@@ -106,7 +106,9 @@ export function loadProgressV2(storage?: Storage): ProgressV2 {
     const raw = store(storage)?.getItem(PROGRESS_KEY);
     if (!raw) return p;
     const o = JSON.parse(raw);
-    if (o?.profile && MODES.includes(o.profile.mode) && THEMES.includes(o.profile.theme)) p.profile = { mode: o.profile.mode, theme: o.profile.theme };
+    // the 'ai' theme was replaced by 'sport': an old save keeps its mode and falls back to 'games'
+    const theme = o?.profile?.theme === 'ai' ? 'games' : o?.profile?.theme;
+    if (o?.profile && MODES.includes(o.profile.mode) && THEMES.includes(theme)) p.profile = { mode: o.profile.mode, theme };
     if (o?.mastery && typeof o.mastery === 'object') for (const c of CABINETS) { const v = o.mastery[c]; if (typeof v === 'number' && v >= 0 && v <= 1) p.mastery[c] = v; }
     if (Array.isArray(o?.finished)) p.finished = o.finished.filter((c: unknown) => CABINETS.includes(c as CabinetId));
     if (typeof o?.xp === 'number' && Number.isFinite(o.xp) && o.xp >= 0) p.xp = o.xp;

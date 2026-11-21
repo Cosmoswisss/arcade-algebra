@@ -9,7 +9,7 @@
     "examples": {
       "games": "A hero moves with two keys: how many steps right and how many steps up give the position.",
       "physics": "Two forces along different directions combine into one resultant force.",
-      "ai": "An output is a weighted sum of two feature vectors: the weights are the coefficients."
+      "sport": "Your position on the pitch = a steps along the touchline + b steps towards goal."
     },
     "scene": [
       { "matrix": [[1, 0], [0, 1]], "caption": "u = (1, 0) and v = (0, 1)", "ms": 1800 },
@@ -33,7 +33,7 @@
     "examples": {
       "games": "Two diagonal buttons can still reach any tile, if you may press them a negative number of times.",
       "physics": "Any two non-parallel directions are enough to express a force.",
-      "ai": "Any two independent features can express every point of the feature plane."
+      "sport": "Two diagonal runs, forward-left and forward-right, still cover the whole pitch if you may also run them backwards."
     },
     "check": {
       "kind": "point",
@@ -53,7 +53,7 @@
     "examples": {
       "games": "Two buttons that both move you diagonally up-right can never take you straight up.",
       "physics": "Two forces on the same line can never produce a sideways force.",
-      "ai": "Two features that are multiples of each other add no new direction."
+      "sport": "Two players who can only run along the same diagonal can never reach a ball straight to the side."
     },
     "scene": [
       { "matrix": [[1, 0], [0, 1]], "caption": "Two independent arrows span the whole plane", "ms": 2000 },

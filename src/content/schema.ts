@@ -75,7 +75,7 @@ export function validateCabinet(folder: string, files: Record<string, unknown>, 
     const w = `${at('course.json')}#${id}`;
     if (!isObj(s) || !isStr(s.id) || !isStr(s.title)) { errors.push(`${w}: id and title are required`); continue; }
     if (!hasModes(s.text, isStr)) errors.push(`${w}: text must have guided and fast versions`);
-    if (!isObj(s.examples) || !THEMES.every((t) => isStr((s.examples as Record<string, unknown>)[t]))) errors.push(`${w}: examples must have games, physics and ai`);
+    if (!isObj(s.examples) || !THEMES.every((t) => isStr((s.examples as Record<string, unknown>)[t]))) errors.push(`${w}: examples must have games, physics and sport`);
     checkScene(s.scene, w, errors);
     const q = checkQuestion(s.check);
     if (q) errors.push(`${w}: ${q}`);

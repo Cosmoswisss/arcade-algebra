@@ -40,7 +40,7 @@ describe('progression', () => {
     const r2 = applyWaveResult(r1.next, 'drone', miss); expect(r2.suggestMode).toBe('guided');
   });
   test('3 first-try wins in a row in guided mode suggest fast', () => {
-    let p: ProgressV2 = { ...defaultProgress(), profile: { mode: 'guided', theme: 'ai' } };
+    let p: ProgressV2 = { ...defaultProgress(), profile: { mode: 'guided', theme: 'sport' } };
     let last = null as null | string;
     for (let k = 0; k < 3; k++) { const r = applyWaveResult(p, 'drone', win); p = r.next; last = r.suggestMode; }
     expect(last).toBe('fast');

@@ -9,7 +9,7 @@
     "examples": {
       "games": "Think of a game camera: dragging two handles at the corners of the screen stretches or tilts everything you see.",
       "physics": "Think of a rubber sheet pinned at the origin: pull the tip of each unit arrow and every drawn shape deforms with it.",
-      "ai": "Think of a layer that remaps two input features to new directions: the weights are exactly where each basis arrow ends up."
+      "sport": "Redraw the pitch: say where the touchline arrow and the goal-line arrow end up, and every spot on the pitch follows."
     },
     "scene": [
       { "matrix": [[1, 0], [0, 1]], "caption": "Start: î = (1, 0) and ĵ = (0, 1)", "ms": 1800 },
@@ -34,7 +34,7 @@
     "examples": {
       "games": "A character stuck to a sticker on the screen moves with the sticker: same recipe, new axes.",
       "physics": "A mark painted on the stretched sheet stays at the same grid coordinates, whatever the sheet does.",
-      "ai": "An input (x, y) is a weighted sum of the two basis directions; the layer just reweights them."
+      "sport": "A spot 3 along the touchline and 1 towards goal stays \"3 and 1\" on the redrawn pitch, just with the new arrows."
     },
     "scene": [
       { "matrix": [[1, 0], [0, 1]], "caption": "The point (2, 1) = 2 × î + 1 × ĵ", "ms": 2000 },
@@ -58,7 +58,7 @@
     "examples": {
       "games": "Controls swapped: pressing right now moves you up, and up moves you right.",
       "physics": "Exchanging the x and y axes of a lab frame mirrors every measurement across the diagonal.",
-      "ai": "Feeding features in the wrong order silently swaps what each weight means."
+      "sport": "Swap the touchline and goal-line arrows and every tactic board play goes to the wrong spot."
     },
     "check": {
       "kind": "choice",

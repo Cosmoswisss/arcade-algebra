@@ -49,8 +49,8 @@ export type CabinetId = 'vector-golf' | 'drone' | 'hole-in-the-wall' | 'factory'
 export const CABINETS: CabinetId[] = ['vector-golf', 'drone', 'hole-in-the-wall', 'factory', 'squash', 'rewind', 'laser-lab'];
 export type Mode = 'guided' | 'fast';
 export const MODES: Mode[] = ['guided', 'fast'];
-export type Theme = 'games' | 'physics' | 'ai';
-export const THEMES: Theme[] = ['games', 'physics', 'ai'];
+export type Theme = 'games' | 'physics' | 'sport';
+export const THEMES: Theme[] = ['games', 'physics', 'sport'];
 /** The three tiers of in-game help: with visual aids, partial aids, abstract representation only. */
 export type Rule = 'assist' | 'partial' | 'abstract';
 export const RULES: Rule[] = ['assist', 'partial', 'abstract'];

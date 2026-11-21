@@ -19,6 +19,12 @@ describe('progress v2 storage', () => {
     const p = loadProgressV2(s as unknown as Storage);
     expect(p.xp).toBe(0); expect(p.profile).toBeNull(); expect(p.finished).toEqual(['drone']);
   });
+  test('a saved ai theme loads as games, the rest is kept', () => {
+    const s = new Mem(); s.setItem(PROGRESS_KEY, JSON.stringify({ profile: { mode: 'fast', theme: 'ai' }, xp: 40 }));
+    const p = loadProgressV2(s as unknown as Storage);
+    expect(p.profile).toEqual({ mode: 'fast', theme: 'games' });
+    expect(p.xp).toBe(40);
+  });
   test('a throwing storage gives defaults and never throws', () => {
     expect(loadProgressV2(boom).xp).toBe(0);
     expect(() => saveProgressV2(loadProgressV2(boom), boom)).not.toThrow();

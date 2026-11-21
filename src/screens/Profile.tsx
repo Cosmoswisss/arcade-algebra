@@ -11,7 +11,7 @@ const LEVELS: { mode: Mode; name: string; line: string }[] = [
 const THEMES: { theme: Theme; name: string; example: string }[] = [
   { theme: 'games', name: 'Games', example: 'A character stuck to a sticker on the screen moves whenever the sticker does.' },
   { theme: 'physics', name: 'Physics', example: 'A mark painted on a rubber sheet stays at the same grid coordinates while the sheet stretches.' },
-  { theme: 'ai', name: 'AI', example: 'A layer reweights two input directions: its weights are where each basis arrow ends up.' },
+  { theme: 'sport', name: 'Sport', example: 'A pass is a vector: 3 steps forward and 1 to the side lands the ball on your teammate.' },
 ];
 
 export function Profile() {

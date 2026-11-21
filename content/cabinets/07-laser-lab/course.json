@@ -9,7 +9,7 @@
     "examples": {
       "games": "Pulling a stretchy toy along its length keeps it straight; pulling it sideways bends it.",
       "physics": "The principal axes of a deformation are the directions that are stretched without being rotated.",
-      "ai": "The directions along which a covariance matrix only scales, never rotates, are its principal components."
+      "sport": "A ball kicked straight along the wind only goes faster or slower; kicked across it, it curves."
     },
     "scene": [
       { "matrix": [[1, 0], [0, 1]], "caption": "Start: î = (1, 0), ĵ = (0, 1)", "ms": 1800 },
@@ -32,7 +32,7 @@
     "examples": {
       "games": "A zoom that doubles width and triples height: along each axis, the zoom factor is the eigenvalue.",
       "physics": "The eigenvalue along a principal axis is the stretch ratio in that direction.",
-      "ai": "The eigenvalue of a principal component is the variance (the \"importance\") along it."
+      "sport": "A pitch stretched 2× in length and 3× in width: along each line, the stretch factor is the eigenvalue."
     },
     "check": {
       "kind": "number",
@@ -52,7 +52,7 @@
     "examples": {
       "games": "A camera that spins the whole scene leaves no object pointing the same way.",
       "physics": "A pure rotation of the plane keeps no direction fixed.",
-      "ai": "A rotation of feature space has no direction that is only scaled."
+      "sport": "Spin the whole pitch around the centre spot: no player keeps facing the same direction."
     },
     "scene": [
       { "matrix": [[1, 0], [0, 1]], "caption": "Start", "ms": 1600 },

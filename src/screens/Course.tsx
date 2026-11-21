@@ -13,7 +13,7 @@ import { RichText } from '../ui/RichText';
 
 type View = 'learn' | 'ask' | 'wrong' | 'right';
 const IDENTITY: Mat2 = [[1, 0], [0, 1]];
-const THEME_NAME = { games: 'Games', physics: 'Physics', ai: 'AI' } as const;
+const THEME_NAME = { games: 'Games', physics: 'Physics', sport: 'Sport' } as const;
 
 export function Course({ id }: { id: CabinetId }) {
   const { progress, content } = useStore();

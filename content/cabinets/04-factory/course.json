@@ -9,7 +9,7 @@
     "examples": {
       "games": "A filter applied to a sprite: it goes in unchanged and comes out turned or stretched.",
       "physics": "A lens or a mirror in a beam path is one transformation of the beam.",
-      "ai": "Each layer of a network is one machine on the belt."
+      "sport": "A coach turns the formation a quarter turn: every player goes in at one spot and comes out at another."
     },
     "scene": [
       { "matrix": [[1, 0], [0, 1]], "caption": "A part enters the belt", "ms": 1800 },
@@ -33,7 +33,7 @@
     "examples": {
       "games": "Rotate the character and then move forward, or move forward and then rotate: you end up in different places.",
       "physics": "Two rotations about different axes do not commute: the final orientation depends on the order.",
-      "ai": "Normalising then projecting is not the same as projecting then normalising."
+      "sport": "Turn the formation then stretch it, or stretch it then turn it: the players end up in different places."
     },
     "scene": [
       { "matrix": [[2, 0], [0, 1]], "caption": "STRETCH ×2 first: î → (2, 0)", "ms": 2200 },
@@ -58,7 +58,7 @@
     "examples": {
       "games": "f(g(x)): the inner call runs first, like the first machine on the belt.",
       "physics": "A sequence of operators acts on a state from the right: the one next to the state acts first.",
-      "ai": "In a network, h = W2·(W1·x): the matrix next to the input acts first."
+      "sport": "Warm-up first, then the match: in B·A, the A next to the player acts first."
     },
     "check": {
       "kind": "basis",

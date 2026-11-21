@@ -9,7 +9,7 @@
     "examples": {
       "games": "A character takes two steps in a row: the total move is the sum of the two steps.",
       "physics": "Two forces on a ball add up: the resulting force is the sum of the two vectors.",
-      "ai": "A feature vector plus an update vector gives the new feature vector, one coordinate at a time."
+      "sport": "A one-two pass: (3, 1) then (1, 2) puts the ball at (4, 3) from where it started."
     },
     "check": {
       "kind": "point",
@@ -29,7 +29,7 @@
     "examples": {
       "games": "Double speed doubles both the sideways and the upward part of your move.",
       "physics": "Doubling a force doubles every component of it; reversing a force flips both signs.",
-      "ai": "Scaling a gradient step by a learning rate multiplies every coordinate."
+      "sport": "Kick twice as hard: both the forward and the sideways part of the shot double. A back pass is a negative vector."
     },
     "scene": [
       { "matrix": [[1, 0], [0, 1]], "caption": "Start: î = (1, 0), ĵ = (0, 1)", "ms": 1800 },
@@ -54,7 +54,7 @@
     "examples": {
       "games": "Walk 3 east then 4 north, or 4 north then 3 east: you end on the same tile, but one route may cross a lava field.",
       "physics": "The net displacement does not depend on the order of the legs of the trip.",
-      "ai": "Summing gradient updates in any order gives the same total update."
+      "sport": "Dribble 3 right then 4 up, or 4 up then 3 right: same spot, but one path may run into a defender."
     },
     "check": {
       "kind": "choice",

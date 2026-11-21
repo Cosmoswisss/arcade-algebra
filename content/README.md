@@ -66,7 +66,7 @@ Chaque borne contient **5 fichiers** : `cabinet.json`, `course.json`, `waves.jso
     "examples": {
       "games": "Like a power-up that makes every sprite twice as big.",
       "physics": "Like a fluid being compressed: the same stuff in less space.",
-      "ai": "Like resizing an image: the number of pixels changes."
+      "sport": "Like widening the pitch: every zone covers more grass."
     },
     "scene": [
       { "matrix": [[1, 0], [0, 1]], "caption": "Unit square: area 1.", "ms": 1200 },

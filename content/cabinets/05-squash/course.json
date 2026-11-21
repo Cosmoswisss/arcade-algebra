@@ -9,7 +9,7 @@
     "examples": {
       "games": "Zoom a map 2× wider and 3× taller: every region takes 6 times more screen.",
       "physics": "Stretch a rubber sheet by 2 in one direction and 1.5 in the other: every patch grows by 3 times.",
-      "ai": "A layer that expands one feature by 2 and another by 1.5 enlarges every region of feature space by 3."
+      "sport": "Widen the pitch 2× and lengthen it 3×: every zone of the pitch covers 6 times more grass."
     },
     "scene": [
       { "matrix": [[1, 0], [0, 1]], "caption": "The unit square has area 1", "ms": 1800 },
@@ -33,7 +33,7 @@
     "examples": {
       "games": "Mirror your level horizontally: same size, but left and right are swapped.",
       "physics": "A reflection in a mirror keeps lengths and areas but reverses handedness.",
-      "ai": "Swapping two input features keeps the information but reverses the orientation of the feature space."
+      "sport": "Play the second half on the other side: same pitch size, but left and right wings are swapped."
     },
     "scene": [
       { "matrix": [[1, 0], [0, 1]], "caption": "Start: the L points right", "ms": 1800 },
@@ -57,7 +57,7 @@
     "examples": {
       "games": "Squash a character against the wall until it is a line: you can no longer tell its height.",
       "physics": "Projecting a 3D object onto a flat screen loses depth: the lost dimension cannot be recovered.",
-      "ai": "Two features that always move together carry the same information: the layer collapses them."
+      "sport": "Squash the whole pitch onto the halfway line: you can no longer tell how far up the field a player was."
     },
     "scene": [
       { "matrix": [[1, 0], [0, 1]], "caption": "Start: î = (1, 0), ĵ = (0, 1)", "ms": 1800 },

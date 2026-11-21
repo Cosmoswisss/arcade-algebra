@@ -9,7 +9,7 @@
     "examples": {
       "games": "Rewind a replay: the inverse of every move, played in reverse, returns to the start.",
       "physics": "To recover the original measurement you apply the inverse of the instrument's distortion.",
-      "ai": "Decoding an embedding means applying the inverse of the encoder's matrix."
+      "sport": "Rewind the replay: undo each move in reverse order and the players are back at kick-off."
     },
     "scene": [
       { "matrix": [[1, 0], [0, 1]], "caption": "The original picture", "ms": 1800 },
@@ -34,7 +34,7 @@
     "examples": {
       "games": "Spin the camera 90° left, then 90° right: the scene is back.",
       "physics": "A rotation of the frame is undone by the opposite rotation.",
-      "ai": "Rotating features by an angle and then by minus that angle returns the original features."
+      "sport": "Turn the formation 90° left, then 90° right: everyone is back in place."
     },
     "scene": [
       { "matrix": [[1, 0], [0, 1]], "caption": "Start", "ms": 1600 },
@@ -59,7 +59,7 @@
     "examples": {
       "games": "A character squashed flat against a wall: you can no longer tell how tall it was.",
       "physics": "A photo flattens 3D into 2D: depth is lost for good.",
-      "ai": "A layer that maps two different inputs to the same output cannot be inverted."
+      "sport": "Two players squashed onto the same spot of the halfway line: you cannot tell who was where."
     },
     "scene": [
       { "matrix": [[1, 0], [0, 1]], "caption": "Different points, different places", "ms": 1800 },

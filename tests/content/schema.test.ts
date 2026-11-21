@@ -13,7 +13,7 @@ const meta = {
   boss: { waves: 2 },
 };
 const course = [{
-  id: 'c1', title: 'Two arrows', text: { guided: 'g', fast: 'f' }, examples: { games: 'x', physics: 'y', ai: 'z' },
+  id: 'c1', title: 'Two arrows', text: { guided: 'g', fast: 'f' }, examples: { games: 'x', physics: 'y', sport: 'z' },
   scene: [{ matrix: [[2, 0], [0, 1]], caption: 'stretch', ms: 1200 }],
   check: { kind: 'basis', prompt: 'Where do î and ĵ land?', given: { matrix: [[2, 0], [0, 1]] }, answer: [[2, 0], [0, 1]], tolerance: 0.1 },
 }];
@@ -31,6 +31,12 @@ describe('validateCabinet', () => {
     const r = validateCabinet('03-hole-in-the-wall', files({ 'waves.json': [{ id: 'w9', concept: 'stretch', params: { matrix: [[1, 2]] } }] }), validateHoleParams);
     expect(r.ok).toBe(false);
     if (!r.ok) expect(r.errors.join('\n')).toMatch(/waves\.json.*w9/);
+  });
+  test('lesson examples need games, physics and sport', () => {
+    const old = [{ ...course[0], examples: { games: 'x', physics: 'y', ai: 'z' } }];
+    const r = validateCabinet('03-hole-in-the-wall', files({ 'course.json': old }), validateHoleParams);
+    expect(r.ok).toBe(false);
+    if (!r.ok) expect(r.errors.join('\n')).toContain('games, physics and sport');
   });
   test('rejects tiers that are not exactly assist, partial, abstract', () => {
     const r = validateCabinet('03-hole-in-the-wall', files({ 'cabinet.json': { ...meta, tiers: meta.tiers.slice(0, 2) } }), validateHoleParams);
