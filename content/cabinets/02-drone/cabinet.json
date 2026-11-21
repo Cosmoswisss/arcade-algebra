@@ -6,7 +6,7 @@
   "tiers": [
     {
       "rule": "assist",
-      "banner": "The drone's position is shown live",
+      "banner": "The drone moves live",
       "waves": {
         "guided": 3,
         "fast": 2
@@ -14,7 +14,7 @@
     },
     {
       "rule": "partial",
-      "banner": "NEW RULE · THE DRONE IS HIDDEN UNTIL IT FLIES",
+      "banner": "NEW RULE · DRONE HIDDEN until it flies",
       "waves": {
         "guided": 3,
         "fast": 2
@@ -22,7 +22,7 @@
     },
     {
       "rule": "abstract",
-      "banner": "NEW RULE · REACHABLE OR NOT? Answer before it flies",
+      "banner": "NEW RULE · REACHABLE OR NOT? answer first",
       "waves": {
         "guided": 3,
         "fast": 2
@@ -36,5 +36,8 @@
   "boss": {
     "waves": 2
   },
-  "story": {"intro":"The drone bay lost its mixing rule. Two thrusters, one target: teach it to combine.","cleared":"Drones fly again. Every reachable point is a mix of u and v."}
+  "story": {
+    "intro": "The drone bay lost its mixing rule. Two thrusters, one target: teach it to combine.",
+    "cleared": "Drones fly again. Every reachable point is a mix of u and v."
+  }
 }

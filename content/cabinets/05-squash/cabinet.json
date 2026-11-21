@@ -14,7 +14,7 @@
     },
     {
       "rule": "partial",
-      "banner": "NEW RULE · ONLY î AND ĵ ARE SHOWN",
+      "banner": "NEW RULE · ONLY î AND ĵ",
       "waves": {
         "guided": 3,
         "fast": 2
@@ -22,7 +22,7 @@
     },
     {
       "rule": "abstract",
-      "banner": "NEW RULE · ONLY THE MATRIX — predict the area",
+      "banner": "NEW RULE · MATRIX ONLY",
       "waves": {
         "guided": 3,
         "fast": 2
@@ -36,5 +36,8 @@
   "boss": {
     "waves": 2
   },
-  "story": {"intro":"The press zone lost track of areas. Bet on the squash before it lands.","cleared":"The press is calibrated. Determinants measure areas again."}
+  "story": {
+    "intro": "The press zone lost track of areas. Bet on the squash before it lands.",
+    "cleared": "The press is calibrated. Determinants measure areas again."
+  }
 }

@@ -47,9 +47,9 @@ export function evaluateLaser(m: Mat2, v: Vec2, saidNone: boolean): { correct: b
 }
 
 export function goalText(m: Mat2, rule: Rule): string {
-  if (rule === 'assist') return 'Aim the laser so the beam comes out of the lens on the same line (the dashed exit beam must line up). Or press NO STRAIGHT PATH.';
-  if (rule === 'partial') return 'Same goal, but the exit beam is hidden until you fire. Watch how the lens bends the grid.';
-  return `The lens is ${mstr(m)}. Aim at a direction it does not turn — or press NO STRAIGHT PATH.`;
+  if (rule === 'assist') return 'Aim so the beam leaves the lens on the same line.';
+  if (rule === 'partial') return 'Same line in and out. The exit beam shows only when you fire.';
+  return `Lens ${mstr(m)}: aim where it does not turn the beam.`;
 }
 
 export function checklist(m: Mat2, v: Vec2, rule: Rule): { label: string; ok: boolean }[] {

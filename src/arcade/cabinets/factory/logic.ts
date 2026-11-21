@@ -21,9 +21,9 @@ export function evaluateFactory(p: FactoryParams, order: number[]): { correct: b
 }
 
 export function goalText(p: FactoryParams, rule: Rule): string {
-  if (rule === 'assist') return `Put the machines on the belt so the part ends with î at ${vstr(col(p.target, 0))} and ĵ at ${vstr(col(p.target, 1))}. You see the part after each machine.`;
-  if (rule === 'partial') return 'Same job, but you only see the final part. Think about what each machine does to the previous result.';
-  return 'Only the machines\' matrices are shown. Order them so the product matches the outline.';
+  if (rule === 'assist') return `Order the machines: î must end at ${vstr(col(p.target, 0))}, ĵ at ${vstr(col(p.target, 1))}.`;
+  if (rule === 'partial') return `Same goal: î at ${vstr(col(p.target, 0))}, ĵ at ${vstr(col(p.target, 1))}. Only the final part is shown.`;
+  return 'Order the matrices so their product makes the target.';
 }
 
 export function checklist(p: FactoryParams, order: number[], rule: Rule): { label: string; ok: boolean }[] {

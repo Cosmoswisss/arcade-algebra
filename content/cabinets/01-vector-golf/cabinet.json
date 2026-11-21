@@ -6,7 +6,7 @@
   "tiers": [
     {
       "rule": "assist",
-      "banner": "The path is drawn for you",
+      "banner": "Shots are shown with their coordinates",
       "waves": {
         "guided": 3,
         "fast": 2
@@ -14,7 +14,7 @@
     },
     {
       "rule": "partial",
-      "banner": "NEW RULE · THE PATH IS HIDDEN — add the arrows in your head",
+      "banner": "NEW RULE · NO PATH — add the shots in your head",
       "waves": {
         "guided": 3,
         "fast": 2
@@ -22,7 +22,7 @@
     },
     {
       "rule": "abstract",
-      "banner": "NEW RULE · ONLY THE NUMBERS — predict where the ball stops",
+      "banner": "NEW RULE · NUMBERS ONLY — predict where the ball stops",
       "waves": {
         "guided": 3,
         "fast": 2
@@ -36,5 +36,8 @@
   "boss": {
     "waves": 2
   },
-  "story": {"intro":"Welcome to the Grid. The golf course forgot that a vector is a move, so let us remind it.","cleared":"The golf course is back on. Moves add up again, tip to tail."}
+  "story": {
+    "intro": "Welcome to the Grid. The golf course forgot that a vector is a move, so let us remind it.",
+    "cleared": "The golf course is back on. Moves add up again, tip to tail."
+  }
 }

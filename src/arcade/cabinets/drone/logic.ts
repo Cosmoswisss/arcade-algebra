@@ -40,8 +40,8 @@ export function evaluateDrone(p: DroneParams, rule: Rule, a: number, b: number, 
 }
 
 export function goalText(p: DroneParams, rule: Rule): string {
-  if (rule === 'abstract') return `Thrusters u = ${vstr(p.u)} and v = ${vstr(p.v)}. Can the drone reach ${vstr(p.target)}? Answer before it flies.`;
-  return `Mix the thrusters u = ${vstr(p.u)} and v = ${vstr(p.v)} to reach ${vstr(p.target)} — or press CAN'T REACH.`;
+  if (rule === 'abstract') return `u = ${vstr(p.u)}, v = ${vstr(p.v)}: can the drone reach ${vstr(p.target)}?`;
+  return `Reach ${vstr(p.target)} with a·u + b·v (u = ${vstr(p.u)}, v = ${vstr(p.v)}).`;
 }
 
 export function checklist(p: DroneParams, rule: Rule, a: number, b: number): { label: string; ok: boolean }[] {

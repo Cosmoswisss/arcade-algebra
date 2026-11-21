@@ -24,9 +24,9 @@ export function evaluateRewind(warp: Mat2, player: Mat2, saidCantRepair: boolean
 
 const mstr = (m: Mat2) => `[[${m[0][0]}, ${m[0][1]}], [${m[1][0]}, ${m[1][1]}]]`;
 export function goalText(warp: Mat2, rule: Rule): string {
-  if (rule === 'assist') return 'Drag î and ĵ to build the move that puts the picture back in its frame — or press CAN\'T REPAIR if it was squashed flat.';
-  if (rule === 'partial') return 'Same mission, without the frame: straighten the picture so it looks undistorted.';
-  return `The warp was ${mstr(warp)}. Build the move that undoes it — the picture only appears at the end.`;
+  if (rule === 'assist') return 'Move î and ĵ to put the picture back in its frame.';
+  if (rule === 'partial') return 'Straighten the picture. No frame this time.';
+  return `Warp ${mstr(warp)}: build the move that undoes it.`;
 }
 
 export function checklist(warp: Mat2, player: Mat2, rule: Rule): { label: string; ok: boolean }[] {

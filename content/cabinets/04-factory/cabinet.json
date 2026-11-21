@@ -6,7 +6,7 @@
   "tiers": [
     {
       "rule": "assist",
-      "banner": "You see the part after every machine",
+      "banner": "You see the part after each machine",
       "waves": {
         "guided": 3,
         "fast": 2
@@ -14,7 +14,7 @@
     },
     {
       "rule": "partial",
-      "banner": "NEW RULE · ONLY THE FINAL PART IS SHOWN",
+      "banner": "NEW RULE · ONLY THE FINAL PART",
       "waves": {
         "guided": 3,
         "fast": 2
@@ -22,7 +22,7 @@
     },
     {
       "rule": "abstract",
-      "banner": "NEW RULE · ONLY THE MATRICES — think before you run",
+      "banner": "NEW RULE · MATRICES ONLY",
       "waves": {
         "guided": 3,
         "fast": 2
@@ -36,5 +36,8 @@
   "boss": {
     "waves": 2
   },
-  "story": {"intro":"The factory belt runs its machines in random order. Put some order back.","cleared":"The belt runs right to left again. Composition restored."}
+  "story": {
+    "intro": "The factory belt runs its machines in random order. Put some order back.",
+    "cleared": "The belt runs right to left again. Composition restored."
+  }
 }

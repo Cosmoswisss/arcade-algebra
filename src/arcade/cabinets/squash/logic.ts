@@ -17,9 +17,9 @@ export function evaluateSquash(m: Mat2, bet: number): { correct: boolean; diagno
 }
 
 export function goalText(m: Mat2, rule: Rule): string {
-  if (rule === 'assist') return 'The press will reshape the yellow square (area 1). Count the squares it will cover and bet on the new area. Flipped over = negative.';
-  if (rule === 'partial') return `Only î and ĵ after the press are shown. Bet on the new area of the square (matrix ${mstr(m)}).`;
-  return `The press applies ${mstr(m)}. Bet on the area factor before it hits.`;
+  if (rule === 'assist') return 'Count the squares and bet on the new area. Flipped = negative.';
+  if (rule === 'partial') return `Matrix ${mstr(m)}: bet on the new area.`;
+  return `Press ${mstr(m)}: bet on the area factor.`;
 }
 
 export function checklist(m: Mat2, bet: number, rule: Rule): { label: string; ok: boolean }[] {

@@ -47,9 +47,9 @@ export function evaluateGolf(p: GolfParams, rule: Rule, playerShots: Vec2[], pre
 
 export function goalText(p: GolfParams, rule: Rule): string {
   const n = p.shots.length;
-  if (rule === 'assist') return `Get the ball from ${vstr(p.start)} to the hole at ${vstr(p.hole)} with ${n} shot${n > 1 ? 's' : ''}.`;
-  if (rule === 'partial') return `Reach the hole with ${n} shot${n > 1 ? 's' : ''}. This time the path is hidden: add the arrows in your head.`;
-  return `The shots are ${p.shots.map(vstr).join(' then ')}. Predict where the ball stops.`;
+  if (rule === 'assist') return `From ${vstr(p.start)} to the flag at ${vstr(p.hole)}: ${n} shot${n > 1 ? 's' : ''}.`;
+  if (rule === 'partial') return `From ${vstr(p.start)} to the flag at ${vstr(p.hole)}: ${n} shot${n > 1 ? 's' : ''}, path hidden.`;
+  return `Shots ${p.shots.map(vstr).join(' then ')}: where does the ball stop?`;
 }
 
 export function checklist(p: GolfParams, rule: Rule, playerShots: Vec2[]): { label: string; ok: boolean }[] {
