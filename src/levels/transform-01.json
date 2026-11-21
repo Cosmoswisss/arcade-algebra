@@ -1,0 +1,12 @@
+{
+  "id": "transform-01",
+  "skill": "matrix-transform",
+  "title": "Fit the square",
+  "prompt": "Drag î and ĵ so the square lands in the hole.",
+  "shape": [[0, 0], [1, 0], [1, 1], [0, 1]],
+  "target": { "type": "shape", "matrix": [[2, 0], [1, 1]] },
+  "movable": ["i", "j"],
+  "snap": 0.5,
+  "tolerance": 0.1,
+  "hints": ["Where should the corner (1,0) go?", "The corner (1,0) follows î exactly."]
+}

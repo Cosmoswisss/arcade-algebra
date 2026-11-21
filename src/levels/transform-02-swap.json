@@ -1,0 +1,11 @@
+{
+  "id": "transform-02-swap",
+  "skill": "matrix-transform",
+  "title": "Which arrow goes where?",
+  "prompt": "Make the square land in the hole. Watch which corner each arrow carries.",
+  "shape": [[0, 0], [1, 0], [1, 1], [0, 1]],
+  "target": { "type": "shape", "matrix": [[0, 1], [2, 0]] },
+  "movable": ["i", "j"],
+  "targetsError": "swapped-columns",
+  "hints": ["The corner (1,0) is carried by î. Where is it in the hole?", "î is the green arrow: it lands where the corner (1,0) must go."]
+}
