@@ -6,11 +6,13 @@ import type { KitContext } from '../../kit/context';
 import type { Handle } from '../../kit/handles';
 import { arrowAt, CSS, ease, FONT_MONO, glow, lerp, NEON } from '../../kit/neon';
 import type { CabinetGame, Phase } from '../../kit/runner';
-import { checklist, endPoint, evaluateGolf, goalText, hitsWall, HOLE_R, pathPoints } from './logic';
+import { checklist, endPoint, evaluateGolf, fixedShots, goalText, hitsWall, HOLE_R, pathPoints } from './logic';
 import type { GolfParams } from './params';
 
 const SHOT_COLORS = [NEON.player, NEON.accent, NEON.target];
 const SHOT_CSS = [CSS.player, CSS.accent, CSS.target];
+/** Seconds after LOCK IN when the club meets the ball (the Runner's impact comes at 1 s). */
+const IMPACT_AT = 0.88;
 const FIELD: [[number, number], [number, number]] = [[-3, 3], [-2, 3]];
 const add = (a: Vec2, b: Vec2): Vec2 => [a[0] + b[0], a[1] + b[1]];
 const sub = (a: Vec2, b: Vec2): Vec2 => [a[0] - b[0], a[1] - b[1]];
@@ -44,6 +46,8 @@ export function createVectorGolf(): CabinetGame & { setup(ctx: KitContext): void
   let lastPhase: Phase = 'brief';
   /** Seconds since LOCK IN: drives the club swing. */
   let sinceLock = -1;
+  /** Shots given by the level (see fixedShots): drawn, not draggable. */
+  let fixed: boolean[] = [];
   const handles: Handle[] = [];
   const trail: Vec2[] = [];
 
@@ -56,7 +60,7 @@ export function createVectorGolf(): CabinetGame & { setup(ctx: KitContext): void
     g.ellipse(x, y, r, r * 0.45).fill({ color: NEON.bg }).ellipse(x, y, r, r * 0.45).stroke({ width: 2, color: NEON.target, alpha: 0.8 });
     glow(g, [[x, y], [x, y - pole]], NEON.white, 1.6);
     g.poly([x, y - pole, x + 26, y - pole + 7 + wave * 0.3, x, y - pole + 15]).fill({ color: NEON.target });
-    holeT.text = `flag ${vstr(at)}`; holeT.position.set(x + 30, y - pole - 4); holeT.visible = true;
+    holeT.text = `flag ${vstr(at)}`; holeT.anchor.set(0.5, 1); holeT.position.set(x + 8, y - pole - 6); holeT.visible = true;
   }
 
   function drawField(clock: number, showFlag = true) {
@@ -73,28 +77,62 @@ export function createVectorGolf(): CabinetGame & { setup(ctx: KitContext): void
   }
 
   /**
-   * The golf club at the ball: at address while the player aims, then one swing after LOCK IN
-   * (back, then through the ball along the first shot), held at the follow-through.
+   * The golf club at the ball: at address while the player aims (a small waggle), then one swing after LOCK IN:
+   * back swing, a beat at the top, a fast down swing with a motion trail, a flash at impact, and the follow-through.
    */
+  function clubAngle(rest: number, dirX: number, clock: number): number {
+    // screen angles grow clockwise: the head goes back (behind the ball, up) and follows through towards the flag
+    const back = rest + dirX * 1.25, through = rest - dirX * 1.05;
+    if (sinceLock < 0) return rest + Math.sin(clock * 2) * 0.03;
+    const s = sinceLock, out = (x: number) => 1 - Math.pow(1 - x, 3);
+    if (s < 0.4) return rest + (back - rest) * out(s / 0.4);                   // back swing
+    if (s < 0.52) return back;                                                 // the top
+    if (s < IMPACT_AT) return back + (rest - back) * Math.pow((s - 0.52) / (IMPACT_AT - 0.52), 2.2); // down swing
+    return rest + (through - rest) * out(Math.min(1, (s - IMPACT_AT) / 0.37)); // follow-through
+  }
+
+  function drawClubAt(a: number, pivot: Vec2, len: number, dirX: number, alpha: number) {
+    const u: Vec2 = [Math.cos(a), Math.sin(a)];                 // along the shaft, towards the head
+    const t: Vec2 = dirX > 0 ? [u[1], -u[0]] : [-u[1], u[0]];   // the toe points the way the ball goes
+    const head: Vec2 = [pivot[0] + u[0] * len, pivot[1] + u[1] * len];
+    const at = (o: Vec2, du: number, dt: number): number[] => [o[0] + u[0] * du + t[0] * dt, o[1] + u[1] * du + t[1] * dt];
+    // shaft, then the grip (the top 28 % of the club)
+    glow(g, [pivot, head], NEON.white, 2.2, false, alpha);
+    g.moveTo(pivot[0], pivot[1]).lineTo(pivot[0] + u[0] * len * 0.28, pivot[1] + u[1] * len * 0.28).stroke({ width: 7, color: NEON.accent, alpha, cap: 'round' });
+    for (let k = 1; k <= 3; k++) { const q = at(pivot, len * 0.07 * k, 0); g.moveTo(q[0] - t[0] * 3.5, q[1] - t[1] * 3.5).lineTo(q[0] + t[0] * 3.5, q[1] + t[1] * 3.5); }
+    g.stroke({ width: 1.2, color: NEON.bg, alpha: alpha * 0.8 });
+    // an iron head: heel at the shaft, toe forward, a lofted face with two grooves
+    const face = [...at(head, -2, -3), ...at(head, -1, 21), ...at(head, 9, 23), ...at(head, 11, -1)];
+    g.poly(face).fill({ color: 0xdfe6ff, alpha: 0.95 * alpha }).stroke({ width: 1.5, color: NEON.target, alpha });
+    for (const du of [3, 6]) { const a1 = at(head, du, 3), a2 = at(head, du + 0.6, 17); g.moveTo(a1[0], a1[1]).lineTo(a2[0], a2[1]); }
+    g.stroke({ width: 1, color: NEON.muted, alpha: alpha * 0.9 });
+    g.circle(head[0], head[1], 3).fill({ color: NEON.target, alpha });
+  }
+
   function drawClub(clock: number) {
     const L = ctx.layout();
     const first = rule === 'abstract' ? p.shots[0] : shots[0] ?? [1, 0];
-    const dirX = Math.sign(first[0]) || 1;                         // the side the ball goes to
-    const ball = S(p.start), len = Math.max(46, L.U * 1.15);
-    const pivot: Vec2 = [ball[0] - dirX * len * 0.35, ball[1] - len * 0.94];
-    const rest = Math.atan2(ball[1] - pivot[1], ball[0] - pivot[0]); // club head resting behind the ball
-    const back = rest - dirX * 0.95, through = rest + dirX * 0.75;
-    let a = rest + Math.sin(clock * 2) * 0.03;                       // at address: a slight waggle
-    if (sinceLock >= 0) {
-      const k = Math.min(1, sinceLock / 0.45);
-      a = k < 0.45 ? rest + (back - rest) * (k / 0.45)               // back swing
-        : back + (through - back) * Math.pow((k - 0.45) / 0.55, 2);  // down swing, accelerating through the ball
+    const dirX = Math.sign(first[0]) || 1;
+    const ball = S(p.start), len = Math.max(52, L.U * 1.25);
+    const pivot: Vec2 = [ball[0] - dirX * len * 0.32, ball[1] - len * 0.96];
+    // rest: the club head sits just behind the ball
+    const rest = Math.atan2(ball[1] - 4 - pivot[1], ball[0] - dirX * 10 - pivot[0]);
+    const a = clubAngle(rest, dirX, clock);
+    // motion trail while the club comes down and through
+    if (sinceLock > 0.52 && sinceLock < IMPACT_AT + 0.3) {
+      for (let k = 4; k >= 1; k--) drawClubAt(a + dirX * k * 0.13, pivot, len, dirX, 0.1 * (5 - k)); // the trail lags behind the head
     }
-    const head: Vec2 = [pivot[0] + Math.cos(a) * len, pivot[1] + Math.sin(a) * len];
-    glow(g, [pivot, head], NEON.white, 3.2);
-    // the grip and the club head: a short blade pointing the way the ball will go
-    g.circle(pivot[0], pivot[1], 5).fill({ color: NEON.accent });
-    g.moveTo(head[0], head[1]).lineTo(head[0] + dirX * 16, head[1] + 3).stroke({ width: 7, color: NEON.target, cap: 'round' });
+    drawClubAt(a, pivot, len, dirX, 1);
+    // impact: a ring and a few sparks at the ball
+    if (sinceLock >= IMPACT_AT && sinceLock < IMPACT_AT + 0.25) {
+      const f = (sinceLock - IMPACT_AT) / 0.25;
+      g.circle(ball[0], ball[1], 8 + 26 * f).stroke({ width: 3, color: NEON.target, alpha: 1 - f });
+      for (let k = 0; k < 6; k++) {
+        const ang = (k / 6) * Math.PI * 2 + 0.3, r0 = 10 + 18 * f, r1 = r0 + 8;
+        g.moveTo(ball[0] + Math.cos(ang) * r0, ball[1] + Math.sin(ang) * r0).lineTo(ball[0] + Math.cos(ang) * r1, ball[1] + Math.sin(ang) * r1);
+      }
+      g.stroke({ width: 2, color: NEON.white, alpha: 1 - f });
+    }
   }
 
   function drawBall(at: Vec2, alpha = 1) {
@@ -116,8 +154,9 @@ export function createVectorGolf(): CabinetGame & { setup(ctx: KitContext): void
     }
     shots.forEach((v, k) => {
       const from = S(origin(k)), to = S(add(origin(k), v));
-      arrowAt(g, from, to, SHOT_COLORS[k], 3.5);
-      const t = shotLabels[k]; t.visible = true; t.text = `shot ${k + 1} ${vstr(v)}`;
+      arrowAt(g, from, to, SHOT_COLORS[k], fixed[k] ? 2.5 : 3.5);
+      // a fixed shot is given by the level: it follows wherever shot 1 ends
+      const t = shotLabels[k]; t.visible = true; t.text = `shot ${k + 1} ${vstr(v)}${fixed[k] ? ' · fixed' : ''}`;
       t.position.set((from[0] + to[0]) / 2 + 10, (from[1] + to[1]) / 2 - 24);
     });
     if (rule === 'assist' && phase !== 'result') {
@@ -137,7 +176,7 @@ export function createVectorGolf(): CabinetGame & { setup(ctx: KitContext): void
           color: SHOT_COLORS[k],
           get: () => (rule === 'abstract' ? predicted : add(origin(k), shots[k] ?? [0, 0])),
           set: (v) => { if (rule === 'abstract') predicted = v; else shots[k] = sub(v, origin(k)); },
-          enabled: () => ctx.phase() === 'play' && !locked && (rule === 'abstract' ? k === 0 : k < shots.length),
+          enabled: () => ctx.phase() === 'play' && !locked && (rule === 'abstract' ? k === 0 : k < shots.length && !fixed[k]),
           limits: FIELD,
         }));
       }
@@ -145,7 +184,8 @@ export function createVectorGolf(): CabinetGame & { setup(ctx: KitContext): void
     startWave(w: Wave, r: Rule) {
       p = w.params as GolfParams;
       rule = r; locked = false; afterT = 0; trail.length = 0; sinceLock = -1;
-      shots = p.shots.map((_, k) => (k % 2 === 0 ? [1, 0] : [0, 1]) as Vec2);
+      fixed = fixedShots(p);
+      shots = p.shots.map((v, k) => (fixed[k] ? [...v] : k % 2 === 0 ? [1, 0] : [0, 1]) as Vec2);
       predicted = [...p.start] as Vec2;
     },
     update() {},

@@ -30,6 +30,12 @@ export function hitsWall(path: Vec2[], walls: [Vec2, Vec2][]): boolean {
   return false;
 }
 
+/**
+ * Which shots the level gives (fixed) and which the player sets. Without walls, only shot 1 is free: otherwise the
+ * whole move fits in one shot and the others can be left at zero. With walls, every shot is free (the split is the puzzle).
+ */
+export const fixedShots = (p: GolfParams): boolean[] => p.shots.map((_, k) => p.walls.length === 0 && k > 0);
+
 /** Build mode (assist/partial): the player sets the shots. Abstract mode: the shots are given and the player predicts the landing point. */
 export function evaluateGolf(p: GolfParams, rule: Rule, playerShots: Vec2[], predicted: Vec2 | null): { correct: boolean; diagnosis: Diagnosis | null } {
   if (rule === 'abstract') {
@@ -38,8 +44,11 @@ export function evaluateGolf(p: GolfParams, rule: Rule, playerShots: Vec2[], pre
     const d = diagnoseVector(sub(predicted, p.start), sub(real, p.start), HOLE_R);
     return d ? { correct: false, diagnosis: { ...d, text: `The ball stops at ${vstr(real)}: add the shots one after the other.` } } : { correct: true, diagnosis: null };
   }
-  const path = pathPoints(p.start, playerShots);
+  const fixed = fixedShots(p);
+  const played = p.shots.map((s, k) => (fixed[k] ? s : playerShots[k] ?? [0, 0]));
+  const path = pathPoints(p.start, played);
   if (hitsWall(path, p.walls)) return { correct: false, diagnosis: { kind: 'hit-wall', text: 'Bonk! The ball hit a wall. Split the move into shots that go around it.', wrongParts: [true, true] } };
+  if (played.some(([x, y]) => x === 0 && y === 0)) return { correct: false, diagnosis: { kind: 'other', text: `Every shot must move the ball: use all ${played.length} shots.`, wrongParts: [true, true] } };
   const end = path[path.length - 1];
   const d = diagnoseVector(sub(end, p.start), sub(p.hole, p.start), HOLE_R);
   return d ? { correct: false, diagnosis: { ...d, text: `The flag is ${vstr(sub(p.hole, p.start))} away from the start; your shots add up to ${vstr(sub(end, p.start))}.` } } : { correct: true, diagnosis: null };
@@ -47,8 +56,11 @@ export function evaluateGolf(p: GolfParams, rule: Rule, playerShots: Vec2[], pre
 
 export function goalText(p: GolfParams, rule: Rule): string {
   const n = p.shots.length;
-  if (rule === 'assist') return `From ${vstr(p.start)} to the flag at ${vstr(p.hole)}: ${n} shot${n > 1 ? 's' : ''}.`;
-  if (rule === 'partial') return `From ${vstr(p.start)} to the flag at ${vstr(p.hole)}: ${n} shot${n > 1 ? 's' : ''}, path hidden.`;
+  const fixed = fixedShots(p);
+  const given = p.shots.map((v, k) => (fixed[k] ? `shot ${k + 1} is fixed at ${vstr(v)}` : '')).filter(Boolean);
+  const how = given.length ? `${given.join(', ')}. Choose shot 1` : `${n} shot${n > 1 ? 's' : ''}`;
+  if (rule === 'assist') return `From ${vstr(p.start)} to the flag at ${vstr(p.hole)}: ${how}.`;
+  if (rule === 'partial') return `From ${vstr(p.start)} to the flag at ${vstr(p.hole)}: ${how}, path hidden.`;
   return `Shots ${p.shots.map(vstr).join(' then ')}: where does the ball stop?`;
 }
 
@@ -57,5 +69,6 @@ export function checklist(p: GolfParams, rule: Rule, playerShots: Vec2[]): { lab
   const end = endPoint(p.start, playerShots);
   const total = { label: `total move ${vstr(sub(end, p.start))}`, ok: Math.hypot(end[0] - p.hole[0], end[1] - p.hole[1]) <= HOLE_R };
   if (rule === 'partial') return [total];
-  return [total, { label: 'no wall in the way', ok: !hitsWall(pathPoints(p.start, playerShots), p.walls) }];
+  // the wall item only where there are walls
+  return p.walls.length ? [total, { label: 'no wall in the way', ok: !hitsWall(pathPoints(p.start, playerShots), p.walls) }] : [total];
 }

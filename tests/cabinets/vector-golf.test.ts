@@ -40,3 +40,25 @@ describe('vector golf logic', () => {
     }
   });
 });
+
+describe('vector golf: no shortcut through a zero shot', () => {
+  const open: GolfParams = { start: [-2, -1], shots: [[2, 1], [1, 2]], hole: [1, 2], walls: [] };
+  test('without walls, only the first shot is free: the next ones are given by the level', async () => {
+    const { fixedShots } = await import('../../src/arcade/cabinets/vector-golf/logic');
+    expect(fixedShots(open)).toEqual([false, true]);
+    expect(fixedShots(P)).toEqual([false, false]);                  // walls: every shot is the player's (the order matters)
+    expect(fixedShots({ ...open, shots: [[3, 3]] })).toEqual([false]);
+  });
+  test('putting the whole move in shot 1 fails: shot 2 is still added', () => {
+    expect(evaluateGolf(open, 'assist', [[3, 3], [1, 2]], null).correct).toBe(false);
+    expect(evaluateGolf(open, 'assist', [[2, 1], [1, 2]], null).correct).toBe(true);
+  });
+  test('a shot that does not move the ball is refused, with a named reason', () => {
+    const r = evaluateGolf(P, 'assist', [[3, 3], [0, 0]], null);
+    expect(r.correct).toBe(false);
+    const free: GolfParams = { start: [0, 0], shots: [[1, 0], [0, 1]], hole: [1, 1], walls: [[[2, 2], [3, 3]]] };
+    const z = evaluateGolf(free, 'assist', [[1, 1], [0, 0]], null);
+    expect(z.correct).toBe(false); expect(z.diagnosis?.text).toMatch(/every shot must move/i);
+  });
+  test('the goal names the fixed shot', () => expect(goalText(open, 'assist')).toMatch(/shot 2 is fixed.*\(1, 2\)/i));
+});
