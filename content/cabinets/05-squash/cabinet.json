@@ -1,0 +1,39 @@
+{
+  "id": "squash",
+  "order": 5,
+  "name": "Squash!",
+  "notion": "The determinant is how much a matrix scales areas, and whether it flips them over.",
+  "tiers": [
+    {
+      "rule": "assist",
+      "banner": "The squares are shown: count them",
+      "waves": {
+        "guided": 3,
+        "fast": 2
+      }
+    },
+    {
+      "rule": "partial",
+      "banner": "NEW RULE · ONLY î AND ĵ ARE SHOWN",
+      "waves": {
+        "guided": 3,
+        "fast": 2
+      }
+    },
+    {
+      "rule": "abstract",
+      "banner": "NEW RULE · ONLY THE MATRIX — predict the area",
+      "waves": {
+        "guided": 3,
+        "fast": 2
+      }
+    }
+  ],
+  "waveSeconds": {
+    "guided": 16,
+    "fast": 12
+  },
+  "boss": {
+    "waves": 2
+  }
+}

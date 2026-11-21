@@ -78,8 +78,8 @@ export class Hud {
       this.combo.position.set(24, 46); this.info.position.set(24, 78); this.info.style.wordWrap = false;
       this.exitBtn.position.set(w - 110, 72); this.exitBtn.scale.set(1);
     }
-    this.mission.position.set(w / 2, narrow ? 150 : 104); this.mission.style.wordWrapWidth = Math.min(760, w - 48);
-    this.check.position.set(w / 2, narrow ? 196 : 138);
+    this.mission.anchor.set(0.5, 0); this.mission.position.set(w / 2, narrow ? 132 : 92); this.mission.style.wordWrapWidth = Math.min(760, w - 48);
+    this.check.anchor.set(0.5, 0);
     this.lockBtn.position.set(120, h - 50);
     this.pop.position.set(w / 2, h * 0.42); this.sub.position.set(w / 2, h * 0.42 + 52); this.sub.style.wordWrapWidth = Math.min(700, w - 48);
     this.caption.position.set(w / 2, h - 52); this.caption.style.wordWrap = true; this.caption.style.wordWrapWidth = Math.min(900, w - 32); this.hint.position.set(w / 2, h - 20);
@@ -111,11 +111,12 @@ export class Hud {
       const list = r.checklist;
       this.check.text = list.map((c) => `${c.ok ? '✓' : '○'} ${c.label}`).join('      ');
       this.check.style.fill = list.length && list.every((c) => c.ok) ? CSS.target : CSS.text;
+      this.check.position.set(L.w / 2, this.mission.y + this.mission.height + 8);
     }
     this.banner.visible = inPlay && !!r.banner && r.phaseClock < 6;
     this.banner.text = r.banner; this.banner.alpha = Math.min(1, 6 - r.phaseClock);
     this.banner.style.wordWrap = true; this.banner.style.wordWrapWidth = L.w - 32;
-    this.banner.position.set(L.w / 2, L.w < 640 ? 238 : this.check.text ? 172 : 150);
+    this.banner.position.set(L.w / 2, (this.check.text ? this.check.y + this.check.height : this.mission.y + this.mission.height) + 26);
     this.lockBtn.visible = inPlay && r.lockBonus === 0 && r.t < 0.97;
     this.lockBtn.alpha = 0.85 + 0.15 * Math.sin(clock * 6);
     // result pop

@@ -1,0 +1,38 @@
+{
+  "errorKind": "hit-wall",
+  "title": "Go around",
+  "text": {
+    "guided": "The same total move can be split into shots in different orders.\nPick the order whose path goes **around** the wall.",
+    "fast": "Same sum, different path: change the order."
+  },
+  "scene": [
+    {
+      "matrix": [
+        [
+          1,
+          0
+        ],
+        [
+          0,
+          1
+        ]
+      ],
+      "caption": "Start here.",
+      "ms": 1000
+    },
+    {
+      "matrix": [
+        [
+          1,
+          0
+        ],
+        [
+          0,
+          1
+        ]
+      ],
+      "caption": "Watch.",
+      "ms": 1600
+    }
+  ]
+}

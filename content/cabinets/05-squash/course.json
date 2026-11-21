@@ -1,0 +1,185 @@
+[
+  {
+    "id": "areas-scale",
+    "title": "Areas get scaled",
+    "text": {
+      "guided": "Take the unit square: area **1**.\nAfter a matrix, it becomes a parallelogram. Its area is the **determinant**.\nWith $\\begin{bmatrix}3&0\\\\0&1\\end{bmatrix}$, the square is 3 times wider: area 3.",
+      "fast": "The unit square (area 1) becomes a parallelogram of area det(M). A 3× stretch gives area 3."
+    },
+    "examples": {
+      "games": "Like a power-up that makes every sprite 3 times wider.",
+      "physics": "Like a gas expanding to 3 times its volume.",
+      "ai": "Like resizing an image: the number of pixels changes."
+    },
+    "scene": [
+      {
+        "matrix": [
+          [
+            1,
+            0
+          ],
+          [
+            0,
+            1
+          ]
+        ],
+        "caption": "Unit square: area 1.",
+        "ms": 1200
+      },
+      {
+        "matrix": [
+          [
+            3,
+            0
+          ],
+          [
+            0,
+            1
+          ]
+        ],
+        "caption": "3 times wider: area 3.",
+        "ms": 1800
+      }
+    ],
+    "check": {
+      "kind": "number",
+      "prompt": "What is the new area of the unit square?",
+      "given": {
+        "matrix": [
+          [
+            3,
+            0
+          ],
+          [
+            0,
+            1
+          ]
+        ]
+      },
+      "answer": 3,
+      "tolerance": 0.25
+    }
+  },
+  {
+    "id": "shear-keeps-area",
+    "title": "Leaning keeps the area",
+    "text": {
+      "guided": "A shear slides the top of the square sideways.\nThe parallelogram leans, but its base and height do not change: the area stays **1**.",
+      "fast": "Shears keep areas: det of $\\begin{bmatrix}1&1\\\\0&1\\end{bmatrix}$ is 1."
+    },
+    "examples": {
+      "games": "Like italic text: slanted, same amount of ink.",
+      "physics": "Like pushing the top of a deck of cards.",
+      "ai": "Like a skew augmentation: same pixels, slanted."
+    },
+    "scene": [
+      {
+        "matrix": [
+          [
+            1,
+            0
+          ],
+          [
+            0,
+            1
+          ]
+        ],
+        "caption": "Area 1.",
+        "ms": 1000
+      },
+      {
+        "matrix": [
+          [
+            1,
+            1
+          ],
+          [
+            0,
+            1
+          ]
+        ],
+        "caption": "Same base, same height: still 1.",
+        "ms": 1800
+      }
+    ],
+    "check": {
+      "kind": "number",
+      "prompt": "What is the new area?",
+      "given": {
+        "matrix": [
+          [
+            1,
+            1
+          ],
+          [
+            0,
+            1
+          ]
+        ]
+      },
+      "answer": 1,
+      "tolerance": 0.25
+    }
+  },
+  {
+    "id": "flip-and-squash",
+    "title": "Flipped or flattened",
+    "text": {
+      "guided": "If the matrix turns the square **over** (like a mirror), the determinant is **negative**.\nIf it squashes the square into a line, the area is **0**: the plane is flattened.",
+      "fast": "det < 0: the plane is flipped over. det = 0: everything is squashed onto a line."
+    },
+    "examples": {
+      "games": "Like a sprite mirrored left-right.",
+      "physics": "Like looking at your hand in a mirror: left becomes right.",
+      "ai": "Like projecting 2D data onto a single line: information is lost."
+    },
+    "scene": [
+      {
+        "matrix": [
+          [
+            1,
+            0
+          ],
+          [
+            0,
+            1
+          ]
+        ],
+        "caption": "Area 1.",
+        "ms": 1000
+      },
+      {
+        "matrix": [
+          [
+            -1,
+            0
+          ],
+          [
+            0,
+            2
+          ]
+        ],
+        "caption": "Mirrored and twice as tall: area −2.",
+        "ms": 1800
+      }
+    ],
+    "check": {
+      "kind": "number",
+      "prompt": "What is the (signed) new area?",
+      "given": {
+        "matrix": [
+          [
+            -1,
+            0
+          ],
+          [
+            0,
+            2
+          ]
+        ]
+      },
+      "answer": -2,
+      "tolerance": 0.25
+    }
+  }
+]

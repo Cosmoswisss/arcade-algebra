@@ -1,0 +1,164 @@
+[
+  {
+    "errorKind": "wrong-sign",
+    "label": "flipped means negative",
+    "waves": [
+      {
+        "id": "drill-wrong-sign-1",
+        "concept": "flip",
+        "params": {
+          "matrix": [
+            [
+              0,
+              1
+            ],
+            [
+              1,
+              0
+            ]
+          ]
+        }
+      },
+      {
+        "id": "drill-wrong-sign-2",
+        "concept": "flip",
+        "params": {
+          "matrix": [
+            [
+              1,
+              0
+            ],
+            [
+              0,
+              -1
+            ]
+          ]
+        }
+      },
+      {
+        "id": "drill-wrong-sign-3",
+        "concept": "flip",
+        "params": {
+          "matrix": [
+            [
+              -1.5,
+              0
+            ],
+            [
+              0,
+              1
+            ]
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "errorKind": "missed-zero",
+    "label": "squashed flat = 0",
+    "waves": [
+      {
+        "id": "drill-missed-zero-1",
+        "concept": "squash",
+        "params": {
+          "matrix": [
+            [
+              1,
+              1
+            ],
+            [
+              1,
+              1
+            ]
+          ]
+        }
+      },
+      {
+        "id": "drill-missed-zero-2",
+        "concept": "squash",
+        "params": {
+          "matrix": [
+            [
+              2,
+              1
+            ],
+            [
+              2,
+              1
+            ]
+          ]
+        }
+      },
+      {
+        "id": "drill-missed-zero-3",
+        "concept": "squash",
+        "params": {
+          "matrix": [
+            [
+              1,
+              2
+            ],
+            [
+              0.5,
+              1
+            ]
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "errorKind": "other",
+    "label": "counting the area",
+    "waves": [
+      {
+        "id": "drill-other-1",
+        "concept": "scale",
+        "params": {
+          "matrix": [
+            [
+              2,
+              0
+            ],
+            [
+              0,
+              1
+            ]
+          ]
+        }
+      },
+      {
+        "id": "drill-other-2",
+        "concept": "scale",
+        "params": {
+          "matrix": [
+            [
+              1.5,
+              0
+            ],
+            [
+              0,
+              2
+            ]
+          ]
+        }
+      },
+      {
+        "id": "drill-other-3",
+        "concept": "shear",
+        "params": {
+          "matrix": [
+            [
+              1,
+              1
+            ],
+            [
+              0,
+              1
+            ]
+          ]
+        }
+      }
+    ]
+  }
+]

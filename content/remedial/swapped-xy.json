@@ -1,0 +1,38 @@
+{
+  "errorKind": "swapped-xy",
+  "title": "x comes first",
+  "text": {
+    "guided": "A vector is written **(x, y)**: first how far right, then how far up.",
+    "fast": "(x, y): right first, up second."
+  },
+  "scene": [
+    {
+      "matrix": [
+        [
+          1,
+          0
+        ],
+        [
+          0,
+          1
+        ]
+      ],
+      "caption": "Start here.",
+      "ms": 1000
+    },
+    {
+      "matrix": [
+        [
+          1,
+          0
+        ],
+        [
+          0,
+          1
+        ]
+      ],
+      "caption": "Watch.",
+      "ms": 1600
+    }
+  ]
+}

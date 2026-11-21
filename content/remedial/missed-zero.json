@@ -1,0 +1,38 @@
+{
+  "errorKind": "missed-zero",
+  "title": "Squashed flat",
+  "text": {
+    "guided": "When î and ĵ end up on the **same line**, the square is flattened: area **0**.",
+    "fast": "Same line = area 0."
+  },
+  "scene": [
+    {
+      "matrix": [
+        [
+          1,
+          0
+        ],
+        [
+          0,
+          1
+        ]
+      ],
+      "caption": "Start here.",
+      "ms": 1000
+    },
+    {
+      "matrix": [
+        [
+          1,
+          2
+        ],
+        [
+          0.5,
+          1
+        ]
+      ],
+      "caption": "Watch.",
+      "ms": 1600
+    }
+  ]
+}

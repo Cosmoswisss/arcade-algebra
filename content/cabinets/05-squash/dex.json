@@ -1,0 +1,62 @@
+[
+  {
+    "concept": "scale",
+    "name": "AREA FACTOR",
+    "body": "The determinant tells how much areas grow: det = 2 means every shape covers twice as much.",
+    "demo": [
+      [
+        2,
+        0
+      ],
+      [
+        0,
+        1.5
+      ]
+    ]
+  },
+  {
+    "concept": "shear",
+    "name": "SAME AREA",
+    "body": "Leaning a shape (a shear) keeps its area: same base, same height, det = 1.",
+    "demo": [
+      [
+        1,
+        1
+      ],
+      [
+        0,
+        1
+      ]
+    ]
+  },
+  {
+    "concept": "flip",
+    "name": "NEGATIVE AREA",
+    "body": "A negative determinant means the plane was turned over, like in a mirror.",
+    "demo": [
+      [
+        -1,
+        0
+      ],
+      [
+        0,
+        1
+      ]
+    ]
+  },
+  {
+    "concept": "squash",
+    "name": "SQUASHED",
+    "body": "det = 0: î and ĵ point along the same line and the whole plane is flattened onto it.",
+    "demo": [
+      [
+        1,
+        2
+      ],
+      [
+        0.5,
+        1
+      ]
+    ]
+  }
+]

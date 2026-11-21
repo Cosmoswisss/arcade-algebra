@@ -3,6 +3,7 @@ import type { KitContext } from './kit/context';
 import type { CabinetGame } from './kit/runner';
 import { createHoleInTheWall } from './cabinets/hole-in-the-wall/game';
 import { createVectorGolf } from './cabinets/vector-golf/game';
+import { createSquash } from './cabinets/squash/game';
 
 export type GameFactory = () => CabinetGame & { setup(ctx: KitContext): void };
 
@@ -10,4 +11,5 @@ export type GameFactory = () => CabinetGame & { setup(ctx: KitContext): void };
 export const GAMES: Partial<Record<CabinetId, GameFactory>> = {
   'vector-golf': createVectorGolf,
   'hole-in-the-wall': createHoleInTheWall,
+  squash: createSquash,
 };

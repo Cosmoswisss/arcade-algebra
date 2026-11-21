@@ -1,0 +1,194 @@
+[
+  {
+    "id": "scale-1",
+    "concept": "scale",
+    "params": {
+      "matrix": [
+        [
+          2,
+          0
+        ],
+        [
+          0,
+          1
+        ]
+      ]
+    }
+  },
+  {
+    "id": "scale-2",
+    "concept": "scale",
+    "params": {
+      "matrix": [
+        [
+          2,
+          0
+        ],
+        [
+          0,
+          1.5
+        ]
+      ]
+    }
+  },
+  {
+    "id": "scale-3",
+    "concept": "scale",
+    "params": {
+      "matrix": [
+        [
+          1.5,
+          0
+        ],
+        [
+          0,
+          1
+        ]
+      ]
+    }
+  },
+  {
+    "id": "shear-1",
+    "concept": "shear",
+    "params": {
+      "matrix": [
+        [
+          1,
+          1
+        ],
+        [
+          0,
+          1
+        ]
+      ]
+    }
+  },
+  {
+    "id": "shear-2",
+    "concept": "shear",
+    "params": {
+      "matrix": [
+        [
+          1,
+          0
+        ],
+        [
+          2,
+          1
+        ]
+      ]
+    }
+  },
+  {
+    "id": "shear-3",
+    "concept": "shear",
+    "params": {
+      "matrix": [
+        [
+          2,
+          1
+        ],
+        [
+          1,
+          1
+        ]
+      ]
+    }
+  },
+  {
+    "id": "flip-1",
+    "concept": "flip",
+    "params": {
+      "matrix": [
+        [
+          -1,
+          0
+        ],
+        [
+          0,
+          1
+        ]
+      ]
+    }
+  },
+  {
+    "id": "flip-2",
+    "concept": "flip",
+    "params": {
+      "matrix": [
+        [
+          0,
+          1
+        ],
+        [
+          1,
+          0
+        ]
+      ]
+    }
+  },
+  {
+    "id": "flip-3",
+    "concept": "flip",
+    "params": {
+      "matrix": [
+        [
+          -2,
+          0
+        ],
+        [
+          0,
+          1
+        ]
+      ]
+    }
+  },
+  {
+    "id": "squash-1",
+    "concept": "squash",
+    "params": {
+      "matrix": [
+        [
+          1,
+          2
+        ],
+        [
+          0.5,
+          1
+        ]
+      ]
+    }
+  },
+  {
+    "id": "squash-2",
+    "concept": "squash",
+    "params": {
+      "matrix": [
+        [
+          2,
+          1
+        ],
+        [
+          2,
+          1
+        ]
+      ]
+    }
+  },
+  {
+    "id": "squash-3",
+    "concept": "squash",
+    "params": {
+      "matrix": [
+        [
+          1,
+          1
+        ],
+        [
+          1,
+          1
+        ]
+      ]
+    }
+  }
+]

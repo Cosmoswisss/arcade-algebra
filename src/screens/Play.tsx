@@ -25,7 +25,7 @@ export default function Play({ id }: { id: CabinetId }) {
           if (r.suggestMode) setSuggest(r.suggestMode);
           return { newDex: r.newDex };
         }}
-        dex={() => ({ count: latest.current.dex.length, total: c.dex.length, isNew: (k) => !latest.current.dex.includes(k) })}
+        dex={() => ({ count: c.dex.filter((d) => latest.current.dex.includes(d.concept)).length, total: c.dex.length, isNew: (k) => !latest.current.dex.includes(k) })}
         onExit={() => go('/hall')}
       />
       {suggest && (

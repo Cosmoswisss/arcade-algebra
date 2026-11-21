@@ -1,0 +1,38 @@
+{
+  "errorKind": "sign-x",
+  "title": "Left is negative",
+  "text": {
+    "guided": "Moving **left** means a negative x.",
+    "fast": "Left = negative x."
+  },
+  "scene": [
+    {
+      "matrix": [
+        [
+          1,
+          0
+        ],
+        [
+          0,
+          1
+        ]
+      ],
+      "caption": "Start here.",
+      "ms": 1000
+    },
+    {
+      "matrix": [
+        [
+          -1,
+          0
+        ],
+        [
+          0,
+          1
+        ]
+      ],
+      "caption": "Watch.",
+      "ms": 1600
+    }
+  ]
+}

@@ -1,0 +1,38 @@
+{
+  "errorKind": "wrong-sign",
+  "title": "Did it flip?",
+  "text": {
+    "guided": "The size was right but the **sign** was not.\nIf the square comes out **mirrored**, the area counts as negative.",
+    "fast": "Right size, wrong sign: mirrored = negative."
+  },
+  "scene": [
+    {
+      "matrix": [
+        [
+          1,
+          0
+        ],
+        [
+          0,
+          1
+        ]
+      ],
+      "caption": "Start here.",
+      "ms": 1000
+    },
+    {
+      "matrix": [
+        [
+          -1,
+          0
+        ],
+        [
+          0,
+          1
+        ]
+      ],
+      "caption": "Watch.",
+      "ms": 1600
+    }
+  ]
+}

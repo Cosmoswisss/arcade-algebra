@@ -1,6 +1,7 @@
 import type { CabinetId } from '../engine/types';
 import { validateHoleParams } from '../arcade/cabinets/hole-in-the-wall/params';
 import { validateGolfParams } from '../arcade/cabinets/vector-golf/params';
+import { validateSquashParams } from '../arcade/cabinets/squash/params';
 import type { ParamsValidator } from './types';
 
 /** Temporary validator for cabinets whose game is not built yet: accepts any object. */
@@ -11,7 +12,7 @@ export const PARAMS_VALIDATORS: Record<CabinetId, ParamsValidator> = {
   drone: pending,
   'hole-in-the-wall': validateHoleParams,
   factory: pending,
-  squash: pending,
+  squash: validateSquashParams,
   rewind: pending,
   'laser-lab': pending,
 };
