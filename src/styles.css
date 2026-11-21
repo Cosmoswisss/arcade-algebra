@@ -1,1 +1,14 @@
-body{margin:0;font-family:system-ui,sans-serif;}
+:root { --bg: #ffffff; --fg: #111827; --muted: #6b7280; --card: #f3f4f6; --accent: #2563eb; }
+@media (prefers-color-scheme: dark) { :root { --bg: #0b1020; --fg: #e5e7eb; --muted: #9ca3af; --card: #151b2e; --accent: #60a5fa; } }
+* { box-sizing: border-box; }
+body { margin: 0; font-family: system-ui, sans-serif; background: var(--bg); color: var(--fg); }
+.app { max-width: 1100px; margin: 0 auto; padding: 16px; }
+h1 { margin: 8px 0; font-size: 1.6rem; }
+.play { display: grid; grid-template-columns: 1fr 240px; gap: 16px; align-items: start; }
+@media (max-width: 760px) { .play { grid-template-columns: 1fr; } }
+.matrix-panel { background: var(--card); border-radius: 12px; padding: 16px; text-align: center; }
+.matrix-legend { display: flex; justify-content: space-between; font-size: 0.8rem; font-weight: 600; }
+.matrix-tex { font-size: 1.8rem; margin: 12px 0; }
+.matrix-det { color: var(--muted); }
+button { font: inherit; border: 0; border-radius: 10px; padding: 10px 16px; cursor: pointer; background: var(--card); color: var(--fg); }
+button.primary { background: var(--accent); color: white; font-weight: 600; }
