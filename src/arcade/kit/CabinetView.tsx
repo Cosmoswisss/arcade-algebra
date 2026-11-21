@@ -21,7 +21,7 @@ export default function CabinetView({ content, createGame, mode, startTier, onWa
     <ArcadeStage
       content={content}
       createGame={createGame}
-      label={`${content.meta.name}. Press space to lock in or continue, arrow keys to move the selected arrow.`}
+      label={`${content.meta.name}. Press space to lock in or continue. Tab picks an arrow, the arrow keys move it.`}
       mode={{ kind: 'run', mode, startTier, onWaveResult, dex, onExit }}
     />
   );

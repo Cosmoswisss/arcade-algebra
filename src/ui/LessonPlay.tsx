@@ -109,7 +109,7 @@ export function LessonPlay({ cabinet, play, theme, variant = 'lesson', rule, onD
       <div className="stage-frame">
         <Suspense fallback={<p className="stage-loading">Powering up…</p>}>
           <LazyStage key={`${wave.id}-${attempt}`} cabinet={cabinet} content={cab} className="stage" mode={mode}
-            label={`${cab.meta.name}: ${play.mission[theme]}`} onStatus={setStatus} onReady={(c) => { controls.current = c; }} />
+            label={`${cab.meta.name}: ${play.mission[theme]} Tab picks an arrow, the arrow keys move it, space locks in.`} onStatus={setStatus} onReady={(c) => { controls.current = c; }} />
         </Suspense>
         {talk && gain && <p className="stage-gain mono" role="status">{gain}</p>}
       </div>

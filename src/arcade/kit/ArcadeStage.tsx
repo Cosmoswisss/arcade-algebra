@@ -84,6 +84,33 @@ export default function ArcadeStage(props: ArcadeStageProps) {
         return challenge.phase === 'replay' ? 'replay' : challenge.phase === 'done' ? 'result' : 'play';
       };
 
+      // keyboard play (spec §3): Tab picks the next handle the game currently allows, the arrow keys move it one snap step
+      const handles: Handle[] = [];
+      let selected = -1;
+      const select = (k: number) => { handles.forEach((h, i) => { h.selected = i === k; }); selected = k; };
+      const nextHandle = (back: boolean): number => {
+        const live = handles.map((h, i) => (h.enabled ? i : -1)).filter((i) => i >= 0);
+        const at = live.indexOf(selected);
+        const k = at === -1 ? (back ? live.length - 1 : 0) : at + (back ? -1 : 1);
+        return k >= 0 && k < live.length ? live[k] : -1;
+      };
+      const ARROWS: Record<string, [number, number]> = { ArrowLeft: [-1, 0], ArrowRight: [1, 0], ArrowUp: [0, 1], ArrowDown: [0, -1] };
+      const onStageKey = (e: KeyboardEvent) => {
+        if (e.key === 'Tab') {
+          const k = nextHandle(e.shiftKey);
+          if (k === -1) { select(-1); return; } // past the last handle: let the focus leave the stage
+          e.preventDefault(); select(k); return;
+        }
+        const d = ARROWS[e.key];
+        if (!d) return;
+        if (selected === -1 || !handles[selected]?.enabled) { const k = nextHandle(false); if (k === -1) return; select(k); }
+        e.preventDefault();
+        handles[selected].nudge(d[0], d[1]);
+      };
+      el.addEventListener('keydown', onStageKey);
+      const onBlur = () => select(-1);
+      el.addEventListener('focusout', onBlur);
+
       const ctx: KitContext = {
         app, layer, coords, fx, sfx,
         layout: () => L,
@@ -91,7 +118,7 @@ export default function ArcadeStage(props: ArcadeStageProps) {
         toPlane: (x, y, origin) => toPlane(L, x, y, origin),
         clock: () => clock,
         phase: phaseNow,
-        handle: (o) => new Handle(layer, app.stage, { toPlane: (x, y) => toPlane(L, x, y), toScreen: (p) => toScreen(L, p), ...o }),
+        handle: (o) => { const h = new Handle(layer, app.stage, { toPlane: (x, y) => toPlane(L, x, y), toScreen: (p) => toScreen(L, p), ...o }); handles.push(h); return h; },
       };
       const game = latest.current.createGame();
       game.setup(ctx);
@@ -189,6 +216,8 @@ export default function ArcadeStage(props: ArcadeStageProps) {
 
       cleanup = () => {
         window.removeEventListener('keydown', onKey);
+        el.removeEventListener('keydown', onStageKey);
+        el.removeEventListener('focusout', onBlur);
         app.ticker.remove(tick);
         game.destroy();
         app.destroy(true, { children: true });
@@ -197,5 +226,5 @@ export default function ArcadeStage(props: ArcadeStageProps) {
     return () => { alive = false; cleanup(); };
   }, []);
 
-  return <div ref={host} className={props.className ?? 'cabinet-view'} role="application" aria-label={props.label} tabIndex={props.mode.kind === 'challenge' ? 0 : undefined} />;
+  return <div ref={host} className={props.className ?? 'cabinet-view'} role="application" aria-label={props.label} tabIndex={props.mode.kind === 'demo' ? undefined : 0} />;
 }
