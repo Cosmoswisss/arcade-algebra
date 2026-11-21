@@ -61,6 +61,10 @@ describe('validateCabinet', () => {
     const bad = lesson('c1', { play: { ...lesson('c1').play, mission: { games: 'a', physics: 'b' } } });
     expect(errs({ 'course.json': [bad, lesson('c2'), course[2]] })).toContain('mission');
   });
+  test('a play wave without a solution is refused at load and names the lesson (Review Focus 2)', () => {
+    const bad = lesson('c1', { play: { ...lesson('c1').play, wave: { id: 'x', concept: 'stretch', params: { matrix: [[0.3, 0], [0, 1]] } } } });
+    expect(errs({ 'course.json': [bad, lesson('c2'), course[2]] })).toMatch(/course\.json#c1.*no solution/);
+  });
   test('a robot line is 2 sentences at most', () => expect(errs({ 'course.json': [lesson('c1', { robot: 'One. Two. Three.' }), lesson('c2'), course[2]] })).toContain('robot line: 2 sentences max'));
   test('cabinet.json needs a story', () => expect(errs({ 'cabinet.json': { ...meta, story: { intro: 'x' } } })).toContain('story'));
   test('at least 2 lessons must be play', () => expect(errs({ 'course.json': [lesson('c1'), course[2], { ...course[2], id: 'c4' }] })).toContain('at least 2 lessons must be play'));
