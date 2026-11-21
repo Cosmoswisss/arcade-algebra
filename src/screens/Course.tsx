@@ -35,8 +35,8 @@ export default function Course({ id }: { id: CabinetId }) {
   const submit = () => {
     if (answer === null) return;
     const r = checkAnswer(q, answer);
-    if (r.correct) setFeedback({ correct: true });
-    else setFeedback({ correct: false, text: r.text, remedial: content.remedial[r.kind ?? 'other'] ?? content.remedial.other ?? null });
+    if (r.correct) { setFeedback({ correct: true }); return; } // keep the right answer on screen
+    setFeedback({ correct: false, text: r.text, remedial: content.remedial[r.kind ?? 'other'] ?? content.remedial.other ?? null });
     setPlayKey((k) => k + 1);
   };
   const next = () => { setStep(step + 1); setAnswer(null); setFeedback(null); setPlayKey((k) => k + 1); };
@@ -74,7 +74,7 @@ export default function Course({ id }: { id: CabinetId }) {
           <MiniScene
             playKey={`${step}-${playKey}`}
             scene={showingRemedial ? feedback.remedial!.scene : s.scene}
-            input={showingRemedial || feedback?.correct ? 'none' : q.kind === 'basis' || q.kind === 'point' ? q.kind : 'none'}
+            input={showingRemedial ? 'none' : q.kind === 'basis' || q.kind === 'point' ? q.kind : 'none'}
             shown={feedback?.correct && q.kind === 'basis' ? q.answer : q.kind === 'number' ? q.given.matrix : undefined}
             vectors={q.kind === 'point' ? q.given.vectors : undefined}
             onBasis={(m) => setAnswer(m)} onPoint={(p) => setAnswer(p)} onCaption={setCaption}

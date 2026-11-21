@@ -30,6 +30,11 @@ export default function App() {
     default: screen = <Title />;
   }
   const key = route.name + ('id' in route ? route.id : '');
+  useEffect(() => {
+    const name = 'id' in route ? content.cabinets[route.id]?.meta.name : null;
+    const titles: Record<string, string> = { title: 'Linear Arcade', profile: 'Your profile · Linear Arcade', diagnostic: 'Placement · Linear Arcade', hall: 'The arcade · Linear Arcade', course: `${name} course · Linear Arcade`, play: `${name} · Linear Arcade` };
+    document.title = titles[route.name] ?? 'Linear Arcade';
+  }, [key]);
   return (
     <AppCtx.Provider value={state}>
       <AnimatePresence mode="wait">

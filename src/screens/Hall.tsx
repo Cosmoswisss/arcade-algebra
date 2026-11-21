@@ -73,7 +73,7 @@ export default function Hall() {
             <ul>{content.errors.map((e) => <li key={e} className="mono small">{e}</li>)}</ul>
           </details>
         )}
-        <button className="btn btn-danger" onClick={() => { if (confirm('Reset all progress? This cannot be undone.')) setProgress(resetProgressV2()); }}>Reset progress</button>
+        <button className="btn btn-quiet danger-link" onClick={() => { if (confirm('Reset all progress? This cannot be undone.')) setProgress(resetProgressV2()); }}>Reset progress</button>
       </footer>
     </main>
   );

@@ -1,74 +1,59 @@
 # Linear Arcade
 
-An interactive game for learning linear algebra from scratch, built for LauzHack 2026 (Scholé challenge).
+**Learn linear algebra from scratch by playing seven neon arcade cabinets.**
+Built at LauzHack 2026 for the Scholé challenge: a learning experience that adapts to the learner, with no chatbot.
 
-**Grab the arrows. Bend the plane. Discover what a matrix really is.**
+Linear Arcade aims for deep, concrete understanding rather than exam drills. You bend the plane with your own hands, and you prove you understood by **predicting before you see**.
 
-You drag the tips of the two basis arrows, î (green) and ĵ (red), and the whole grid warps with them. The matrix next to the grid writes itself as you move: column 1 is where î lands, column 2 is where ĵ lands.
+## The arcade
 
-## How it adapts to the learner
+| # | Cabinet | Idea | You… |
+|---|---|---|---|
+| 1 | Vector Golf | vectors, addition | chain vector shots around walls into the hole |
+| 2 | Two-Thruster Drone | linear combinations, span | mix two thrusters `a·u + b·v`, or spot that a target is unreachable |
+| 3 | Hole in the Wall | a matrix = where î and ĵ land | warp your shape with î and ĵ before the wall hits |
+| 4 | Machine Factory | composition | put transformation machines on a belt in the right order |
+| 5 | Squash! | determinant | bet on how the press scales the area, and whether it flips it |
+| 6 | Rewind | inverse | build the move that un-warps a picture, or say it can't be repaired |
+| 7 | Laser Lab | eigenvectors | aim a laser so the lens doesn't turn it |
 
-- **It names your mistake.** When you press **Check** and miss, the game freezes your grid, draws the correct one as a dashed ghost, and tells you which mistake you made: swapped î and ĵ, a flipped arrow, the wrong size, only one arrow wrong, or the wrong order of moves.
-- **It suggests practice on that mistake.** **Practice this** opens a level built around exactly that mistake.
-- **It estimates your mastery of each skill.** Every attempt updates a probability per skill, using simplified Bayesian Knowledge Tracing. A success that needed hints counts for less.
-- **It suggests what to play next.** The suggested level is your weakest skill whose earlier skills you have already mastered. You can still play any level you like.
-- **Hints go step by step.** The first hint is a question, the next is more concrete, and none of them gives away the answer.
+Every cabinet starts with a **short course**: three screens of text, a scene to watch and play with, and a prediction question. A wrong answer opens a **remedial lesson** built around that exact mistake.
+
+## How it adapts (the same 8 rules in every cabinet)
+
+1. **A brief before each wave**: the concept, plus the mission written in coordinates.
+2. **Coordinates everywhere**: graduated axes, live coordinates on every arrow and target.
+3. **A live checklist** during the wave.
+4. **The help fades in three tiers**: first with visual aids, then fewer aids, then the abstract representation only (just the matrix or the numbers). You must predict.
+5. **A replay after each wave**, rebuilding the right answer step by step with a caption. It waits for your click.
+6. **Mistakes are named**, then trained: the error is diagnosed (swapped columns, wrong sign, wrong order, det = 0, …) and the next wave is a drill on that error.
+7. **The Transform Dex**: a collectible card for each new concept.
+8. **The arcade loop**: lives, score, combos, an early lock-in bonus, sound and effects. The pace is slow at first.
+
+The learner also shapes the experience without typing anything:
+- **Profile**: high school or university. This sets a guided or fast mode.
+- **Theme for the examples**: games, physics or AI.
+- **Placement test**: opens the cabinets you already master.
+- **Mastery per cabinet**: a simplified Bayesian Knowledge Tracing model.
+- **A dynamic mode**: two misses in a row suggest more guidance; three first-try wins suggest a faster pace.
 
 ## Run it
 
 ```bash
 npm install
 npm run dev      # http://localhost:5173
-npm test         # engine + level content tests
+npm test         # engine, content and cabinet logic
 npm run build
 ```
 
-## Add or edit a level (no code needed)
+## Write content (no code needed)
 
-Each level is one JSON file in `src/levels/`. To add a level, copy an existing file and change the numbers.
+All lessons, waves, drills and Dex cards are JSON files in `content/`. See [`content/README.md`](content/README.md) for the format. Bad files are reported on the arcade screen, and the other cabinets keep working.
 
-```json
-{
-  "id": "transform-01",
-  "skill": "matrix-transform",
-  "title": "Fit the shape",
-  "prompt": "Drag î and ĵ so the shape lands in the hole.",
-  "shape": [[0,0],[0.25,0],[0.25,0.5],[1,0.5],[1,1],[0,1]],
-  "target": { "type": "shape", "matrix": [[2,0],[1,1]] },
-  "movable": ["i", "j"],
-  "hints": ["Where should the corner (1,0) go?", "The corner (1,0) follows î exactly."]
-}
-```
+## Under the hood
 
-### Fields
-
-- **`skill`**, one of:
-  - `vectors`
-  - `combinations`
-  - `matrix-transform`
-  - `composition`
-  - `determinant`
-  - `inverse`
-  - `eigen`
-- **`target.type`**, one of:
-  - `shape`: match `matrix`
-  - `point`: send the point `from` onto `point`
-  - `area`: reach a determinant `det`
-  - `direction`: find a vector `v` that the fixed matrix `start` doesn't turn
-- **`movable`**: any of `i`, `j`, `v`.
-- **Optional fields:**
-  - `start`: the starting matrix
-  - `pre`: a move applied *before* the player's
-  - `snap`: the grid step the arrows lock onto (default `0.5`)
-  - `tolerance`: how close counts as solved (default `0.1`)
-  - `targetsError`: makes this level the one suggested after that mistake
-
-**Matrices are written row by row:** `[[a, b], [c, d]]`, where `(a, c)` is where î lands and `(b, d)` is where ĵ lands.
-
-**Shapes must look different when î and ĵ are swapped.** A square looks the same either way, so the player can't see that mistake. Keep targets inside x −3…4.5 and y −2…3.5 so they stay on screen.
-
-If a file has a mistake, the home screen lists it with the reason, and every other level stays playable. Run `npm test`: it also checks that every level has a solution on the snap grid. When you add a level, add its solution to `tests/levels/loader.test.ts`.
-
-## Stack
-
-Vite, React, TypeScript, [Mafs](https://mafs.dev) (interactive math in SVG), KaTeX and Vitest. There is no server: progress is saved in the browser.
+- **Stack**: Vite, React, TypeScript, PixiJS v8 for the cabinets, Motion for transitions, KaTeX for the maths, and Vitest for the tests.
+- **Engine**: `src/engine/` is pure and tested. It covers 2×2 maths, error diagnosis, wave selection, progression and storage.
+- **Arcade kit**: `src/arcade/kit/` is shared by all cabinets. It holds the runner state machine, the neon rendering, sound, effects and the HUD.
+- **Cabinets**: each cabinet in `src/arcade/cabinets/<id>/` only provides its own mechanic.
+- **Design**: the visual rules are in [`DESIGN.md`](DESIGN.md). The validated gameplay prototype is in `docs/prototypes/hole-in-the-wall.html`.

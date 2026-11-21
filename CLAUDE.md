@@ -16,7 +16,7 @@ C'est **une salle d'arcade de 7 bornes**, une par notion. Chaque borne a son pro
   - **le plan :** `docs/superpowers/plans/2026-11-21-linear-arcade-v2.md`
   - **le prototype validé :** `docs/prototypes/hole-in-the-wall.html`, à ouvrir dans un navigateur
   - **le format du contenu :** `content/README.md`, créé par la Tâche 2 du plan. **N'écrivez pas de contenu avant qu'il existe.**
-- **Ce qui reste de la v1** (`src/components/`, `src/levels/`, Mafs) sera supprimé par la Tâche 17 du plan. N'y investissez plus de temps.
+- **La v1 a été supprimée** (Mafs, `src/components/`, `src/levels/`). Les 7 bornes v2 sont toutes jouables, avec un contenu minimal écrit par Claude.
 
 ## Qui touche à quoi
 
@@ -48,11 +48,11 @@ Avant de modifier un fichier partagé, ou un fichier d'une autre zone, **ajoutez
 
 | Qui | Fichier(s) | Pourquoi | Depuis |
 |---|---|---|---|
-| Camson | `src/engine/types.ts`, `src/content/`, `content/README.md` | Tâche 2 du plan : figer le format du contenu | 21/11 |
+| *(vide)* | | | |
 
 ## Écrire du contenu (pour les deux amis)
 
-1. **Attendre que `content/README.md` existe** : c'est le signal que le format est figé.
+1. **Le format est figé** : il est décrit dans `content/README.md`. Chaque borne a déjà un contenu minimal (3 écrans de cours, 8 à 12 vagues) : améliorez-le plutôt que de repartir de zéro.
 2. **Écrire dans le dossier de sa borne**, en suivant le README, et en anglais. Pour chaque borne :
    - **3 à 5 écrans de cours**, chacun avec une mini-question de **prédiction**, jamais une simple définition ;
    - **au moins 6 vagues**, chacune taguée avec son concept ;

@@ -118,3 +118,8 @@ body::before { /* faint floor grid behind reading screens */
 .skip { text-align: right; }
 .check-matrix { font-size: 26px; margin: 0 0 var(--s4); }
 .actions-row { display: flex; flex-wrap: wrap; align-items: center; gap: var(--s4); margin-top: var(--s5); }
+.title-screen { gap: var(--s7); flex-wrap: wrap; }
+.title-block { flex: 1 1 380px; }
+.title-teaser { flex: 1 1 380px; margin: 0; }
+.title-teaser figcaption { color: var(--target); margin-top: var(--s2); font-size: 15px; min-height: 1.4em; }
+.danger-link { color: var(--danger); }
