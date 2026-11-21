@@ -19,13 +19,14 @@ export const Sound = (p: P) => wrap(<><path d="M4 9v6h4l5 4V5L8 9z" /><path d="M
 export const SoundOff = (p: P) => wrap(<><path d="M4 9v6h4l5 4V5L8 9z" /><path d="M17 9l4 6M21 9l-4 6" /></>, p);
 export const Close = (p: P) => wrap(<path d="M6 6l12 12M18 6L6 18" />, p);
 
-/** Logo mark: the two basis arrows over a corner of grid. */
+/** Logo mark: an arcade joystick pushed off its upright rest position (the stick is a vector). Keep in sync with public/favicon.svg. */
 export const LogoMark = ({ size = 28 }: { size?: number }) => (
   <svg width={size} height={size} viewBox="0 0 32 32" aria-hidden fill="none" strokeLinecap="round" strokeLinejoin="round">
-    <path d="M13 26V10M19 26V16M25 26V22M5 20h20M5 14h14M5 8h8" stroke="#6366f1" strokeWidth="1" opacity="0.5" />
-    <path d="M5 26h20M20 22l5 4-5 4" stroke="#4ade80" strokeWidth="2.4" />
-    <path d="M5 26V6M1 11l4-5 4 5" stroke="#f87171" strokeWidth="2.4" />
-    <rect x="14" y="9" width="8" height="8" stroke="#fde047" strokeWidth="2" />
+    <path d="M16 25V8" stroke="#6366f1" strokeWidth="0.9" strokeDasharray="1.6 1.8" />
+    <path d="M16 25L22.4 9" stroke="#e0e7ff" strokeWidth="2.4" />
+    <circle cx="22.8" cy="8" r="4.6" fill="#f0abfc" />
+    <path d="M4 28H28" stroke="#a5b4fc" strokeWidth="2.4" />
+    <circle cx="16" cy="25" r="2" fill="#05030f" stroke="#a5b4fc" strokeWidth="1.4" />
   </svg>
 );
 
