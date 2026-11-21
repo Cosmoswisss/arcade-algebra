@@ -16,7 +16,16 @@ const START_V: Vec2 = [-1, 2];
 
 type Result = null | { ok: true } | { ok: false; kind: ErrorKind };
 
+import PlayPreview from './screens/PlayPreview';
+import type { CabinetId } from './engine/types';
+
 export default function App() {
+  const route = location.hash.match(/^#\/play\/([\w-]+)/);
+  if (route) return <PlayPreview id={route[1] as CabinetId} />;
+  return <AppV1 />;
+}
+
+function AppV1() {
   const [progress, setProgress] = useState<Progress>(() => loadProgress());
   const [levelId, setLevelId] = useState<string | undefined>(() => recommend(levels, loadProgress())?.id ?? levels[0]?.id);
   const level = useMemo(() => levels.find((l) => l.id === levelId), [levelId]);

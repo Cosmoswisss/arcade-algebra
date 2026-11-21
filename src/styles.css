@@ -38,3 +38,5 @@ button.primary { background: var(--accent); color: white; font-weight: 600; }
 .load-errors { color: #dc2626; font-size: .9rem; }
 .reset { align-self: center; }
 .back { margin-bottom: 4px; }
+.cabinet-view { position: absolute; inset: 0; touch-action: none; }
+.cabinet-view canvas { display: block; }
