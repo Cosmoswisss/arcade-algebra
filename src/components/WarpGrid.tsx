@@ -1,6 +1,7 @@
 import { Line, Mafs, MovablePoint, Point, Polygon, Text, Vector } from 'mafs';
 import { effectiveMatrix } from '../engine/checkLevel';
 import { apply, basis, det, fromBasis } from '../engine/matrix';
+import { snapInView, VIEW } from '../engine/snap';
 import type { Level, Mat2, Vec2 } from '../engine/types';
 import { GHOST_COLOR, I_COLOR, J_COLOR, SHAPE_COLOR, TARGET_COLOR } from './colors';
 
@@ -30,20 +31,17 @@ function GridLines({ m, color, opacity, dashed }: { m: Mat2; color: string; opac
   return <>{segs}</>;
 }
 
-const snapTo = (step: number) => (p: Vec2): Vec2 =>
-  step > 0 ? [Math.round(p[0] / step) * step, Math.round(p[1] / step) * step] : p;
-
 const fmt = (x: number) => String(Math.round(x * 100) / 100);
 
 export default function WarpGrid({ level, m, onChange, v, onVChange, ghost, height = 460 }: Props) {
   const e = effectiveMatrix(level, m);
   const [i, j] = basis(m);
   const t = level.target;
-  const constrain = snapTo(level.snap);
+  const constrain = snapInView(level.snap);
   const canMove = (k: 'i' | 'j' | 'v') => level.movable.includes(k);
 
   return (
-    <Mafs height={height} pan={false} zoom={false} viewBox={{ x: [-3, 4.5], y: [-2, 3.5] }}>
+    <Mafs height={height} pan={false} zoom={false} viewBox={{ x: VIEW.x, y: VIEW.y }}>
       {/* the untouched plane, as a faint ghost */}
       <GridLines m={[[1, 0], [0, 1]]} color={GHOST_COLOR} opacity={0.25} />
       {ghost && <GridLines m={ghost} color={GHOST_COLOR} opacity={0.9} dashed />}

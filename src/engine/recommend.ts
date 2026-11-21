@@ -15,7 +15,7 @@ export function recommend(levels: Level[], progress: Progress): Level | undefine
     if (targeted) return targeted;
   }
   const eligible = SKILLS.filter(
-    (s) => PREREQS[s].every((p) => progress.mastery[p] >= ACQUIRED) && todo.some((l) => l.skill === s),
+    (s) => PREREQS[s].every((p) => progress.mastery[p] >= ACQUIRED - 1e-9) && todo.some((l) => l.skill === s),
   );
   if (eligible.length > 0) {
     const weakest = eligible.reduce((a, b) => (progress.mastery[b] < progress.mastery[a] ? b : a));

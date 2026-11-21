@@ -30,3 +30,18 @@ describe('diagnose', () => {
       expect(ERROR_MESSAGES[k].length).toBeGreaterThan(5);
   });
 });
+
+describe('diagnose with pre', () => {
+  const rot: Mat2 = [[0, -1], [1, 0]];
+  const lvl: Level = { ...base, pre: rot, target: { type: 'shape', matrix: [[0, -2], [1, 0]] } }; // solution m = [[2,0],[0,1]]
+  test('judges the arrows the player actually drags', () => {
+    expect(diagnose(lvl, [[0, 2], [1, 0]])).toBe('swapped-columns'); // swap of the solution's columns
+    expect(diagnose(lvl, [[0, -2], [-1, 0]])).not.toBe('swapped-columns'); // reviewer's false positive
+    expect(diagnose(lvl, [[-2, 0], [0, 1]])).toBe('sign-flip');
+  });
+});
+
+describe('messages', () => {
+  test("'other' does not mention a ghost (non-shape levels draw none)", () =>
+    expect(ERROR_MESSAGES.other.toLowerCase()).not.toContain('ghost'));
+});

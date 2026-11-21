@@ -24,7 +24,6 @@ export default function App() {
   const [v, setV] = useState<Vec2>(START_V);
   const [hintsUsed, setHintsUsed] = useState(0);
   const [result, setResult] = useState<Result>(null);
-  const [attempt, setAttempt] = useState(0); // remounts HintBox on level change
   const [screen, setScreen] = useState<'map' | 'play'>('map');
 
   const open = (l: Level | undefined) => {
@@ -34,7 +33,6 @@ export default function App() {
     setV(START_V);
     setHintsUsed(0);
     setResult(null);
-    setAttempt((a) => a + 1);
     setScreen('play');
   };
 
@@ -96,13 +94,13 @@ export default function App() {
             <div className="feedback good">
               <strong>Nice!</strong>
               <div className="actions">
-                <button className="primary" onClick={() => open(recommend(levels, progress))}>Next</button>
+                <button className="primary" onClick={() => { const next = recommend(levels, progress); if (next) open(next); else setScreen('map'); }}>Next</button>
               </div>
             </div>
           ) : !result && (
             <>
               <button className="primary check" onClick={check}>Check</button>
-              <HintBox key={attempt} hints={level.hints} onReveal={setHintsUsed} />
+              <HintBox hints={level.hints} shown={hintsUsed} onReveal={setHintsUsed} />
             </>
           )}
           <p className="muted mastery-line">Mastery · {level.skill}: {Math.round(progress.mastery[level.skill] * 100)}%</p>

@@ -65,15 +65,27 @@ export function validateLevel(raw: unknown): Result {
   };
 }
 
-export function loadLevels(): { levels: Level[]; errors: string[] } {
-  const files = import.meta.glob('./*.json', { eager: true, import: 'default' }) as Record<string, unknown>;
+export function parseLevelFiles(files: Record<string, string>): { levels: Level[]; errors: string[] } {
   const levels: Level[] = [];
   const errors: string[] = [];
-  for (const [path, raw] of Object.entries(files)) {
+  for (const [path, text] of Object.entries(files)) {
+    const name = path.replace('./', '');
+    let raw: unknown;
+    try {
+      raw = JSON.parse(text);
+    } catch (e) {
+      errors.push(`${name}: invalid JSON (${(e as Error).message})`);
+      continue;
+    }
     const r = validateLevel(raw);
     if (r.ok) levels.push(r.level);
-    else errors.push(`${path.replace('./', '')}: ${r.error}`);
+    else errors.push(`${name}: ${r.error}`);
   }
   levels.sort((a, b) => SKILLS.indexOf(a.skill) - SKILLS.indexOf(b.skill) || a.id.localeCompare(b.id));
   return { levels, errors };
+}
+
+export function loadLevels(): { levels: Level[]; errors: string[] } {
+  const files = import.meta.glob('./*.json', { eager: true, query: '?raw', import: 'default' }) as Record<string, string>;
+  return parseLevelFiles(files);
 }

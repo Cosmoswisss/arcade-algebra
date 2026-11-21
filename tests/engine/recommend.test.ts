@@ -25,3 +25,14 @@ describe('recommend', () => {
   test('undefined when everything is done', () =>
     expect(recommend(levels, progress({ completed: levels.map((l) => l.id) }))).toBeUndefined());
 });
+
+import { updateMastery } from '../../src/engine/mastery';
+
+describe('unlocking', () => {
+  test('one clean solve from 0.2 (shown as 60%) unlocks the next skill', () => {
+    const mastery = { ...initialMastery(), vectors: updateMastery(0.2, true, 0) };
+    const lv = [lvl('v1', 'vectors'), lvl('v2', 'vectors'), lvl('c1', 'combinations')];
+    // unlocked: combinations (0.2) is weaker than vectors (0.6) → c1; still locked → v2
+    expect(recommend(lv, progress({ mastery, completed: ['v1'] }))?.id).toBe('c1');
+  });
+});

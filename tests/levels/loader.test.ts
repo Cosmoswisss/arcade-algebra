@@ -108,3 +108,16 @@ describe('every bundled level is solvable on the 0.5 snap grid', () => {
     });
   }
 });
+
+import { parseLevelFiles } from '../../src/levels/loader';
+
+describe('parseLevelFiles', () => {
+  test('a file with broken JSON syntax is reported, the others still load', () => {
+    const good = JSON.stringify({ ...specExample });
+    const { levels, errors } = parseLevelFiles({ './a.json': good, './b.json': '{"id": "x",}' });
+    expect(levels.map((l) => l.id)).toEqual(['transform-01']);
+    expect(errors).toHaveLength(1);
+    expect(errors[0]).toContain('b.json');
+    expect(errors[0]).toContain('JSON');
+  });
+});
