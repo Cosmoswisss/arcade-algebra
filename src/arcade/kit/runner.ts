@@ -43,6 +43,8 @@ export interface WaveOutcome {
 
 export interface RunnerOptions {
   mode: Mode;
+  /** 1 starts the run at the partial rule (a cabinet passed in the placement test). */
+  startTier?: 0 | 1;
   rand?: () => number;
   /** Called once per wave; returns the Dex concept unlocked by this wave, if any. */
   onWaveResult: (o: WaveOutcome) => { newDex: string | null };
@@ -102,8 +104,8 @@ export class Runner {
     const prevRule = this.run.waveIndex < 0 ? null : this.rule;
     const waveIndex = this.run.waveIndex + 1;
     const { meta } = this;
-    this.boss = isBossWave(meta, this.opts.mode, waveIndex);
-    const tierIndex = tierFor(meta, this.opts.mode, waveIndex);
+    this.boss = isBossWave(meta, this.opts.mode, waveIndex, this.opts.startTier ?? 0);
+    const tierIndex = tierFor(meta, this.opts.mode, waveIndex, this.opts.startTier ?? 0);
     this.rule = this.boss ? 'abstract' : RULES[tierIndex];
     this.run = { ...this.run, waveIndex, tierIndex };
     const pick = nextWave(this.content, this.run, this.rand);

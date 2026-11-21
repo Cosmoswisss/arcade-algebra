@@ -13,6 +13,11 @@ describe('tiers', () => {
     expect([0, 2, 3, 5, 6, 9, 10].map((w) => tierFor(meta, 'guided', w))).toEqual([0, 0, 1, 1, 2, 2, 2]);
   });
   test('fast mode moves on sooner', () => expect(tierFor(meta, 'fast', 2)).toBe(1));
+  test('a start tier counts the skipped tier as already played (tier and boss)', () => {
+    expect(tierFor(meta, 'guided', 0, 1)).toBe(1);
+    expect(isBossWave(meta, 'guided', 6, 1)).toBe(false);
+    expect(isBossWave(meta, 'guided', 7, 1)).toBe(true);
+  });
   test('boss waves come right after the last tier', () => {
     expect(isBossWave(meta, 'guided', 9)).toBe(false);
     expect(isBossWave(meta, 'guided', 10)).toBe(true);

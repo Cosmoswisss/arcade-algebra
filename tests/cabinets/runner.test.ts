@@ -35,6 +35,15 @@ const play = (r: Runner) => { wait(r, 500); r.click(); };       // close the bri
 const finishWave = (r: Runner) => { for (let k = 0; k < 2000 && r.phase === 'play'; k++) r.tick(50); };
 const toNext = (r: Runner) => { for (let k = 0; k < 200 && r.phase === 'result'; k++) r.tick(50); r.click(); };
 
+describe('runner start tier', () => {
+  test('a placed cabinet starts its first wave under the partial rule', () => {
+    const { game, log } = fakeGame(() => true);
+    const r = new Runner(content, game, { mode: 'guided', startTier: 1, onWaveResult: () => ({ newDex: null }) });
+    r.start();
+    expect(log.rules[0]).toBe('partial');
+  });
+});
+
 describe('runner', () => {
   test('clampDt caps a background-tab frame', () => { expect(clampDt(5000)).toBe(0.05); expect(clampDt(16)).toBeCloseTo(0.016); });
   test('the brief waits for a click, even after 60s', () => {

@@ -18,16 +18,20 @@ const tierEnds = (meta: CabinetMeta, mode: Mode) => {
   return meta.tiers.map((t) => (acc += t.waves[mode]));
 };
 
-/** Tier (0..2) for a wave index; boss waves stay on the last tier. */
-export function tierFor(meta: CabinetMeta, mode: Mode, waveIndex: number): number {
+/** Waves already counted as played when the run starts `startTier` tiers up (placement test). */
+const skipped = (meta: CabinetMeta, mode: Mode, startTier: number) => meta.tiers.slice(0, startTier).reduce((n, t) => n + t.waves[mode], 0);
+
+/** Tier (0..2) for a wave index; boss waves stay on the last tier. `startTier` counts the tiers before it as played. */
+export function tierFor(meta: CabinetMeta, mode: Mode, waveIndex: number, startTier = 0): number {
   const ends = tierEnds(meta, mode);
-  const k = ends.findIndex((e) => waveIndex < e);
+  const i = waveIndex + skipped(meta, mode, startTier);
+  const k = ends.findIndex((e) => i < e);
   return k === -1 ? meta.tiers.length - 1 : k;
 }
 
-export function isBossWave(meta: CabinetMeta, mode: Mode, waveIndex: number): boolean {
+export function isBossWave(meta: CabinetMeta, mode: Mode, waveIndex: number, startTier = 0): boolean {
   const ends = tierEnds(meta, mode);
-  return waveIndex >= ends[ends.length - 1];
+  return waveIndex + skipped(meta, mode, startTier) >= ends[ends.length - 1];
 }
 
 /** Seconds a wave lasts: the first tier uses meta.waveSeconds, then ×0.85 per tier, never below 6. */

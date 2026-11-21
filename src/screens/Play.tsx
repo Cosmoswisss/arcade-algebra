@@ -2,6 +2,7 @@ import { useState } from 'react';
 import CabinetView from '../arcade/kit/CabinetView';
 import type { WaveOutcome } from '../arcade/kit/runner';
 import { GAMES } from '../arcade/registry';
+import { startTier } from '../engine/adapt';
 import { dexKey, effectiveMode } from '../engine/progression';
 import type { CabinetId, Mode } from '../engine/types';
 import { go, href } from '../router';
@@ -27,7 +28,7 @@ export function Play({ id }: { id: CabinetId }) {
   }
 
   const onWave = (o: WaveOutcome) => {
-    const a = applyWave(id, o);
+    const a = applyWave(id, { ...o, errorKind: o.diagnosis?.kind });
     const parts: string[] = [];
     if (a.xpGained > 0) parts.push(`+${a.xpGained} XP`);
     if (a.newDex) parts.push('new Transform Dex card');
@@ -53,6 +54,7 @@ export function Play({ id }: { id: CabinetId }) {
         content={cabinet}
         createGame={make}
         mode={mode}
+        startTier={startTier(progress, id)}
         onWaveResult={onWave}
         dex={dex}
         onExit={() => go(href.hall)}
