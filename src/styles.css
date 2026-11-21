@@ -22,3 +22,19 @@ button.primary { background: var(--accent); color: white; font-weight: 600; }
 .hints { display: flex; flex-direction: column; gap: 8px; align-items: flex-start; }
 .hint { margin: 0; background: var(--card); padding: 8px 10px; border-radius: 8px; }
 .mastery-line { font-size: .85rem; margin: 0; }
+.hero { text-align: center; padding: 16px 0 8px; }
+.hero h1 { font-size: 2.2rem; }
+.play-btn { font-size: 1.2rem; padding: 12px 40px; margin-top: 8px; }
+.map { display: flex; flex-direction: column; gap: 14px; margin-top: 16px; }
+.skill { background: var(--card); border-radius: 12px; padding: 12px 14px; }
+.skill-head { display: flex; align-items: center; gap: 12px; }
+.skill-head h2 { font-size: 1.05rem; margin: 0; flex: 1; }
+.gauge { width: 120px; height: 8px; border-radius: 4px; background: rgba(127,127,127,.25); overflow: hidden; }
+.gauge-fill { height: 100%; background: #16a34a; }
+.level-row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+.level-btn { background: var(--bg); border: 1px solid rgba(127,127,127,.3); }
+.level-btn.recommended { border-color: var(--accent); box-shadow: 0 0 0 2px var(--accent); }
+.level-btn.done { opacity: .75; }
+.load-errors { color: #dc2626; font-size: .9rem; }
+.reset { align-self: center; }
+.back { margin-bottom: 4px; }

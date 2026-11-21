@@ -1,16 +1,17 @@
 import { useMemo, useState } from 'react';
 import ErrorReplay from './components/ErrorReplay';
 import HintBox from './components/HintBox';
+import LevelMap from './components/LevelMap';
 import MatrixPanel from './components/MatrixPanel';
 import WarpGrid from './components/WarpGrid';
 import { diagnose } from './engine/diagnose';
 import { updateMastery } from './engine/mastery';
-import { loadProgress, saveProgress } from './engine/progress';
+import { loadProgress, resetProgress, saveProgress } from './engine/progress';
 import { recommend } from './engine/recommend';
 import type { ErrorKind, Level, Mat2, Progress, Vec2 } from './engine/types';
 import { loadLevels } from './levels/loader';
 
-const { levels } = loadLevels();
+const { levels, errors } = loadLevels();
 const START_V: Vec2 = [-1, 2];
 
 type Result = null | { ok: true } | { ok: false; kind: ErrorKind };
@@ -24,6 +25,7 @@ export default function App() {
   const [hintsUsed, setHintsUsed] = useState(0);
   const [result, setResult] = useState<Result>(null);
   const [attempt, setAttempt] = useState(0); // remounts HintBox on level change
+  const [screen, setScreen] = useState<'map' | 'play'>('map');
 
   const open = (l: Level | undefined) => {
     if (!l) return;
@@ -33,6 +35,7 @@ export default function App() {
     setHintsUsed(0);
     setResult(null);
     setAttempt((a) => a + 1);
+    setScreen('play');
   };
 
   const commit = (p: Progress) => { setProgress(p); saveProgress(p); };
@@ -50,7 +53,23 @@ export default function App() {
     }
   };
 
-  if (!level) return <main className="app"><h1>No levels found</h1></main>;
+  if (screen === 'map' || !level) {
+    const rec = recommend(levels, progress);
+    return (
+      <main className="app">
+        <header className="hero">
+          <h1>Linear Algebra Warp</h1>
+          <p className="muted">Grab the arrows. Bend the plane. Discover what a matrix really is.</p>
+          <button className="primary play-btn" disabled={!rec} onClick={() => open(rec)}>{rec ? 'Play' : 'All levels done!'}</button>
+        </header>
+        <LevelMap
+          levels={levels} progress={progress} recommendedId={rec?.id} errors={errors}
+          onPick={(id) => open(levels.find((l) => l.id === id))}
+          onReset={() => setProgress(resetProgress())}
+        />
+      </main>
+    );
+  }
 
   const targeted = result && !result.ok
     ? levels.find((l) => l.targetsError === result.kind && l.id !== level.id)
@@ -58,6 +77,7 @@ export default function App() {
 
   return (
     <main className="app">
+      <button className="back" onClick={() => setScreen('map')}>← Map</button>
       <h1>{level.title}</h1>
       <p>{level.prompt}</p>
       <div className="play">
