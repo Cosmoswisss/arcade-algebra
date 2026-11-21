@@ -19,7 +19,7 @@ export function Title() {
   return (
     <main className="title">
       <div className="title-copy">
-        <p className="eyebrow">7 cabinets · 1 idea each</p>
+        <p className="eyebrow">7 arcade games · from vectors to eigenvectors</p>
         <h1>Linear Arcade</h1>
         <p className="lead">
           Learn linear algebra by playing. Drag two arrows, fit your shape through the hole in the wall, and see
@@ -33,7 +33,7 @@ export function Title() {
         </div>
         <ol id="how" className="steps">
           <li><b>Learn</b><span>A one-minute lesson with a scene you can drag. Then a question where you predict the answer first.</span></li>
-          <li><b>Play</b><span>A different arcade game on every cabinet. Walls come at you, so you read coordinates fast, then from the matrix alone.</span></li>
+          <li><b>Play</b><span>A different arcade game for every idea. Walls come at you, so you read coordinates fast, then from the matrix alone.</span></li>
           <li><b>See your mistakes</b><span>Every miss is named — “you swapped î and ĵ” — replayed step by step, and trained on in the next wave.</span></li>
         </ol>
       </div>

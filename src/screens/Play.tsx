@@ -19,7 +19,7 @@ export function Play({ id }: { id: CabinetId }) {
   if (!cabinet || !make) {
     return (
       <main className="narrow">
-        <h1>This cabinet is not available</h1>
+        <h1>This game is not available</h1>
         <p className="lead">Its game or its content is missing or broken. The hall lists what is wrong.</p>
         <a className="btn btn-primary" href={href.hall}>Back to the hall</a>
       </main>
@@ -60,7 +60,7 @@ export function Play({ id }: { id: CabinetId }) {
       <p className="toast" role="status">{toast}</p>
       {suggest && (
         <div className="suggest" role="dialog" aria-label="Pace suggestion">
-          <p>{suggest === 'guided' ? 'Two misses in a row. Want more step-by-step help on this cabinet?' : 'Three clean wins in a row. Want shorter lessons and faster rules on this cabinet?'}</p>
+          <p>{suggest === 'guided' ? 'Two misses in a row. Want more step-by-step help on this game?' : 'Three clean wins in a row. Want shorter lessons and faster rules on this game?'}</p>
           <div className="actions">
             <button className="btn btn-primary" onClick={() => { setModeOverride(id, suggest); setSuggest(null); }}>
               {suggest === 'guided' ? 'Yes, guide me' : 'Yes, speed up'}

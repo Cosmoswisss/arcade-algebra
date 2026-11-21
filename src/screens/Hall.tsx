@@ -29,9 +29,9 @@ export function Hall() {
       <header className="hall-head">
         <div>
           <p className="eyebrow">The arcade hall</p>
-          <h1>Pick a cabinet</h1>
+          <h1>Pick a game</h1>
           <p className="lead">
-            {rec ? <>Next up: <strong>{CABINET_INFO[rec].name}</strong> — {CABINET_INFO[rec].notion.toLowerCase()}.</> : <>Every cabinet is cleared. Replay any of them to beat your score.</>}
+            {rec ? <>Next up: <strong>{CABINET_INFO[rec].name}</strong> — {CABINET_INFO[rec].notion.toLowerCase()}.</> : <>Every game is cleared. Replay any of them to beat your score.</>}
           </p>
         </div>
         <section className="player" aria-label="Your progress">
@@ -76,7 +76,7 @@ export function Hall() {
 
       {content.errors.length > 0 && (
         <details className="problems">
-          <summary>{content.errors.length} content problem{content.errors.length > 1 ? 's' : ''} (affected cabinets are switched off)</summary>
+          <summary>{content.errors.length} content problem{content.errors.length > 1 ? 's' : ''} (affected games are switched off)</summary>
           <ul>{content.errors.map((e) => <li key={e} className="mono">{e}</li>)}</ul>
         </details>
       )}

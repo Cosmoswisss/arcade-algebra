@@ -35,7 +35,7 @@ function Screen({ route }: { route: Route }) {
     case 'hall': return <Hall />;
     case 'diagnostic': return <Diagnostic />;
     case 'course': return <Course id={route.id} />;
-    case 'play': return <Suspense fallback={<p className="loading" role="status">Powering up the cabinet…</p>}><Play id={route.id} /></Suspense>;
+    case 'play': return <Suspense fallback={<p className="loading" role="status">Powering up the game…</p>}><Play id={route.id} /></Suspense>;
     default: return (
       <main className="narrow">
         <h1>Page not found</h1>

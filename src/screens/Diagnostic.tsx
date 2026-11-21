@@ -31,7 +31,7 @@ export function Diagnostic() {
     return (
       <main className="narrow">
         <h1>No placement test yet</h1>
-        <p className="lead">No cabinet content is available to build it from.</p>
+        <p className="lead">No game content is available to build it from.</p>
         <a className="btn btn-primary" href={href.hall}>Go to the hall</a>
       </main>
     );
@@ -41,10 +41,10 @@ export function Diagnostic() {
     return (
       <main className="narrow">
         <p className="eyebrow">Placement test · done</p>
-        <h1>{passed.length === 0 ? 'You start from the first cabinet' : 'Some cabinets are already lit'}</h1>
+        <h1>{passed.length === 0 ? 'You start from the first game' : 'Some games are already unlocked'}</h1>
         <p className="lead">
           {passed.length === 0
-            ? 'No problem: the first cabinet opens with a short lesson, and the game adapts as you play.'
+            ? 'No problem: the first game opens with a short lesson, and the game adapts as you play.'
             : 'You already predicted these correctly, so they open as mastered. Clear their boss to earn the badge.'}
         </p>
         <ul className="placed">
@@ -79,7 +79,7 @@ export function Diagnostic() {
         {items.map((it, i) => <li key={it.id} className={i < index ? 'done' : i === index ? 'now' : ''}>{i + 1}</li>)}
       </ol>
       <div className="narrow-card">
-        <p className="tiny">No feedback during the test: it only decides which cabinets open already.</p>
+        <p className="tiny">No feedback during the test: it only decides which games are unlocked.</p>
         <QuestionPanel q={item.question} resetKey={item.id} onSubmit={answer} submitLabel={index + 1 >= items.length ? 'Finish' : 'Next question'} />
       </div>
     </main>

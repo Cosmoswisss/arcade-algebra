@@ -169,7 +169,7 @@ export class Hud {
     } else {
       const done = r.phase === 'done';
       this.kicker.text = done ? 'BADGE EARNED' : `WAVE ${r.run.waveIndex + 1}`;
-      this.title.text = done ? 'CABINET CLEARED' : 'GAME OVER';
+      this.title.text = done ? 'GAME CLEARED' : 'GAME OVER';
       this.body.text = `Score ${r.run.score}\n\n${this.meta.notion}`;
       this.btnA.visible = this.btnB.visible = true;
       this.btnA.setText(done ? 'PLAY AGAIN' : 'RETRY');
