@@ -1,0 +1,38 @@
+{
+  "errorKind": "repaired-flat",
+  "title": "It was flat",
+  "text": {
+    "guided": "When det = 0, many points land on the **same spot**.\nYou cannot tell them apart any more, so no move can undo it.",
+    "fast": "det = 0: points merged, no inverse."
+  },
+  "scene": [
+    {
+      "matrix": [
+        [
+          1,
+          0
+        ],
+        [
+          0,
+          1
+        ]
+      ],
+      "caption": "Start here.",
+      "ms": 1000
+    },
+    {
+      "matrix": [
+        [
+          1,
+          2
+        ],
+        [
+          0.5,
+          1
+        ]
+      ],
+      "caption": "Watch.",
+      "ms": 1600
+    }
+  ]
+}

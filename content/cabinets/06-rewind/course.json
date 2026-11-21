@@ -1,0 +1,209 @@
+[
+  {
+    "id": "undo-zoom",
+    "title": "Undo a zoom",
+    "text": {
+      "guided": "A picture was zoomed ×2: î went to (2, 0) and ĵ to (0, 2).\nTo bring it back, the undo move must **halve** everything: î → (0.5, 0), ĵ → (0, 0.5).\nThat undo move is the **inverse** matrix.",
+      "fast": "The inverse undoes a move: the inverse of a ×2 zoom is a ×0.5 zoom."
+    },
+    "examples": {
+      "games": "Like the undo button in a level editor.",
+      "physics": "Like playing a motion backwards in time.",
+      "ai": "Like de-normalising data back to its original scale."
+    },
+    "scene": [
+      {
+        "matrix": [
+          [
+            1,
+            0
+          ],
+          [
+            0,
+            1
+          ]
+        ],
+        "caption": "Original.",
+        "ms": 800
+      },
+      {
+        "matrix": [
+          [
+            2,
+            0
+          ],
+          [
+            0,
+            2
+          ]
+        ],
+        "caption": "Zoomed ×2.",
+        "ms": 1400
+      },
+      {
+        "matrix": [
+          [
+            1,
+            0
+          ],
+          [
+            0,
+            1
+          ]
+        ],
+        "caption": "Undone by ×0.5.",
+        "ms": 1400
+      }
+    ],
+    "check": {
+      "kind": "basis",
+      "prompt": "The picture was zoomed by the matrix below. Place î and ĵ of the move that UNDOES it.",
+      "given": {
+        "matrix": [
+          [
+            2,
+            0
+          ],
+          [
+            0,
+            2
+          ]
+        ]
+      },
+      "answer": [
+        [
+          0.5,
+          0
+        ],
+        [
+          0,
+          0.5
+        ]
+      ],
+      "tolerance": 0.1
+    }
+  },
+  {
+    "id": "undo-shear",
+    "title": "Undo a lean",
+    "text": {
+      "guided": "A shear pushed ĵ to (1, 1): the picture leans right.\nTo straighten it, push ĵ back **to the left**: ĵ → (−1, 1). î did not move, so it stays (1, 0).",
+      "fast": "Undo a shear by shearing the other way: ĵ (1, 1) is undone by ĵ (−1, 1)."
+    },
+    "examples": {
+      "games": "Like un-skewing a sprite that was drawn in italics.",
+      "physics": "Like pushing the deck of cards back into a stack.",
+      "ai": "Like reversing a skew augmentation."
+    },
+    "scene": [
+      {
+        "matrix": [
+          [
+            1,
+            0
+          ],
+          [
+            0,
+            1
+          ]
+        ],
+        "caption": "Original.",
+        "ms": 800
+      },
+      {
+        "matrix": [
+          [
+            1,
+            1
+          ],
+          [
+            0,
+            1
+          ]
+        ],
+        "caption": "Leaning right.",
+        "ms": 1400
+      }
+    ],
+    "check": {
+      "kind": "basis",
+      "prompt": "The picture was sheared by the matrix below. Place î and ĵ of the move that UNDOES it.",
+      "given": {
+        "matrix": [
+          [
+            1,
+            1
+          ],
+          [
+            0,
+            1
+          ]
+        ]
+      },
+      "answer": [
+        [
+          1,
+          -1
+        ],
+        [
+          0,
+          1
+        ]
+      ],
+      "tolerance": 0.1
+    }
+  },
+  {
+    "id": "no-way-back",
+    "title": "No way back",
+    "text": {
+      "guided": "Some moves squash the plane onto a line (det = 0).\nThen **many points land on the same spot**: you cannot tell where they came from. No inverse exists.",
+      "fast": "det = 0 ⇒ points merge ⇒ no inverse."
+    },
+    "examples": {
+      "games": "Like a 3D scene flattened into a shadow: you cannot rebuild the object from the shadow alone.",
+      "physics": "Like a projection on a wall: the depth is lost.",
+      "ai": "Like keeping only one feature out of two: the other one is gone."
+    },
+    "scene": [
+      {
+        "matrix": [
+          [
+            1,
+            0
+          ],
+          [
+            0,
+            1
+          ]
+        ],
+        "caption": "Original.",
+        "ms": 800
+      },
+      {
+        "matrix": [
+          [
+            1,
+            2
+          ],
+          [
+            0.5,
+            1
+          ]
+        ],
+        "caption": "Squashed onto a line.",
+        "ms": 1600
+      }
+    ],
+    "check": {
+      "kind": "choice",
+      "prompt": "A picture was squashed by [[1, 2], [0.5, 1]]. Can it be repaired?",
+      "options": [
+        "No: det = 0, points merged",
+        "Yes, with the inverse",
+        "Yes, by doing the move twice"
+      ],
+      "answer": 0
+    }
+  }
+]

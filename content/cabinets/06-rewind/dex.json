@@ -1,0 +1,77 @@
+[
+  {
+    "concept": "undo-scale",
+    "name": "UNDO ZOOM",
+    "body": "The inverse of a ×2 zoom is a ×0.5 zoom: î (2, 0) is undone by î (0.5, 0).",
+    "demo": [
+      [
+        0.5,
+        0
+      ],
+      [
+        0,
+        0.5
+      ]
+    ]
+  },
+  {
+    "concept": "undo-shear",
+    "name": "UNDO LEAN",
+    "body": "A shear is undone by the same shear the other way: ĵ (1, 1) → ĵ (−1, 1).",
+    "demo": [
+      [
+        1,
+        -1
+      ],
+      [
+        0,
+        1
+      ]
+    ]
+  },
+  {
+    "concept": "undo-flip",
+    "name": "SELF-UNDO",
+    "body": "A mirror undoes itself: flip twice and you are back. Its inverse is itself.",
+    "demo": [
+      [
+        -1,
+        0
+      ],
+      [
+        0,
+        1
+      ]
+    ]
+  },
+  {
+    "concept": "undo-rotation",
+    "name": "UNDO TURN",
+    "body": "A quarter turn is undone by a quarter turn the other way: î (0, 1) → î (0, −1).",
+    "demo": [
+      [
+        0,
+        1
+      ],
+      [
+        -1,
+        0
+      ]
+    ]
+  },
+  {
+    "concept": "impossible",
+    "name": "NO INVERSE",
+    "body": "If det = 0 the plane is squashed onto a line: points merge, nothing can undo it.",
+    "demo": [
+      [
+        1,
+        2
+      ],
+      [
+        0.5,
+        1
+      ]
+    ]
+  }
+]

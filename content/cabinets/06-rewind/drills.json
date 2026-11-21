@@ -1,0 +1,282 @@
+[
+  {
+    "errorKind": "repaired-flat",
+    "label": "spotting a flat picture",
+    "waves": [
+      {
+        "id": "drill-repaired-flat-1",
+        "concept": "impossible",
+        "params": {
+          "matrix": [
+            [
+              1,
+              1
+            ],
+            [
+              1,
+              1
+            ]
+          ],
+          "image": "city"
+        }
+      },
+      {
+        "id": "drill-repaired-flat-2",
+        "concept": "impossible",
+        "params": {
+          "matrix": [
+            [
+              2,
+              1
+            ],
+            [
+              2,
+              1
+            ]
+          ],
+          "image": "mountains"
+        }
+      }
+    ]
+  },
+  {
+    "errorKind": "missed-repairable",
+    "label": "det ≠ 0 can be undone",
+    "waves": [
+      {
+        "id": "drill-missed-repairable-1",
+        "concept": "undo-scale",
+        "params": {
+          "matrix": [
+            [
+              2,
+              0
+            ],
+            [
+              0,
+              2
+            ]
+          ],
+          "image": "face"
+        }
+      },
+      {
+        "id": "drill-missed-repairable-2",
+        "concept": "undo-shear",
+        "params": {
+          "matrix": [
+            [
+              1,
+              1
+            ],
+            [
+              0,
+              1
+            ]
+          ],
+          "image": "mountains"
+        }
+      }
+    ]
+  },
+  {
+    "errorKind": "swapped-columns",
+    "label": "column 1 = where î goes",
+    "waves": [
+      {
+        "id": "drill-swapped-columns-1",
+        "concept": "undo-shear",
+        "params": {
+          "matrix": [
+            [
+              1,
+              0
+            ],
+            [
+              1,
+              1
+            ]
+          ],
+          "image": "city"
+        }
+      },
+      {
+        "id": "drill-swapped-columns-2",
+        "concept": "undo-shear",
+        "params": {
+          "matrix": [
+            [
+              1,
+              0
+            ],
+            [
+              2,
+              1
+            ]
+          ],
+          "image": "mountains"
+        }
+      }
+    ]
+  },
+  {
+    "errorKind": "sign-flip",
+    "label": "undo means the other way",
+    "waves": [
+      {
+        "id": "drill-sign-flip-1",
+        "concept": "undo-shear",
+        "params": {
+          "matrix": [
+            [
+              1,
+              1
+            ],
+            [
+              0,
+              1
+            ]
+          ],
+          "image": "face"
+        }
+      },
+      {
+        "id": "drill-sign-flip-2",
+        "concept": "undo-rotation",
+        "params": {
+          "matrix": [
+            [
+              0,
+              -1
+            ],
+            [
+              1,
+              0
+            ]
+          ],
+          "image": "mountains"
+        }
+      }
+    ]
+  },
+  {
+    "errorKind": "scale",
+    "label": "undoing a zoom",
+    "waves": [
+      {
+        "id": "drill-scale-1",
+        "concept": "undo-scale",
+        "params": {
+          "matrix": [
+            [
+              2,
+              0
+            ],
+            [
+              0,
+              2
+            ]
+          ],
+          "image": "city"
+        }
+      },
+      {
+        "id": "drill-scale-2",
+        "concept": "undo-scale",
+        "params": {
+          "matrix": [
+            [
+              0.5,
+              0
+            ],
+            [
+              0,
+              0.5
+            ]
+          ],
+          "image": "mountains"
+        }
+      }
+    ]
+  },
+  {
+    "errorKind": "one-column",
+    "label": "one arrow at a time",
+    "waves": [
+      {
+        "id": "drill-one-column-1",
+        "concept": "undo-scale",
+        "params": {
+          "matrix": [
+            [
+              2,
+              0
+            ],
+            [
+              0,
+              1
+            ]
+          ],
+          "image": "face"
+        }
+      },
+      {
+        "id": "drill-one-column-2",
+        "concept": "undo-shear",
+        "params": {
+          "matrix": [
+            [
+              1,
+              1
+            ],
+            [
+              0,
+              1
+            ]
+          ],
+          "image": "city"
+        }
+      }
+    ]
+  },
+  {
+    "errorKind": "other",
+    "label": "undoing step by step",
+    "waves": [
+      {
+        "id": "drill-other-1",
+        "concept": "undo-scale",
+        "params": {
+          "matrix": [
+            [
+              2,
+              0
+            ],
+            [
+              0,
+              2
+            ]
+          ],
+          "image": "mountains"
+        }
+      },
+      {
+        "id": "drill-other-2",
+        "concept": "undo-flip",
+        "params": {
+          "matrix": [
+            [
+              -1,
+              0
+            ],
+            [
+              0,
+              1
+            ]
+          ],
+          "image": "city"
+        }
+      }
+    ]
+  }
+]

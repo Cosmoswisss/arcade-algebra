@@ -1,0 +1,38 @@
+{
+  "errorKind": "missed-repairable",
+  "title": "It could be undone",
+  "text": {
+    "guided": "If det is **not 0**, the picture is only stretched, sheared or turned: every point can be traced back.",
+    "fast": "det ≠ 0: there is always an inverse."
+  },
+  "scene": [
+    {
+      "matrix": [
+        [
+          1,
+          0
+        ],
+        [
+          0,
+          1
+        ]
+      ],
+      "caption": "Start here.",
+      "ms": 1000
+    },
+    {
+      "matrix": [
+        [
+          2,
+          0
+        ],
+        [
+          0,
+          2
+        ]
+      ],
+      "caption": "Watch.",
+      "ms": 1600
+    }
+  ]
+}
