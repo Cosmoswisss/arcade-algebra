@@ -1,3 +1,4 @@
+import { lazy } from 'react';
 import { CABINETS, type CabinetId } from '../engine/types';
 
 /**
@@ -6,3 +7,6 @@ import { CABINETS, type CabinetId } from '../engine/types';
  * Keep it in step with the keys of GAMES in `registry.ts`.
  */
 export const PLAYABLE: ReadonlySet<CabinetId> = new Set<CabinetId>(CABINETS);
+
+/** The arcade stage, loaded on demand: PixiJS and the cabinet games arrive only when a stage is shown. */
+export const LazyStage = lazy(() => import('./CabinetStage'));

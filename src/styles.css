@@ -207,3 +207,34 @@ main.narrow { max-width: 720px; }
   .cabinet-tools { top: 34px; right: 8px; gap: 6px; }
   .cabinet-tools .btn-ghost { font-size: 11px; padding: 4px 8px; }
 }
+
+/* ---------- guide robot ---------- */
+.robot { display: flex; gap: var(--s3); align-items: flex-start; margin: 0 0 var(--s4); }
+.robot-body { flex: none; filter: drop-shadow(0 0 8px rgba(34, 211, 238, 0.45)); }
+.robot-oops .robot-body { filter: drop-shadow(0 0 8px rgba(240, 171, 252, 0.55)); }
+.robot-bubble { position: relative; flex: 1; min-width: 0; padding: var(--s3) var(--s4); background: var(--panel); border: 1px solid var(--cyan); box-shadow: var(--glow-cyan);
+  clip-path: polygon(var(--cut) 0, 100% 0, 100% 100%, 0 100%, 0 var(--cut)); }
+.robot-oops .robot-bubble { border-color: var(--pink); box-shadow: var(--glow-pink); }
+.robot-happy .robot-bubble { border-color: var(--green); }
+.robot-bubble p { margin: 2px 0 0; color: var(--text); }
+.robot-name { font-size: 11px; letter-spacing: 0.14em; color: var(--cyan); }
+.course-intro .robot + .robot { margin-left: var(--s6); }
+
+/* ---------- lesson stage (the real game in the course) ---------- */
+.stage-frame { position: relative; aspect-ratio: 4 / 3; min-height: 300px; border: 1px solid var(--line); background: var(--ink); overflow: hidden; box-shadow: 0 0 24px rgba(99, 102, 241, 0.25); }
+.stage { position: absolute; inset: 0; touch-action: none; }
+.stage canvas { display: block; }
+.stage-loading { position: absolute; inset: 0; display: grid; place-items: center; margin: 0; font-family: var(--font-mono); color: var(--dim); }
+.stage-gain { position: absolute; top: 10px; right: 12px; margin: 0; color: var(--yellow); text-shadow: 0 0 10px rgba(253, 224, 71, 0.7); }
+.stage-caption { min-height: 2.6em; margin: var(--s2) 0; color: var(--text); font-size: 14px; }
+.stage-mission { margin-top: var(--s3); padding: var(--s3) var(--s4); background: var(--panel); border-left: 3px solid var(--yellow); }
+.stage-mission p { margin: 0; color: var(--yellow); font-size: 14px; }
+.checklist { list-style: none; margin: var(--s2) 0 0; padding: 0; display: flex; flex-wrap: wrap; gap: var(--s2) var(--s4); font-family: var(--font-mono); font-size: 13px; color: var(--dim); }
+.checklist .ok { color: var(--green); }
+.lesson-scene { margin: 0; }
+.lesson-play .actions kbd { margin-left: var(--s2); font-size: 11px; padding: 1px 5px; border: 1px solid currentColor; opacity: 0.7; }
+.dex-card { margin-top: var(--s4); padding: var(--s4); border: 1px solid var(--yellow); box-shadow: var(--glow-yellow); background: var(--panel); }
+.dex-card h3 { color: var(--yellow); margin: 4px 0; }
+.ticks li button { all: unset; display: block; width: 100%; height: 100%; cursor: pointer; }
+.ticks li button:focus-visible { outline: 2px solid var(--cyan); outline-offset: 3px; }
+.ticks li { height: 8px; }
