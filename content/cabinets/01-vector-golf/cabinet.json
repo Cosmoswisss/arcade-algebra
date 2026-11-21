@@ -6,7 +6,7 @@
   "tiers": [
     {
       "rule": "assist",
-      "banner": "Shots are shown with their coordinates",
+      "banner": "The arrows chain tip to tail",
       "waves": {
         "guided": 3,
         "fast": 2
@@ -14,7 +14,7 @@
     },
     {
       "rule": "partial",
-      "banner": "NEW RULE · NO PATH — add the shots in your head",
+      "banner": "NEW RULE · EVERY ARROW STARTS AT THE BALL — add them in your head",
       "waves": {
         "guided": 3,
         "fast": 2

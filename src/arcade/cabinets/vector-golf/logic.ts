@@ -62,7 +62,7 @@ export function goalText(p: GolfParams, rule: Rule): string {
   // two lines: where the hole is (the flag is not drawn while aiming), then what to do
   const hole = `⛳ Hole at ${vstr(p.hole)}`;
   if (rule === 'assist') return `${hole}\n${how}`;
-  if (rule === 'partial') return `${hole}\n${how} · path hidden`;
+  if (rule === 'partial') return `${hole}\n${how}`;
   return `Shots ${p.shots.map(vstr).join(' then ')}: where does the ball stop?`;
 }
 
