@@ -136,7 +136,8 @@ main.narrow { max-width: 720px; }
 .cabinet-view canvas { display: block; }
 .cabinet-tools { position: absolute; top: 46px; right: 12px; display: flex; gap: var(--s2); z-index: 3; }
 .cabinet-loading { position: absolute; inset: 0; display: grid; place-items: center; margin: 0; max-width: none; font-family: var(--font-mono); color: var(--dim); pointer-events: none; }
-.toast { position: fixed; top: 40px; left: 50%; transform: translateX(-50%); margin: 0; z-index: 4; font-family: var(--font-mono); font-size: 13px; color: var(--yellow); background: rgba(14, 10, 36, 0.9); padding: 2px 12px; pointer-events: none; max-width: 90vw; }
+/* rewards (+XP, Dex card, badge): on the right edge, under the ARCADE button, away from the timer and the mission */
+.toast { position: fixed; top: 112px; right: 24px; margin: 0; z-index: 4; font-family: var(--font-mono); font-size: 14px; color: var(--yellow); background: rgba(14, 10, 36, 0.9); border: 1px solid var(--line); padding: 4px 12px; pointer-events: none; max-width: min(340px, 40vw); text-align: right; }
 .toast:empty { display: none; }
 .suggest { position: fixed; left: 50%; bottom: 96px; transform: translateX(-50%); z-index: 6; width: min(520px, calc(100vw - 32px)); padding: var(--s4) var(--s5); background: var(--panel); border: 1px solid var(--pink); box-shadow: var(--glow-pink); }
 .suggest p { margin: 0 0 var(--s3); }
@@ -254,6 +255,7 @@ main.narrow { max-width: 720px; }
 /* phones: the 4:3 frame follows the column width (a 300 px min-height would force it to 400 px wide) */
 @media (max-width: 640px) {
   .stage-frame { min-height: 0; }
+  .toast { top: auto; bottom: 24px; right: 12px; max-width: 44vw; font-size: 12px; }
   .lesson-play { width: 100%; }
   .lesson-play .stage-frame { aspect-ratio: 4 / 3; }
 }
