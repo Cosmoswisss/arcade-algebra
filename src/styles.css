@@ -245,3 +245,46 @@ main.narrow { max-width: 720px; }
 @media (max-width: 640px) {
   .stage-frame { min-height: 0; }
 }
+
+/* ---------- The Grid (world map) ---------- */
+.hall-robot { max-width: 640px; margin: var(--s5) 0 0; }
+.grid-map { position: relative; width: 100%; aspect-ratio: 1000 / 440; margin: var(--s6) 0 var(--s4); }
+.grid-map ol { list-style: none; margin: 0; padding: 0; }
+.grid-path { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+.grid-path path { fill: none; stroke: var(--line); stroke-width: 2; stroke-dasharray: 6 6; }
+.grid-path path.is-lit { stroke: var(--cyan); stroke-dasharray: none; stroke-width: 2.5; filter: drop-shadow(0 0 6px rgba(34, 211, 238, 0.7)); }
+.grid-path--phone { display: none; }
+.zone { position: absolute; left: var(--x); top: var(--y); width: 0; height: 0; }
+.zone a { position: absolute; left: 0; top: -32px; transform: translateX(-50%); width: 150px; display: flex; flex-direction: column; align-items: center; gap: 2px; text-align: center; color: var(--text); text-decoration: none; cursor: pointer; }
+.zone a[aria-disabled] { cursor: not-allowed; }
+.zone-node { position: relative; display: block; width: 64px; height: 64px; color: #4b4380; }
+.zone-hex { fill: var(--panel); stroke: var(--line); stroke-width: 2; }
+.zone-num { font-size: 11px; color: var(--dim); letter-spacing: 0.08em; margin-top: 4px; }
+.zone-name { font-family: var(--font-display); font-weight: 600; font-size: 15px; line-height: 1.2; color: #6b63a8; }
+.zone-note { font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--dim); }
+.zone-badge { position: absolute; right: -4px; top: -4px; display: grid; place-items: center; width: 24px; height: 24px; background: var(--ink); border: 1px solid currentColor; }
+.zone-badge--star { color: var(--yellow); }
+.zone-badge--check { color: var(--green); }
+.zone-you { position: absolute; top: -26px; left: 50%; transform: translateX(-50%); padding: 1px 8px; background: var(--pink); color: var(--ink); font-size: 11px; font-weight: 700; letter-spacing: 0.1em; }
+.zone-you::after { content: ''; position: absolute; left: 50%; bottom: -5px; margin-left: -5px; border: 5px solid transparent; border-bottom: 0; border-top-color: var(--pink); }
+/* reachable zones glow in cyan, the current one in pink, cleared ones are fully lit again in yellow */
+.zone--open .zone-node, .zone--mastered .zone-node { color: var(--cyan); }
+.zone--open .zone-hex, .zone--mastered .zone-hex { stroke: var(--cyan); filter: drop-shadow(0 0 6px rgba(34, 211, 238, 0.55)); }
+.zone--open .zone-name, .zone--mastered .zone-name, .zone--finished .zone-name { color: var(--text); }
+.zone--finished .zone-node { color: var(--yellow); }
+.zone--finished .zone-hex { stroke: var(--yellow); fill: rgba(253, 224, 71, 0.14); filter: drop-shadow(0 0 10px rgba(253, 224, 71, 0.75)); }
+.zone--finished .zone-note { color: var(--yellow); }
+.zone--rec .zone-node { color: var(--pink); }
+.zone--rec .zone-hex { stroke: var(--pink); filter: drop-shadow(0 0 10px rgba(240, 171, 252, 0.8)); animation: zone-pulse 1.6s ease-in-out infinite; }
+.zone--rec .zone-note { color: var(--pink); }
+.zone--off .zone-hex { stroke-dasharray: 4 4; }
+.zone a:hover .zone-name, .zone a:focus-visible .zone-name { text-decoration: underline; text-underline-offset: 3px; }
+@keyframes zone-pulse { 50% { filter: drop-shadow(0 0 2px rgba(240, 171, 252, 0.4)); } }
+
+@media (max-width: 640px) {
+  .grid-map { aspect-ratio: auto; height: 840px; }
+  .grid-path--desk { display: none; }
+  .grid-path--phone { display: block; }
+  .zone { left: var(--mx); top: var(--my); }
+  .zone a { width: 140px; }
+}

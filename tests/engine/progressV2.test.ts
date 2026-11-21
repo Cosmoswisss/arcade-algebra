@@ -41,3 +41,23 @@ describe('progress v2 storage', () => {
     expect(resetProgressV2(boom).xp).toBe(0);
   });
 });
+
+describe('celebrated zones (the Grid map)', () => {
+  test('an old save without celebrated loads with an empty list; unknown ids are dropped', async () => {
+    const s = new Mem(); s.setItem(PROGRESS_KEY, JSON.stringify({ xp: 10 }));
+    expect(loadProgressV2(s as unknown as Storage).celebrated).toEqual([]);
+    s.setItem(PROGRESS_KEY, JSON.stringify({ celebrated: ['drone', 'nope'] }));
+    expect(loadProgressV2(s as unknown as Storage).celebrated).toEqual(['drone']);
+  });
+  test('the first finished zone not yet celebrated is pending, once', async () => {
+    const { celebrate, defaultProgress, pendingCelebration } = await import('../../src/engine/progression');
+    const p = { ...defaultProgress(), finished: ['drone', 'vector-golf'] as ('drone' | 'vector-golf')[] };
+    expect(pendingCelebration(defaultProgress())).toBeNull();
+    expect(pendingCelebration(p)).toBe('vector-golf'); // in cabinet order
+    const q = celebrate(p, 'vector-golf');
+    expect(q.celebrated).toEqual(['vector-golf']);
+    expect(pendingCelebration(q)).toBe('drone');
+    expect(pendingCelebration(celebrate(q, 'drone'))).toBeNull();
+    expect(celebrate(q, 'vector-golf').celebrated).toEqual(['vector-golf']); // no duplicate
+  });
+});

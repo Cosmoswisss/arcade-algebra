@@ -1,7 +1,7 @@
 import { createContext, useCallback, useContext, useMemo, useRef, useState, type ReactNode } from 'react';
 import { loadContent, type LoadedContent as Loaded } from './content/load';
 import {
-  applyWaveResult, defaultProgress, loadProgressV2, placeFromDiagnostic, resetProgressV2, saveProgressV2,
+  applyWaveResult, celebrate as celebrateZone, defaultProgress, loadProgressV2, placeFromDiagnostic, resetProgressV2, saveProgressV2,
   type Applied, type ProgressV2, type WaveResult,
 } from './engine/progression';
 import type { CabinetId, Mode, Theme } from './engine/types';
@@ -16,6 +16,8 @@ interface Store {
   latest: () => ProgressV2;
   setModeOverride: (id: CabinetId, mode: Mode) => void;
   placement: (passed: CabinetId[]) => void;
+  /** The robot said this cleared zone's line on the map: do not say it again. */
+  celebrate: (id: CabinetId) => void;
   reset: () => void;
 }
 
@@ -34,6 +36,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     applyWave: (id, r) => { const a = applyWaveResult(ref.current, id, r); commit(a.next); return a; },
     setModeOverride: (id, mode) => commit({ ...ref.current, modeOverride: { ...ref.current.modeOverride, [id]: mode } }),
     placement: (passed) => commit(placeFromDiagnostic(ref.current, passed)),
+    celebrate: (id) => commit(celebrateZone(ref.current, id)),
     reset: () => { const p = resetProgressV2(); ref.current = p; setProgress(p); },
   }), [progress, commit]);
 

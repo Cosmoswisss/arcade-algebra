@@ -21,6 +21,8 @@ export interface ProgressV2 {
   errors: Record<string, number>;
   /** Cabinets passed in the placement test: their lessons are skipped and their game starts one tier up. */
   placed: CabinetId[];
+  /** Cleared zones whose "repaired" line the robot already said on the map. */
+  celebrated: CabinetId[];
 }
 
 export interface WaveResult { correct: boolean; rule: Rule; firstTry: boolean; concept: string; boss: boolean; cleared?: boolean; errorKind?: string }
@@ -33,7 +35,7 @@ export const defaultProgress = (): ProgressV2 => ({
   mastery: Object.fromEntries(CABINETS.map((c) => [c, START])) as Record<CabinetId, number>,
   finished: [], xp: 0, dex: [], modeOverride: {}, everMastered: [],
   streak: { cabinet: null, fails: 0, firstTryWins: 0 },
-  errors: {}, placed: [],
+  errors: {}, placed: [], celebrated: [],
 });
 
 export const levelOf = (xp: number) => Math.floor(xp / 100) + 1;
@@ -104,6 +106,15 @@ export function recommendedCabinet(p: ProgressV2, available: (c: CabinetId) => b
   return candidates.reduce((a, b) => (p.mastery[b] < p.mastery[a] ? b : a));
 }
 
+/** The first cleared zone (in cabinet order) the map has not celebrated yet: the robot says its `story.cleared`. */
+export function pendingCelebration(p: ProgressV2): CabinetId | null {
+  return CABINETS.find((c) => p.finished.includes(c) && !p.celebrated.includes(c)) ?? null;
+}
+
+export function celebrate(p: ProgressV2, id: CabinetId): ProgressV2 {
+  return p.celebrated.includes(id) ? p : { ...p, celebrated: [...p.celebrated, id] };
+}
+
 // ---------- storage ----------
 const store = (s?: Storage): Storage | undefined => { if (s) return s; try { return globalThis.localStorage; } catch { return undefined; } };
 
@@ -123,6 +134,7 @@ export function loadProgressV2(storage?: Storage): ProgressV2 {
     if (Array.isArray(o?.everMastered)) p.everMastered = o.everMastered.filter((c: unknown) => CABINETS.includes(c as CabinetId));
     if (o?.errors && typeof o.errors === 'object') for (const [k, v] of Object.entries(o.errors)) if (typeof v === 'number' && Number.isInteger(v) && v > 0) p.errors[k] = v;
     if (Array.isArray(o?.placed)) p.placed = o.placed.filter((c: unknown) => CABINETS.includes(c as CabinetId));
+    if (Array.isArray(o?.celebrated)) p.celebrated = o.celebrated.filter((c: unknown) => CABINETS.includes(c as CabinetId));
     if (o?.modeOverride && typeof o.modeOverride === 'object') for (const c of CABINETS) if (MODES.includes(o.modeOverride[c])) p.modeOverride[c] = o.modeOverride[c];
     return p;
   } catch {

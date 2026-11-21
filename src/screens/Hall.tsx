@@ -1,13 +1,16 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { CABINETS, type CabinetId } from '../engine/types';
-import { cabinetState, levelOf, recommendedCabinet } from '../engine/progression';
+import { cabinetState, levelOf, pendingCelebration, recommendedCabinet } from '../engine/progression';
+import type { CabinetState } from '../engine/progression';
 import { PLAYABLE } from '../arcade/playable';
-import { href } from '../router';
+import { go, href } from '../router';
 import { useStore } from '../store';
-import { CABINET_INFO, Cabinet, STATE_LABEL } from '../ui/Cabinet';
+import { CABINET_INFO } from '../ui/Cabinet';
+import { GridMap } from '../ui/GridMap';
+import { Robot } from '../ui/Robot';
 
 export function Hall() {
-  const { progress, content, reset } = useStore();
+  const { progress, content, reset, celebrate } = useStore();
   const [message, setMessage] = useState('');
   const [confirm, setConfirm] = useState(false);
   const isAvailable = (id: CabinetId) => !!content.cabinets[id] && PLAYABLE.has(id);
@@ -16,13 +19,14 @@ export function Hall() {
   const level = levelOf(progress.xp);
   const into = progress.xp % 100;
   const mode = progress.profile?.mode === 'fast' ? 'University' : 'High school';
+  const states = Object.fromEntries(CABINETS.map((id) => [id, cabinetState(progress, id, isAvailable)])) as Record<CabinetId, CabinetState>;
+  const names = Object.fromEntries(CABINETS.map((id) => [id, content.cabinets[id]?.meta.name ?? CABINET_INFO[id].name])) as Record<CabinetId, string>;
 
-  const note = (id: CabinetId, available: boolean): string => {
-    const s = cabinetState(progress, id, isAvailable);
-    if (!available) return 'Coming soon';
-    if (id === rec) return 'Recommended';
-    return STATE_LABEL[s];
-  };
+  // the first time a zone shows up cleared, the robot says its "repaired" line (once: it is then remembered)
+  const [celebration] = useState(() => pendingCelebration(progress));
+  useEffect(() => { if (celebration) celebrate(celebration); }, [celebration, celebrate]);
+  const clearedLine = celebration ? content.cabinets[celebration]?.meta.story.cleared : undefined;
+  const robotSays = clearedLine ?? (rec ? `Next stop: ${names[rec]}. Follow the glowing path.` : undefined);
 
   return (
     <main className="hall">
@@ -48,30 +52,14 @@ export function Hall() {
         </section>
       </header>
 
-      <ol className="floor">
-        {CABINETS.map((id, k) => {
-          const state = cabinetState(progress, id, isAvailable);
-          const available = isAvailable(id);
-          const open = available && state !== 'locked';
-          const name = content.cabinets[id]?.meta.name ?? CABINET_INFO[id].name;
-          const label = `Cabinet ${k + 1}, ${name}. ${note(id, available)}.`;
-          const body = (
-            <>
-              <Cabinet id={id} order={k + 1} state={state} recommended={id === rec && available} available={available} />
-              <span className="cab-name">{name}</span>
-              <span className={`cab-note ${id === rec && available ? 'is-rec' : ''}`}>{note(id, available)}</span>
-            </>
-          );
-          return (
-            <li key={id} className="floor-slot">
-              {open
-                ? <a className="cab-link" href={href.course(id)} aria-label={label}>{body}</a>
-                : <button type="button" className="cab-link" aria-label={label} aria-disabled="true"
-                    onClick={() => setMessage(!available ? `${name} is not built yet.` : `${name} opens when you clear cabinet ${k} or pass the placement test.`)}>{body}</button>}
-            </li>
-          );
-        })}
-      </ol>
+      {robotSays && <div className="hall-robot"><Robot name={content.robot.name} mood={celebration ? 'happy' : 'idle'} line={robotSays} /></div>}
+
+      <GridMap states={states} available={isAvailable} recommended={rec} names={names} placed={progress.placed}
+        onOpen={(id) => go(href.course(id))}
+        onLocked={(id) => {
+          const k = CABINETS.indexOf(id);
+          setMessage(!isAvailable(id) ? `${names[id]} is not built yet.` : `${names[id]} opens when you clear zone ${k} or pass the placement test.`);
+        }} />
       <p className="floor-msg" role="status">{message}</p>
 
       {content.errors.length > 0 && (
