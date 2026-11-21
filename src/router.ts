@@ -17,7 +17,18 @@ export function parseRoute(hash: string): Route {
   return { name: 'title' };
 }
 
-export const go = (path: string) => { location.hash = path; };
+/** Hash links used by the screens: `go(href.hall)` or `<a href={href.course(id)}>`. */
+export const href = {
+  title: '#/',
+  profile: '#/profile',
+  diagnostic: '#/diagnostic',
+  hall: '#/hall',
+  course: (id: CabinetId) => `#/course/${id}`,
+  play: (id: CabinetId) => `#/play/${id}`,
+};
+
+/** Accepts '/hall' or '#/hall'. */
+export const go = (path: string) => { location.hash = path.replace(/^#/, ''); };
 
 export function useRoute(): Route {
   const [route, setRoute] = useState(() => parseRoute(location.hash));

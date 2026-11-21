@@ -37,8 +37,13 @@ export const modeFor = (p: ProgressV2, id: CabinetId): Mode => p.modeOverride[id
 
 const isMastered = (p: ProgressV2, id: CabinetId) => p.mastery[id] >= MASTERED - 1e-9;
 
+/** Alias used by the screens. */
+export const effectiveMode = modeFor;
+
+export type CabinetState = 'locked' | 'open' | 'mastered' | 'finished';
+
 /** `available` tells which cabinets are playable; earlier cabinets that are not built yet never block the next ones. */
-export function cabinetState(p: ProgressV2, id: CabinetId, available: (c: CabinetId) => boolean = () => true): 'locked' | 'open' | 'mastered' | 'finished' {
+export function cabinetState(p: ProgressV2, id: CabinetId, available: (c: CabinetId) => boolean = () => true): CabinetState {
   if (p.finished.includes(id)) return 'finished';
   if (isMastered(p, id)) return 'mastered';
   const earlier = CABINETS.slice(0, CABINETS.indexOf(id)).filter(available);
@@ -48,7 +53,16 @@ export function cabinetState(p: ProgressV2, id: CabinetId, available: (c: Cabine
 /** Aids make a win weaker evidence: treated like hints in the v1 mastery model. */
 const HINTS_FOR_RULE: Record<Rule, number> = { assist: 2, partial: 1, abstract: 0 };
 
-export function applyWaveResult(p: ProgressV2, id: CabinetId, r: WaveResult): { next: ProgressV2; xpGained: number; newDex: string | null; suggestMode: Mode | null } {
+export interface Applied {
+  next: ProgressV2;
+  xpGained: number;
+  /** Concept whose Dex card was just unlocked, if any. */
+  newDex: string | null;
+  /** A pace change to propose to the player (never imposed). */
+  suggestMode: Mode | null;
+}
+
+export function applyWaveResult(p: ProgressV2, id: CabinetId, r: WaveResult): Applied {
   const xpGained = r.correct ? 10 + (r.rule === 'abstract' ? 5 : 0) + (r.boss ? 50 : 0) : 0;
   const mastery = { ...p.mastery, [id]: updateMastery(p.mastery[id], r.correct, HINTS_FOR_RULE[r.rule]) };
   const key = dexKey(id, r.concept);
@@ -74,6 +88,13 @@ export function placeFromDiagnostic(p: ProgressV2, passed: CabinetId[]): Progres
   const mastery = { ...p.mastery };
   for (const c of passed) mastery[c] = Math.max(mastery[c], 0.7);
   return { ...p, mastery, everMastered: [...new Set([...p.everMastered, ...passed])] };
+}
+
+/** The cabinet to highlight: an open, unfinished, available one; the weakest first, then the earliest. */
+export function recommendedCabinet(p: ProgressV2, available: (c: CabinetId) => boolean = () => true): CabinetId | null {
+  const candidates = CABINETS.filter((c) => available(c) && !p.finished.includes(c) && cabinetState(p, c, available) !== 'locked');
+  if (candidates.length === 0) return null;
+  return candidates.reduce((a, b) => (p.mastery[b] < p.mastery[a] ? b : a));
 }
 
 // ---------- storage ----------
