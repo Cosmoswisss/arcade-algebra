@@ -1,0 +1,290 @@
+[
+  {
+    "id": "stretch-1",
+    "concept": "stretch",
+    "params": {
+      "matrix": [
+        [
+          2,
+          0
+        ],
+        [
+          0,
+          1
+        ]
+      ]
+    }
+  },
+  {
+    "id": "stretch-2",
+    "concept": "stretch",
+    "params": {
+      "matrix": [
+        [
+          1,
+          0
+        ],
+        [
+          0,
+          2
+        ]
+      ]
+    }
+  },
+  {
+    "id": "stretch-3",
+    "concept": "stretch",
+    "params": {
+      "matrix": [
+        [
+          1.5,
+          0
+        ],
+        [
+          0,
+          1.5
+        ]
+      ]
+    }
+  },
+  {
+    "id": "shear-1",
+    "concept": "shear",
+    "params": {
+      "matrix": [
+        [
+          1,
+          1
+        ],
+        [
+          0,
+          1
+        ]
+      ]
+    }
+  },
+  {
+    "id": "shear-2",
+    "concept": "shear",
+    "params": {
+      "matrix": [
+        [
+          1,
+          0
+        ],
+        [
+          1,
+          1
+        ]
+      ]
+    }
+  },
+  {
+    "id": "shear-3",
+    "concept": "shear",
+    "params": {
+      "matrix": [
+        [
+          1,
+          -1
+        ],
+        [
+          0,
+          1
+        ]
+      ]
+    }
+  },
+  {
+    "id": "flip-1",
+    "concept": "flip",
+    "params": {
+      "matrix": [
+        [
+          -1,
+          0
+        ],
+        [
+          0,
+          1
+        ]
+      ]
+    }
+  },
+  {
+    "id": "flip-2",
+    "concept": "flip",
+    "params": {
+      "matrix": [
+        [
+          1,
+          0
+        ],
+        [
+          0,
+          -1
+        ]
+      ]
+    }
+  },
+  {
+    "id": "flip-3",
+    "concept": "flip",
+    "params": {
+      "matrix": [
+        [
+          -2,
+          0
+        ],
+        [
+          0,
+          1
+        ]
+      ]
+    }
+  },
+  {
+    "id": "rotation-1",
+    "concept": "rotation",
+    "params": {
+      "matrix": [
+        [
+          0,
+          -1
+        ],
+        [
+          1,
+          0
+        ]
+      ]
+    }
+  },
+  {
+    "id": "rotation-2",
+    "concept": "rotation",
+    "params": {
+      "matrix": [
+        [
+          -1,
+          0
+        ],
+        [
+          0,
+          -1
+        ]
+      ]
+    }
+  },
+  {
+    "id": "rotation-3",
+    "concept": "rotation",
+    "params": {
+      "matrix": [
+        [
+          0,
+          1
+        ],
+        [
+          -1,
+          0
+        ]
+      ]
+    }
+  },
+  {
+    "id": "swap-1",
+    "concept": "swap",
+    "params": {
+      "matrix": [
+        [
+          0,
+          1
+        ],
+        [
+          1,
+          0
+        ]
+      ]
+    }
+  },
+  {
+    "id": "swap-2",
+    "concept": "swap",
+    "params": {
+      "matrix": [
+        [
+          0,
+          2
+        ],
+        [
+          1,
+          0
+        ]
+      ]
+    }
+  },
+  {
+    "id": "combo-1",
+    "concept": "combo",
+    "params": {
+      "matrix": [
+        [
+          2,
+          0
+        ],
+        [
+          1,
+          1
+        ]
+      ]
+    }
+  },
+  {
+    "id": "combo-2",
+    "concept": "combo",
+    "params": {
+      "matrix": [
+        [
+          2,
+          1
+        ],
+        [
+          1,
+          2
+        ]
+      ]
+    }
+  },
+  {
+    "id": "combo-3",
+    "concept": "combo",
+    "params": {
+      "matrix": [
+        [
+          -1,
+          1
+        ],
+        [
+          0,
+          2
+        ]
+      ]
+    }
+  },
+  {
+    "id": "combo-4",
+    "concept": "combo",
+    "params": {
+      "matrix": [
+        [
+          1,
+          -1
+        ],
+        [
+          1,
+          1
+        ]
+      ]
+    }
+  }
+]

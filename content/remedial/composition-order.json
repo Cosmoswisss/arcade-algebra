@@ -1,0 +1,38 @@
+{
+  "errorKind": "composition-order",
+  "title": "Order matters",
+  "text": {
+    "guided": "Two moves in a row: the **second** one acts on the result of the first.\nDoing them in the other order usually gives a different result.",
+    "fast": "A then B ≠ B then A. Check which move comes first."
+  },
+  "scene": [
+    {
+      "matrix": [
+        [
+          1,
+          0
+        ],
+        [
+          0,
+          1
+        ]
+      ],
+      "caption": "Start from the normal plane.",
+      "ms": 1000
+    },
+    {
+      "matrix": [
+        [
+          0,
+          -1
+        ],
+        [
+          1,
+          0
+        ]
+      ],
+      "caption": "Watch where î and ĵ go.",
+      "ms": 1800
+    }
+  ]
+}

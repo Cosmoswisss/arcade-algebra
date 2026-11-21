@@ -1,0 +1,38 @@
+{
+  "errorKind": "other",
+  "title": "Look at the corners",
+  "text": {
+    "guided": "Follow the corner (1, 0): it goes where î goes.\nFollow the corner (0, 1): it goes where ĵ goes.",
+    "fast": "Track the two corners (1, 0) and (0, 1)."
+  },
+  "scene": [
+    {
+      "matrix": [
+        [
+          1,
+          0
+        ],
+        [
+          0,
+          1
+        ]
+      ],
+      "caption": "Start from the normal plane.",
+      "ms": 1000
+    },
+    {
+      "matrix": [
+        [
+          2,
+          0
+        ],
+        [
+          1,
+          1
+        ]
+      ],
+      "caption": "Watch where î and ĵ go.",
+      "ms": 1800
+    }
+  ]
+}

@@ -1,0 +1,165 @@
+[
+  {
+    "id": "two-arrows",
+    "title": "Two arrows rule the plane",
+    "text": {
+      "guided": "Every point of the plane is built from two arrows: **î = (1, 0)** and **ĵ = (0, 1)**.\nThe point (3, 2) is just *3 steps of î plus 2 steps of ĵ*.\nGrab î and watch: the whole grid follows it.",
+      "fast": "Every point is a mix of **î = (1, 0)** and **ĵ = (0, 1)**: (3, 2) = 3î + 2ĵ. Move î and the whole grid follows."
+    },
+    "examples": {
+      "games": "In a game, î and ĵ are the two directions your character can walk.",
+      "physics": "In physics, î and ĵ are the two unit directions of your force diagram.",
+      "ai": "In an image model, î and ĵ are the two pixel axes of a picture."
+    },
+    "scene": [
+      {
+        "matrix": [
+          [
+            1,
+            0
+          ],
+          [
+            0,
+            1
+          ]
+        ],
+        "caption": "The normal plane: î = (1, 0), ĵ = (0, 1).",
+        "ms": 1500
+      },
+      {
+        "matrix": [
+          [
+            2,
+            0
+          ],
+          [
+            0,
+            1
+          ]
+        ],
+        "caption": "Stretch î to (2, 0): every point moves with it.",
+        "ms": 1800
+      }
+    ],
+    "check": {
+      "kind": "basis",
+      "prompt": "This matrix stretches the plane. Place where î and ĵ land.",
+      "given": {
+        "matrix": [
+          [
+            2,
+            0
+          ],
+          [
+            0,
+            1
+          ]
+        ]
+      },
+      "answer": [
+        [
+          2,
+          0
+        ],
+        [
+          0,
+          1
+        ]
+      ],
+      "tolerance": 0.1
+    }
+  },
+  {
+    "id": "read-the-columns",
+    "title": "Read the columns",
+    "text": {
+      "guided": "A matrix is a table with two **columns**.\nColumn 1 tells **where î lands**, column 2 tells **where ĵ lands**.\nIn $\\begin{bmatrix}1&1\\\\0&1\\end{bmatrix}$, î stays at (1, 0) and ĵ moves to (1, 1).",
+      "fast": "Column 1 = where î lands, column 2 = where ĵ lands. $\\begin{bmatrix}1&1\\\\0&1\\end{bmatrix}$ keeps î and sends ĵ to (1, 1)."
+    },
+    "examples": {
+      "games": "That is how a sprite gets sheared when it runs fast.",
+      "physics": "That is the shear of a deck of cards pushed from the top.",
+      "ai": "That is a skew used to augment training images."
+    },
+    "scene": [
+      {
+        "matrix": [
+          [
+            1,
+            0
+          ],
+          [
+            0,
+            1
+          ]
+        ],
+        "caption": "Start from the normal plane.",
+        "ms": 1200
+      },
+      {
+        "matrix": [
+          [
+            1,
+            1
+          ],
+          [
+            0,
+            1
+          ]
+        ],
+        "caption": "Column 2 is (1, 1): ĵ leans right, the shape shears.",
+        "ms": 1800
+      }
+    ],
+    "check": {
+      "kind": "basis",
+      "prompt": "Place î and ĵ for the matrix [[1, 1], [0, 1]].",
+      "given": {
+        "matrix": [
+          [
+            1,
+            1
+          ],
+          [
+            0,
+            1
+          ]
+        ]
+      },
+      "answer": [
+        [
+          1,
+          1
+        ],
+        [
+          0,
+          1
+        ]
+      ],
+      "tolerance": 0.1
+    }
+  },
+  {
+    "id": "column-order",
+    "title": "Order matters",
+    "text": {
+      "guided": "Swap the two columns and you get a different move.\n$\\begin{bmatrix}0&1\\\\1&0\\end{bmatrix}$ sends î to (0, 1) and ĵ to (1, 0): it mirrors the plane across the diagonal.",
+      "fast": "Swapping columns swaps where î and ĵ go — a different transformation (a diagonal mirror)."
+    },
+    "examples": {
+      "games": "Like swapping the left and up keys: the character goes the wrong way.",
+      "physics": "Like swapping two axes in your lab frame.",
+      "ai": "Like transposing an image: rows become columns."
+    },
+    "check": {
+      "kind": "choice",
+      "prompt": "In a matrix, which part tells you where î lands?",
+      "options": [
+        "Column 1",
+        "Column 2",
+        "Row 1"
+      ],
+      "answer": 0
+    }
+  }
+]

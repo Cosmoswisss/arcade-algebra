@@ -1,0 +1,92 @@
+[
+  {
+    "concept": "stretch",
+    "name": "STRETCH",
+    "body": "Make î or ĵ longer and the whole plane stretches that way. The arrow length IS the stretch factor.",
+    "demo": [
+      [
+        2,
+        0
+      ],
+      [
+        0,
+        1
+      ]
+    ]
+  },
+  {
+    "concept": "shear",
+    "name": "SHEAR",
+    "body": "Keep î where it is, slide ĵ sideways: the shape leans like a pushed deck of cards.",
+    "demo": [
+      [
+        1,
+        1
+      ],
+      [
+        0,
+        1
+      ]
+    ]
+  },
+  {
+    "concept": "flip",
+    "name": "FLIP",
+    "body": "Point one arrow backwards and the plane is mirrored. Its area becomes negative: it was turned over.",
+    "demo": [
+      [
+        -1,
+        0
+      ],
+      [
+        0,
+        1
+      ]
+    ]
+  },
+  {
+    "concept": "rotation",
+    "name": "ROTATION",
+    "body": "Turn î and ĵ together, keeping the square corner: the shape spins. 90°: î → (0, 1), ĵ → (−1, 0).",
+    "demo": [
+      [
+        0,
+        -1
+      ],
+      [
+        1,
+        0
+      ]
+    ]
+  },
+  {
+    "concept": "swap",
+    "name": "SWAP",
+    "body": "Trade î and ĵ: the plane is mirrored across the diagonal. That is why the column order matters.",
+    "demo": [
+      [
+        0,
+        1
+      ],
+      [
+        1,
+        0
+      ]
+    ]
+  },
+  {
+    "concept": "combo",
+    "name": "COMBO",
+    "body": "Any two arrows make a transformation. Every matrix is just: where î goes, where ĵ goes.",
+    "demo": [
+      [
+        2,
+        1
+      ],
+      [
+        1,
+        2
+      ]
+    ]
+  }
+]

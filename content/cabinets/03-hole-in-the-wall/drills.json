@@ -1,0 +1,320 @@
+[
+  {
+    "errorKind": "swapped-columns",
+    "label": "swapped arrows",
+    "waves": [
+      {
+        "id": "drill-swapped-columns-1",
+        "concept": "combo",
+        "params": {
+          "matrix": [
+            [
+              2,
+              0
+            ],
+            [
+              1,
+              1
+            ]
+          ]
+        }
+      },
+      {
+        "id": "drill-swapped-columns-2",
+        "concept": "swap",
+        "params": {
+          "matrix": [
+            [
+              0,
+              2
+            ],
+            [
+              1,
+              0
+            ]
+          ]
+        }
+      },
+      {
+        "id": "drill-swapped-columns-3",
+        "concept": "shear",
+        "params": {
+          "matrix": [
+            [
+              2,
+              1
+            ],
+            [
+              0,
+              1
+            ]
+          ]
+        }
+      },
+      {
+        "id": "drill-swapped-columns-4",
+        "concept": "shear",
+        "params": {
+          "matrix": [
+            [
+              1,
+              0
+            ],
+            [
+              2,
+              1
+            ]
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "errorKind": "sign-flip",
+    "label": "arrows pointing backwards",
+    "waves": [
+      {
+        "id": "drill-sign-flip-1",
+        "concept": "flip",
+        "params": {
+          "matrix": [
+            [
+              -1,
+              0
+            ],
+            [
+              0,
+              1
+            ]
+          ]
+        }
+      },
+      {
+        "id": "drill-sign-flip-2",
+        "concept": "flip",
+        "params": {
+          "matrix": [
+            [
+              1,
+              0
+            ],
+            [
+              0,
+              -1
+            ]
+          ]
+        }
+      },
+      {
+        "id": "drill-sign-flip-3",
+        "concept": "flip",
+        "params": {
+          "matrix": [
+            [
+              -2,
+              0
+            ],
+            [
+              0,
+              1
+            ]
+          ]
+        }
+      },
+      {
+        "id": "drill-sign-flip-4",
+        "concept": "flip",
+        "params": {
+          "matrix": [
+            [
+              1,
+              0
+            ],
+            [
+              0,
+              -2
+            ]
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "errorKind": "one-column",
+    "label": "one arrow at a time",
+    "waves": [
+      {
+        "id": "drill-one-column-1",
+        "concept": "shear",
+        "params": {
+          "matrix": [
+            [
+              1,
+              1
+            ],
+            [
+              0,
+              1
+            ]
+          ]
+        }
+      },
+      {
+        "id": "drill-one-column-2",
+        "concept": "shear",
+        "params": {
+          "matrix": [
+            [
+              1,
+              0
+            ],
+            [
+              1,
+              1
+            ]
+          ]
+        }
+      },
+      {
+        "id": "drill-one-column-3",
+        "concept": "stretch",
+        "params": {
+          "matrix": [
+            [
+              1,
+              0
+            ],
+            [
+              0,
+              2
+            ]
+          ]
+        }
+      },
+      {
+        "id": "drill-one-column-4",
+        "concept": "stretch",
+        "params": {
+          "matrix": [
+            [
+              2,
+              0
+            ],
+            [
+              0,
+              1
+            ]
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "errorKind": "scale",
+    "label": "the right length",
+    "waves": [
+      {
+        "id": "drill-scale-1",
+        "concept": "stretch",
+        "params": {
+          "matrix": [
+            [
+              1.5,
+              0
+            ],
+            [
+              0,
+              1.5
+            ]
+          ]
+        }
+      },
+      {
+        "id": "drill-scale-2",
+        "concept": "stretch",
+        "params": {
+          "matrix": [
+            [
+              2,
+              0
+            ],
+            [
+              0,
+              2
+            ]
+          ]
+        }
+      },
+      {
+        "id": "drill-scale-3",
+        "concept": "stretch",
+        "params": {
+          "matrix": [
+            [
+              0.5,
+              0
+            ],
+            [
+              0,
+              1
+            ]
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "errorKind": "other",
+    "label": "reading the corners",
+    "waves": [
+      {
+        "id": "drill-other-1",
+        "concept": "stretch",
+        "params": {
+          "matrix": [
+            [
+              2,
+              0
+            ],
+            [
+              0,
+              1
+            ]
+          ]
+        }
+      },
+      {
+        "id": "drill-other-2",
+        "concept": "shear",
+        "params": {
+          "matrix": [
+            [
+              1,
+              1
+            ],
+            [
+              0,
+              1
+            ]
+          ]
+        }
+      },
+      {
+        "id": "drill-other-3",
+        "concept": "rotation",
+        "params": {
+          "matrix": [
+            [
+              0,
+              -1
+            ],
+            [
+              1,
+              0
+            ]
+          ]
+        }
+      }
+    ]
+  }
+]

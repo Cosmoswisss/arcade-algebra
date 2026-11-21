@@ -1,0 +1,38 @@
+{
+  "errorKind": "sign-flip",
+  "title": "An arrow points backwards",
+  "text": {
+    "guided": "One of your arrows has the right length but points the **opposite** way.\nA minus sign in a column flips that arrow.",
+    "fast": "Right length, wrong direction: check the signs of that column."
+  },
+  "scene": [
+    {
+      "matrix": [
+        [
+          1,
+          0
+        ],
+        [
+          0,
+          1
+        ]
+      ],
+      "caption": "Start from the normal plane.",
+      "ms": 1000
+    },
+    {
+      "matrix": [
+        [
+          -1,
+          0
+        ],
+        [
+          0,
+          1
+        ]
+      ],
+      "caption": "Watch where î and ĵ go.",
+      "ms": 1800
+    }
+  ]
+}

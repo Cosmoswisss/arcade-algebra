@@ -1,0 +1,38 @@
+{
+  "errorKind": "one-column",
+  "title": "One arrow is off",
+  "text": {
+    "guided": "One arrow is exactly right. Only the other one needs to move.\nRead its column in the matrix: that is its target.",
+    "fast": "One column is right; fix the other one."
+  },
+  "scene": [
+    {
+      "matrix": [
+        [
+          1,
+          0
+        ],
+        [
+          0,
+          1
+        ]
+      ],
+      "caption": "Start from the normal plane.",
+      "ms": 1000
+    },
+    {
+      "matrix": [
+        [
+          1,
+          1
+        ],
+        [
+          0,
+          1
+        ]
+      ],
+      "caption": "Watch where î and ĵ go.",
+      "ms": 1800
+    }
+  ]
+}

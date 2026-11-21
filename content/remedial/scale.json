@@ -1,0 +1,38 @@
+{
+  "errorKind": "scale",
+  "title": "Right direction, wrong length",
+  "text": {
+    "guided": "Your arrows point the right way but are too long or too short.\nThe numbers in each column give the exact length.",
+    "fast": "Directions are right; the lengths are not."
+  },
+  "scene": [
+    {
+      "matrix": [
+        [
+          1,
+          0
+        ],
+        [
+          0,
+          1
+        ]
+      ],
+      "caption": "Start from the normal plane.",
+      "ms": 1000
+    },
+    {
+      "matrix": [
+        [
+          2,
+          0
+        ],
+        [
+          0,
+          2
+        ]
+      ],
+      "caption": "Watch where î and ĵ go.",
+      "ms": 1800
+    }
+  ]
+}

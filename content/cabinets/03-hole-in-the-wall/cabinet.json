@@ -1,0 +1,39 @@
+{
+  "id": "hole-in-the-wall",
+  "order": 3,
+  "name": "Hole in the Wall",
+  "notion": "A matrix is just two arrows: where î lands and where ĵ lands.",
+  "tiers": [
+    {
+      "rule": "assist",
+      "banner": "Green dot = where î lands · Red dot = where ĵ lands",
+      "waves": {
+        "guided": 3,
+        "fast": 2
+      }
+    },
+    {
+      "rule": "partial",
+      "banner": "NEW RULE · NO MORE HINT DOTS — find the corners yourself",
+      "waves": {
+        "guided": 3,
+        "fast": 2
+      }
+    },
+    {
+      "rule": "abstract",
+      "banner": "NEW RULE · THE WALL ONLY SHOWS ITS MATRIX",
+      "waves": {
+        "guided": 4,
+        "fast": 3
+      }
+    }
+  ],
+  "waveSeconds": {
+    "guided": 16,
+    "fast": 12
+  },
+  "boss": {
+    "waves": 2
+  }
+}

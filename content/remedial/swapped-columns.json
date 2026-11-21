@@ -1,0 +1,38 @@
+{
+  "errorKind": "swapped-columns",
+  "title": "You swapped î and ĵ",
+  "text": {
+    "guided": "Column 1 is **where î lands**, column 2 is **where ĵ lands**.\nYou put î where ĵ should go. Watch: î goes first, then ĵ.",
+    "fast": "Column 1 = î, column 2 = ĵ. You traded them."
+  },
+  "scene": [
+    {
+      "matrix": [
+        [
+          1,
+          0
+        ],
+        [
+          0,
+          1
+        ]
+      ],
+      "caption": "Start from the normal plane.",
+      "ms": 1000
+    },
+    {
+      "matrix": [
+        [
+          0,
+          1
+        ],
+        [
+          1,
+          0
+        ]
+      ],
+      "caption": "Watch where î and ĵ go.",
+      "ms": 1800
+    }
+  ]
+}
