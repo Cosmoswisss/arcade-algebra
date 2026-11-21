@@ -1,0 +1,192 @@
+[
+  {
+    "id": "mix-1",
+    "concept": "mix",
+    "params": {
+      "u": [
+        1,
+        0
+      ],
+      "v": [
+        0,
+        1
+      ],
+      "target": [
+        2,
+        1
+      ],
+      "reachable": true
+    }
+  },
+  {
+    "id": "mix-2",
+    "concept": "mix",
+    "params": {
+      "u": [
+        1,
+        0
+      ],
+      "v": [
+        0,
+        1
+      ],
+      "target": [
+        1,
+        2
+      ],
+      "reachable": true
+    }
+  },
+  {
+    "id": "tilted-1",
+    "concept": "tilted",
+    "params": {
+      "u": [
+        1,
+        0
+      ],
+      "v": [
+        1,
+        1
+      ],
+      "target": [
+        2,
+        1
+      ],
+      "reachable": true
+    }
+  },
+  {
+    "id": "tilted-2",
+    "concept": "tilted",
+    "params": {
+      "u": [
+        1,
+        1
+      ],
+      "v": [
+        -1,
+        1
+      ],
+      "target": [
+        0,
+        2
+      ],
+      "reachable": true
+    }
+  },
+  {
+    "id": "tilted-3",
+    "concept": "tilted",
+    "params": {
+      "u": [
+        1,
+        0.5
+      ],
+      "v": [
+        0,
+        1
+      ],
+      "target": [
+        2,
+        2
+      ],
+      "reachable": true
+    }
+  },
+  {
+    "id": "negative-1",
+    "concept": "negative",
+    "params": {
+      "u": [
+        1,
+        0
+      ],
+      "v": [
+        1,
+        1
+      ],
+      "target": [
+        -1,
+        1
+      ],
+      "reachable": true
+    }
+  },
+  {
+    "id": "negative-2",
+    "concept": "negative",
+    "params": {
+      "u": [
+        1,
+        1
+      ],
+      "v": [
+        1,
+        -1
+      ],
+      "target": [
+        0,
+        2
+      ],
+      "reachable": true
+    }
+  },
+  {
+    "id": "span-line-1",
+    "concept": "span-line",
+    "params": {
+      "u": [
+        1,
+        1
+      ],
+      "v": [
+        2,
+        2
+      ],
+      "target": [
+        1,
+        0
+      ],
+      "reachable": false
+    }
+  },
+  {
+    "id": "span-line-2",
+    "concept": "span-line",
+    "params": {
+      "u": [
+        1,
+        0.5
+      ],
+      "v": [
+        -2,
+        -1
+      ],
+      "target": [
+        0,
+        1
+      ],
+      "reachable": false
+    }
+  },
+  {
+    "id": "span-line-3",
+    "concept": "span-line",
+    "params": {
+      "u": [
+        1,
+        2
+      ],
+      "v": [
+        0.5,
+        1
+      ],
+      "target": [
+        2,
+        1
+      ],
+      "reachable": false
+    }
+  }
+]

@@ -1,0 +1,39 @@
+{
+  "id": "drone",
+  "order": 2,
+  "name": "Two-Thruster Drone",
+  "notion": "A linear combination a·u + b·v mixes two vectors. Two vectors on the same line can only reach that line.",
+  "tiers": [
+    {
+      "rule": "assist",
+      "banner": "The drone's position is shown live",
+      "waves": {
+        "guided": 3,
+        "fast": 2
+      }
+    },
+    {
+      "rule": "partial",
+      "banner": "NEW RULE · THE DRONE IS HIDDEN UNTIL IT FLIES",
+      "waves": {
+        "guided": 3,
+        "fast": 2
+      }
+    },
+    {
+      "rule": "abstract",
+      "banner": "NEW RULE · REACHABLE OR NOT? Answer before it flies",
+      "waves": {
+        "guided": 3,
+        "fast": 2
+      }
+    }
+  ],
+  "waveSeconds": {
+    "guided": 18,
+    "fast": 14
+  },
+  "boss": {
+    "waves": 2
+  }
+}

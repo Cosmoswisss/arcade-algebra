@@ -1,0 +1,203 @@
+[
+  {
+    "errorKind": "swapped-xy",
+    "label": "a goes with u, b with v",
+    "waves": [
+      {
+        "id": "drill-swapped-xy-1",
+        "concept": "mix",
+        "params": {
+          "u": [
+            1,
+            0
+          ],
+          "v": [
+            0,
+            1
+          ],
+          "target": [
+            2,
+            1
+          ],
+          "reachable": true
+        }
+      },
+      {
+        "id": "drill-swapped-xy-2",
+        "concept": "tilted",
+        "params": {
+          "u": [
+            1,
+            0
+          ],
+          "v": [
+            1,
+            1
+          ],
+          "target": [
+            3,
+            1
+          ],
+          "reachable": true
+        }
+      }
+    ]
+  },
+  {
+    "errorKind": "sign-x",
+    "label": "negative a means backwards u",
+    "waves": [
+      {
+        "id": "drill-sign-x-1",
+        "concept": "negative",
+        "params": {
+          "u": [
+            1,
+            0
+          ],
+          "v": [
+            1,
+            1
+          ],
+          "target": [
+            -1,
+            1
+          ],
+          "reachable": true
+        }
+      }
+    ]
+  },
+  {
+    "errorKind": "sign-y",
+    "label": "negative b means backwards v",
+    "waves": [
+      {
+        "id": "drill-sign-y-1",
+        "concept": "negative",
+        "params": {
+          "u": [
+            1,
+            1
+          ],
+          "v": [
+            1,
+            -1
+          ],
+          "target": [
+            0,
+            2
+          ],
+          "reachable": true
+        }
+      }
+    ]
+  },
+  {
+    "errorKind": "wrong-span",
+    "label": "is it on the line?",
+    "waves": [
+      {
+        "id": "drill-wrong-span-1",
+        "concept": "span-line",
+        "params": {
+          "u": [
+            1,
+            1
+          ],
+          "v": [
+            2,
+            2
+          ],
+          "target": [
+            1,
+            0
+          ],
+          "reachable": false
+        }
+      },
+      {
+        "id": "drill-wrong-span-2",
+        "concept": "span-line",
+        "params": {
+          "u": [
+            1,
+            2
+          ],
+          "v": [
+            0.5,
+            1
+          ],
+          "target": [
+            2,
+            1
+          ],
+          "reachable": false
+        }
+      },
+      {
+        "id": "drill-wrong-span-3",
+        "concept": "tilted",
+        "params": {
+          "u": [
+            1,
+            1
+          ],
+          "v": [
+            -1,
+            1
+          ],
+          "target": [
+            0,
+            2
+          ],
+          "reachable": true
+        }
+      }
+    ]
+  },
+  {
+    "errorKind": "other",
+    "label": "one thruster at a time",
+    "waves": [
+      {
+        "id": "drill-other-1",
+        "concept": "mix",
+        "params": {
+          "u": [
+            1,
+            0
+          ],
+          "v": [
+            0,
+            1
+          ],
+          "target": [
+            1,
+            2
+          ],
+          "reachable": true
+        }
+      },
+      {
+        "id": "drill-other-2",
+        "concept": "tilted",
+        "params": {
+          "u": [
+            1,
+            0
+          ],
+          "v": [
+            1,
+            1
+          ],
+          "target": [
+            2,
+            1
+          ],
+          "reachable": true
+        }
+      }
+    ]
+  }
+]

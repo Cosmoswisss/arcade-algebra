@@ -1,0 +1,101 @@
+[
+  {
+    "id": "mix",
+    "title": "Mixing two arrows",
+    "text": {
+      "guided": "The drone has two thrusters, **u** and **v**.\nFiring u twice and v once moves it by **2·u + 1·v**. This mix is called a *linear combination*.\nWith u = (1, 0) and v = (1, 1): 2u + v = (3, 1).",
+      "fast": "a·u + b·v is a linear combination. u = (1, 0), v = (1, 1): 2u + v = (3, 1)."
+    },
+    "examples": {
+      "games": "Like moving with two keys pressed different amounts.",
+      "physics": "Like two forces added together, each scaled.",
+      "ai": "Like mixing two feature directions with two weights."
+    },
+    "check": {
+      "kind": "point",
+      "prompt": "u = (1, 0), v = (1, 1). Place the point 2·u + 1·v.",
+      "given": {
+        "vectors": [
+          [
+            1,
+            0
+          ],
+          [
+            1,
+            1
+          ]
+        ],
+        "coeffs": [
+          2,
+          1
+        ]
+      },
+      "answer": [
+        3,
+        1
+      ],
+      "tolerance": 0.25
+    }
+  },
+  {
+    "id": "tilted",
+    "title": "Tilted thrusters",
+    "text": {
+      "guided": "u and v do not have to be along the axes.\nWith u = (1, 1) and v = (−1, 1): u + v = (0, 2). The x's cancel, the y's add.",
+      "fast": "Combine component by component: (1, 1) + (−1, 1) = (0, 2)."
+    },
+    "examples": {
+      "games": "Like strafing diagonally in two directions at once.",
+      "physics": "Like two ropes pulling at angles.",
+      "ai": "Like combining two correlated features."
+    },
+    "check": {
+      "kind": "point",
+      "prompt": "u = (1, 1), v = (−1, 1). Place the point u + v.",
+      "given": {
+        "vectors": [
+          [
+            1,
+            1
+          ],
+          [
+            -1,
+            1
+          ]
+        ],
+        "coeffs": [
+          1,
+          1
+        ]
+      },
+      "answer": [
+        0,
+        2
+      ],
+      "tolerance": 0.25
+    }
+  },
+  {
+    "id": "span",
+    "title": "Stuck on a line",
+    "text": {
+      "guided": "If u and v point **along the same line**, mixing them only moves the drone along that line.\nThe set of points you can reach is called the **span**. Here it is just a line, not the whole plane.",
+      "fast": "Collinear u, v span only a line: points off it are unreachable."
+    },
+    "examples": {
+      "games": "Like a character that can only walk forward and backward on a rail.",
+      "physics": "Like two forces along the same rope: you cannot pull sideways.",
+      "ai": "Like two features that are copies of each other: they add no new direction."
+    },
+    "check": {
+      "kind": "choice",
+      "prompt": "u = (1, 2) and v = (2, 4). Can the drone reach (1, 0)?",
+      "options": [
+        "No: u and v are on one line",
+        "Yes: use 1·u − 0.5·v",
+        "Yes, with big enough coefficients"
+      ],
+      "answer": 0
+    }
+  }
+]

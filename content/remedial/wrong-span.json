@@ -1,0 +1,38 @@
+{
+  "errorKind": "wrong-span",
+  "title": "Look at the directions",
+  "text": {
+    "guided": "If u and v point in **different** directions, you can reach every point of the plane.\nIf they lie on the **same line**, you are stuck on that line.",
+    "fast": "Different directions = whole plane. Same line = only that line."
+  },
+  "scene": [
+    {
+      "matrix": [
+        [
+          1,
+          0
+        ],
+        [
+          0,
+          1
+        ]
+      ],
+      "caption": "Two directions: the whole plane.",
+      "ms": 1200
+    },
+    {
+      "matrix": [
+        [
+          1,
+          2
+        ],
+        [
+          0.5,
+          1
+        ]
+      ],
+      "caption": "Same line: only a line.",
+      "ms": 1600
+    }
+  ]
+}

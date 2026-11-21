@@ -1,0 +1,62 @@
+[
+  {
+    "concept": "mix",
+    "name": "COMBINATION",
+    "body": "a·u + b·v: fire u a times and v b times. (1, 0) and (0, 1) reach any point.",
+    "demo": [
+      [
+        1,
+        0
+      ],
+      [
+        0,
+        1
+      ]
+    ]
+  },
+  {
+    "concept": "tilted",
+    "name": "ANY TWO ARROWS",
+    "body": "Two arrows in different directions can reach the whole plane, even tilted ones.",
+    "demo": [
+      [
+        1,
+        1
+      ],
+      [
+        0,
+        1
+      ]
+    ]
+  },
+  {
+    "concept": "negative",
+    "name": "BACKWARDS",
+    "body": "A negative coefficient fires a thruster backwards: −2·u points the other way.",
+    "demo": [
+      [
+        -1,
+        0
+      ],
+      [
+        0,
+        1
+      ]
+    ]
+  },
+  {
+    "concept": "span-line",
+    "name": "SPAN = A LINE",
+    "body": "If u and v are on one line, every mix stays on it. The span is that line, not the plane.",
+    "demo": [
+      [
+        1,
+        2
+      ],
+      [
+        0.5,
+        1
+      ]
+    ]
+  }
+]
