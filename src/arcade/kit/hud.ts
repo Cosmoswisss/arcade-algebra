@@ -39,9 +39,13 @@ export interface HudCallbacks { onLock: () => void; onExit: () => void; onRetry:
 /** All in-game text and modals (pedagogical rules 1, 3, 5, 6, 7 and 8). Rendered in Pixi above the scene. */
 export class Hud {
   readonly view = new Container();
-  private score = mono('', 22, CSS.player); private combo = mono('', 20, CSS.accent); private info = mono('', 14, CSS.muted, '500', false);
+  private score = mono('', 22, CSS.player); private combo = mono('', 20, CSS.accent); private info = mono('', 15, CSS.text, '500', false);
   private lives = mono('', 24, CSS.j); private dex = mono('', 15, CSS.target);
-  private banner = mono('', 19, CSS.accent); private mission = read('', 18, CSS.text); private check = mono('', 16, CSS.text, '700', false);
+  private banner = mono('', 17, CSS.accent); private mission = read('', 19, CSS.text); private check = mono('', 16, CSS.text, '700', false);
+  /** Explicit countdown: big seconds + a bar that turns yellow then red, or "no time limit" on the first wave. */
+  private timer = new Graphics(); private timeT = mono('', 18, CSS.player, '800');
+  /** Dark plate behind the mission and checklist so they read over the scene. */
+  private plate = new Graphics();
   private pop = mono('', 46, CSS.target, '800'); private sub = read('', 19, CSS.text);
   private caption = mono('', 18, CSS.text, '700', false); private hint = mono('', 13, CSS.dim, '500', false);
   private lockBtn: Button; private exitBtn: Button;
@@ -60,7 +64,8 @@ export class Hud {
     for (const t of [this.pop, this.sub, this.caption, this.hint, this.banner, this.mission, this.check, this.kicker, this.title, this.body, this.goal, this.cta]) t.anchor.set(0.5);
     this.lives.anchor.set(1, 0); this.dex.anchor.set(0.5, 0);
     this.modal.addChild(this.modalBg, this.anim, this.kicker, this.title, this.body, this.goal, this.cta, this.btnA, this.btnB);
-    this.view.addChild(this.score, this.combo, this.info, this.lives, this.dex, this.banner, this.mission, this.check, this.pop, this.sub, this.caption, this.hint, this.lockBtn, this.exitBtn, this.modal);
+    this.timeT.anchor.set(0.5, 0);
+    this.view.addChild(this.plate, this.timer, this.timeT, this.score, this.combo, this.info, this.lives, this.dex, this.banner, this.mission, this.check, this.pop, this.sub, this.caption, this.hint, this.lockBtn, this.exitBtn, this.modal);
   }
 
   layout(L: Layout) {
@@ -78,7 +83,9 @@ export class Hud {
       this.combo.position.set(24, 46); this.info.position.set(24, 78); this.info.style.wordWrap = false;
       this.exitBtn.position.set(w - 110, 72); this.exitBtn.scale.set(1);
     }
-    this.mission.anchor.set(0.5, 0); this.mission.position.set(w / 2, narrow ? 132 : 92); this.mission.style.wordWrapWidth = Math.min(760, w - 48);
+    // countdown under the Dex counter, then the mission plate
+    this.timeT.position.set(w / 2, narrow ? 104 : 40);
+    this.mission.anchor.set(0.5, 0); this.mission.position.set(w / 2, narrow ? 150 : 98); this.mission.style.wordWrapWidth = Math.min(680, w - 56);
     this.check.anchor.set(0.5, 0); this.check.style.wordWrap = true; this.check.style.wordWrapWidth = Math.min(760, w - 32);
     this.lockBtn.position.set(120, h - 50);
     this.pop.position.set(w / 2, h * 0.42); this.sub.position.set(w / 2, h * 0.42 + 52); this.sub.style.wordWrapWidth = Math.min(700, w - 48);
@@ -95,28 +102,55 @@ export class Hud {
 
   private dexCard(concept: string) { return this.dexCards.find((c) => c.concept === concept); }
 
+  private drawTimer(r: Runner, clock: number, inPlay: boolean) {
+    const g = this.timer; g.clear();
+    this.timeT.visible = inPlay;
+    if (!inPlay) return;
+    const L = this.L, narrow = L.w < 640;
+    if (r.untimed) {
+      this.timeT.text = r.locked ? 'LOCKED IN' : 'NO TIME LIMIT · LOCK IN WHEN READY';
+      this.timeT.style.fill = CSS.player;
+      return;
+    }
+    const left = r.secondsLeft, frac = Math.max(0, Math.min(1, left / (r.duration || 1)));
+    const color = r.locked ? NEON.player : frac > 0.5 ? NEON.player : frac > 0.25 ? NEON.target : NEON.j;
+    const css = r.locked ? CSS.player : frac > 0.5 ? CSS.player : frac > 0.25 ? CSS.target : CSS.j;
+    this.timeT.text = r.locked ? 'LOCKED IN' : `TIME LEFT  ${Math.ceil(left)} s`;
+    this.timeT.style.fill = css;
+    this.timeT.alpha = !r.locked && frac <= 0.25 ? 0.6 + 0.4 * Math.sin(clock * 10) : 1;
+    const bw = Math.min(360, L.w - 48), x = L.w / 2 - bw / 2, y = this.timeT.y + 26 + (narrow ? 0 : 0);
+    g.roundRect(x, y, bw, 8, 4).fill({ color: NEON.line });
+    g.roundRect(x, y, Math.max(0, bw * frac), 8, 4).fill({ color });
+  }
+
   update(r: Runner, clock: number, matrixPanel?: (L: Layout) => void) {
     const L = this.L; if (!L) return;
     const inPlay = r.phase === 'play';
     this.score.text = `SCORE ${r.run.score}`;
     this.combo.text = r.run.combo > 1 ? `COMBO ×${r.run.combo}` : '';
-    this.info.text = `${this.meta.name.toUpperCase()} · WAVE ${r.run.waveIndex + 1} · ${RULE_LABEL[r.rule]}${inPlay ? ` · ⏱ ${r.secondsLeft.toFixed(1)}s` : ''}`;
-    this.lives.text = '♥'.repeat(Math.max(0, r.run.lives)) + '♡'.repeat(Math.max(0, 3 - r.run.lives));
+    this.info.text = `${this.meta.name.toUpperCase()} · WAVE ${r.run.waveIndex + 1} · ${RULE_LABEL[r.rule]}`;
+    this.lives.text = '♥'.repeat(Math.max(0, r.run.lives)) + '♡'.repeat(Math.max(0, r.maxLives - r.run.lives));
+    this.drawTimer(r, clock, inPlay);
     const d = this.cb.dex(); this.dex.text = `TRANSFORM DEX ${d.count}/${d.total}`;
     // mission + checklist during play (rules 1 and 3)
     this.mission.visible = this.check.visible = inPlay;
     if (inPlay) {
-      const name = this.dexCard(r.wave?.concept ?? '')?.name ?? '';
-      this.mission.text = `${name ? name + ' · ' : ''}${r.goal}`;
+      this.mission.text = r.goal;
       const list = r.checklist;
       this.check.text = list.map((c) => `${c.ok ? '✓' : '○'} ${c.label}`).join('      ');
       this.check.style.fill = list.length && list.every((c) => c.ok) ? CSS.target : CSS.text;
       this.check.position.set(L.w / 2, this.mission.y + this.mission.height + 8);
     }
+    this.plate.clear();
+    if (inPlay) {
+      const bottom = (this.check.text ? this.check.y + this.check.height : this.mission.y + this.mission.height) + 10;
+      const pw = Math.min(Math.max(this.mission.width, this.check.width) + 40, L.w - 16);
+      this.plate.roundRect(L.w / 2 - pw / 2, this.mission.y - 10, pw, bottom - this.mission.y + 10, 10).fill({ color: NEON.bg, alpha: 0.82 }).stroke({ width: 1, color: NEON.line });
+    }
     this.banner.visible = inPlay && !!r.banner && r.phaseClock < 6;
     this.banner.text = r.banner; this.banner.alpha = Math.min(1, 6 - r.phaseClock);
     this.banner.style.wordWrap = true; this.banner.style.wordWrapWidth = L.w - 32;
-    this.banner.position.set(L.w / 2, (this.check.text ? this.check.y + this.check.height : this.mission.y + this.mission.height) + 26);
+    this.banner.position.set(L.w / 2, (this.check.text ? this.check.y + this.check.height : this.mission.y + this.mission.height) + 34);
     this.lockBtn.visible = inPlay && !r.locked && r.t < 0.97;
     this.lockBtn.alpha = 0.85 + 0.15 * Math.sin(clock * 6);
     // result pop
@@ -153,9 +187,12 @@ export class Hud {
       const concept = r.wave?.concept ?? '';
       const card = this.dexCard(concept);
       const isNew = this.cb.dex().isNew(concept);
-      this.kicker.text = `WAVE ${r.run.waveIndex + 1}${r.isDrill ? '  ·  TRAINING' : ''}${r.boss ? '  ·  BOSS' : ''}${isNew ? '  ·  NEW CONCEPT' : ''}`;
+      // short brief: the time rule, the new rule (if any), the concept explained only the first time, then the mission
+      this.kicker.text = `WAVE ${r.run.waveIndex + 1}${r.isDrill ? ' · TRAINING' : ''}${r.boss ? ' · BOSS' : ''} · ${r.untimed ? 'NO TIME LIMIT' : `${Math.round(r.duration)} s`}`;
       this.title.text = card?.name ?? concept.toUpperCase();
-      this.body.text = r.banner && (r.isDrill || r.boss || r.banner.startsWith('NEW RULE')) ? `${r.banner}\n\n${card?.body ?? ''}` : card?.body ?? '';
+      const rule = r.banner && (r.isDrill || r.boss || r.banner.startsWith('NEW RULE')) ? r.banner : '';
+      const explain = isNew ? card?.body ?? '' : '';
+      this.body.text = [rule, explain].filter(Boolean).join('\n\n');
       this.goal.text = r.goal; this.goal.visible = true;
       this.cta.text = 'CLICK / SPACE — GO!'; this.cta.visible = true;
       this.cta.alpha = r.phaseClock > 0.25 ? 0.55 + 0.45 * Math.sin(clock * 5) : 0;

@@ -54,6 +54,10 @@ export interface RunnerOptions {
 export const clampDt = (ms: number) => Math.min(Math.max(ms, 0) / 1000, 0.05);
 
 const LOCK_SPEED = 6;
+/** Lives per run. */
+export const START_LIVES = 5;
+/** Where an untimed wave waits (the wall far away) until LOCK IN. */
+const UNTIMED_T = 0.12;
 const BRIEF_GUARD = 0.25;
 const CARD_GUARD = 0.5;
 
@@ -78,13 +82,16 @@ export class Runner {
   caption = '';
   card: DexCard | null = null;
   bossWins = 0;
+  /** The first wave of a run has no time limit: it waits for LOCK IN. */
+  untimed = false;
+  readonly maxLives = START_LIVES;
   private lockSeen = false;
   private pendingCard: DexCard | null = null;
   private rand: () => number;
 
   constructor(private content: CabinetContent, private game: CabinetGame, private opts: RunnerOptions) {
     this.rand = opts.rand ?? Math.random;
-    this.run = { mode: opts.mode, waveIndex: -1, tierIndex: 0, focus: null, lastWaveId: null, lives: 3, score: 0, combo: 0 };
+    this.run = { mode: opts.mode, waveIndex: -1, tierIndex: 0, focus: null, lastWaveId: null, lives: START_LIVES, score: 0, combo: 0 };
   }
 
   get meta() { return this.content.meta; }
@@ -92,10 +99,10 @@ export class Runner {
   get checklist() { return this.game.checklist(this.rule); }
   /** True once the player has committed (LOCK IN or an in-game answer button). */
   get locked() { return this.game.isLocked(); }
-  get secondsLeft() { return Math.max(0, ((1 - this.t) * this.duration) / (this.game.isLocked() ? LOCK_SPEED : 1)); }
+  get secondsLeft() { return this.untimed ? Infinity : Math.max(0, ((1 - this.t) * this.duration) / (this.game.isLocked() ? LOCK_SPEED : 1)); }
 
   start() {
-    this.run = { ...this.run, waveIndex: -1, lives: 3, score: 0, combo: 0, focus: null, lastWaveId: null };
+    this.run = { ...this.run, waveIndex: -1, lives: START_LIVES, score: 0, combo: 0, focus: null, lastWaveId: null };
     this.bossWins = 0;
     this.setupWave();
   }
@@ -114,7 +121,8 @@ export class Runner {
     this.drillLabel = pick.drillLabel ?? '';
     this.run.lastWaveId = pick.wave.id;
     this.duration = waveSeconds(meta, this.opts.mode, tierIndex);
-    this.t = 0;
+    this.untimed = waveIndex === 0 && !this.boss;
+    this.t = this.untimed ? UNTIMED_T : 0;
     this.lockBonus = 0;
     this.lockSeen = false;
     this.outcome = null;
@@ -132,8 +140,9 @@ export class Runner {
     const dt = clampDt(ms);
     this.phaseClock += dt;
     if (this.phase === 'play') {
-      if (this.game.isLocked() && !this.lockSeen) { this.lockSeen = true; this.lockBonus = Math.round((1 - this.t) * 100); }
-      this.t = Math.min(1, this.t + (dt / this.duration) * (this.game.isLocked() ? LOCK_SPEED : 1));
+      if (this.game.isLocked() && !this.lockSeen) { this.lockSeen = true; this.lockBonus = this.untimed ? 0 : Math.round((1 - this.t) * 100); }
+      // an untimed wave stays put until the player locks in
+      if (!(this.untimed && !this.game.isLocked())) this.t = Math.min(1, this.t + (dt / this.duration) * (this.game.isLocked() ? LOCK_SPEED : 1));
       this.game.update(dt, this.t);
       if (this.t >= 1) this.resolve();
     } else if (this.phase === 'result') {
@@ -149,7 +158,7 @@ export class Runner {
   lock() {
     if (this.phase !== 'play' || this.game.isLocked()) return;
     this.lockSeen = true;
-    this.lockBonus = Math.round((1 - this.t) * 100);
+    this.lockBonus = this.untimed ? 0 : Math.round((1 - this.t) * 100);
     this.game.lock();
   }
 

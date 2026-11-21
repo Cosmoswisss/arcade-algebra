@@ -34,9 +34,12 @@ export function isBossWave(meta: CabinetMeta, mode: Mode, waveIndex: number, sta
   return waveIndex + skipped(meta, mode, startTier) >= ends[ends.length - 1];
 }
 
-/** Seconds a wave lasts: the first tier uses meta.waveSeconds, then ×0.85 per tier, never below 6. */
+/** Extra time on every wave: learners said the walls came too fast. */
+export const TIME_FACTOR = 1.5;
+export const MIN_WAVE_SECONDS = 10;
+/** Seconds a wave lasts: 1.5 × meta.waveSeconds on the first tier, then ×0.85 per tier, never below 10. */
 export function waveSeconds(meta: CabinetMeta, mode: Mode, tierIndex: number): number {
-  return Math.max(6, meta.waveSeconds[mode] * Math.pow(0.85, tierIndex));
+  return Math.max(MIN_WAVE_SECONDS, meta.waveSeconds[mode] * TIME_FACTOR * Math.pow(0.85, tierIndex));
 }
 
 function pick(pool: Wave[], lastId: string | null, rand: () => number): Wave {

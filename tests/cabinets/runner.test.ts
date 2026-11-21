@@ -32,8 +32,31 @@ function make(answer: () => boolean, opts: { newDex?: (o: WaveOutcome) => string
 }
 const wait = (r: Runner, ms: number) => { for (let k = 0; k < ms / 50; k++) r.tick(50); };
 const play = (r: Runner) => { wait(r, 500); r.click(); };       // close the brief
-const finishWave = (r: Runner) => { for (let k = 0; k < 2000 && r.phase === 'play'; k++) r.tick(50); };
+// the first wave of a run waits for LOCK IN (no time limit): lock it so it resolves like any other
+const finishWave = (r: Runner) => { if (r.untimed) r.lock(); for (let k = 0; k < 2000 && r.phase === 'play'; k++) r.tick(50); };
 const toNext = (r: Runner) => { for (let k = 0; k < 200 && r.phase === 'result'; k++) r.tick(50); r.click(); };
+
+describe('runner pace', () => {
+  test('a run starts with 5 lives', () => { const { r } = make(() => true); expect(r.run.lives).toBe(5); expect(r.maxLives).toBe(5); });
+  test('the first wave has no time limit: it waits for LOCK IN', () => {
+    const { r } = make(() => true);
+    play(r);
+    expect(r.untimed).toBe(true);
+    wait(r, 120000);
+    expect(r.phase).toBe('play');
+    r.lock(); for (let k = 0; k < 200 && r.phase === 'play'; k++) r.tick(50);
+    expect(r.phase).toBe('result');
+  });
+  test('the second wave is timed again', () => {
+    const { r } = make(() => true);
+    play(r); finishWave(r); toNext(r);
+    for (let k = 0; k < 200 && r.phase !== 'brief'; k++) { r.tick(50); r.click(); }
+    play(r);
+    expect(r.untimed).toBe(false);
+    for (let k = 0; k < 2000 && r.phase === 'play'; k++) r.tick(50);
+    expect(r.phase).toBe('result');
+  });
+});
 
 describe('runner start tier', () => {
   test('a placed cabinet starts its first wave under the partial rule', () => {
@@ -55,7 +78,7 @@ describe('runner', () => {
   test('a miss costs a life, sets the focus and the next wave is a drill', () => {
     const { r, log } = make(() => false);
     play(r); finishWave(r);
-    expect(r.phase).toBe('result'); expect(r.run.lives).toBe(2); expect(r.run.focus).toBe('swapped-columns');
+    expect(r.phase).toBe('result'); expect(r.run.lives).toBe(4); expect(r.run.focus).toBe('swapped-columns');
     toNext(r);
     expect(r.phase).toBe('brief'); expect(r.isDrill).toBe(true);
     expect(log.started[1].startsWith('drill-swapped-columns')).toBe(true);
@@ -74,16 +97,20 @@ describe('runner', () => {
     wait(r, 600); r.click();
     expect(r.phase).toBe('brief');
   });
-  test('locking in early ends the wave sooner and earns a bonus', () => {
+  test('locking in early ends the wave sooner and earns a bonus (from wave 2, the first timed one)', () => {
     const { r } = make(() => true);
+    play(r); finishWave(r); toNext(r);
+    const before = r.run.score;
     play(r); r.tick(50); r.lock();
     let n = 0; while (r.phase === 'play' && n < 2000) { r.tick(50); n++; }
-    expect(n).toBeLessThan(80);
-    expect(r.run.score).toBeGreaterThan(100);
+    expect(n * 0.05).toBeLessThan(r.duration / 3); // far sooner than the wave would end on its own
+    expect(r.run.score - before).toBeGreaterThan(100 * r.run.combo);
   });
-  test('three misses end the run', () => {
+  test('five misses end the run', () => {
     const { r } = make(() => false);
-    for (let w = 0; w < 3; w++) { play(r); finishWave(r); toNext(r); }
+    for (let w = 0; w < 4; w++) { play(r); finishWave(r); toNext(r); }
+    expect(r.phase).toBe('brief');
+    play(r); finishWave(r); toNext(r);
     expect(r.phase).toBe('over');
   });
   test('rules follow the tiers, then boss waves, and beating the boss finishes the cabinet', () => {
@@ -115,6 +142,10 @@ describe('review fixes', () => {
     const { game } = fakeGame(() => true);
     const r = new Runner(content, game, { mode: 'guided', onWaveResult: () => ({ newDex: null }) });
     r.start(); wait(r, 500); r.click(); r.tick(50);
+    game.lock(); for (let k = 0; k < 200 && r.phase === 'play'; k++) r.tick(50);
+    expect(r.lockBonus).toBe(0); // wave 1 is untimed: no race, no early bonus
+    for (let k = 0; k < 200 && r.phase === 'result'; k++) r.tick(50);
+    r.click(); wait(r, 500); r.click(); r.tick(50);
     game.lock(); r.tick(50);
     expect(r.lockBonus).toBeGreaterThan(90);
     expect(r.locked).toBe(true);

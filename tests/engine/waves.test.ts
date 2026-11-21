@@ -23,11 +23,11 @@ describe('tiers', () => {
     expect(isBossWave(meta, 'guided', 10)).toBe(true);
     expect(isBossWave(meta, 'guided', 11)).toBe(true);
   });
-  test('waveSeconds starts at meta.waveSeconds, decreases, never below 6', () => {
+  test('waveSeconds gives 1.5× meta.waveSeconds on the first tier, decreases, never below 10', () => {
     const s = [0, 1, 2].map((t) => waveSeconds(meta, 'guided', t));
-    expect(s[0]).toBe(16);
+    expect(s[0]).toBe(24);
     expect(s[1]).toBeLessThan(s[0]); expect(s[2]).toBeLessThan(s[1]);
-    expect(waveSeconds({ ...meta, waveSeconds: { guided: 6.5, fast: 6 } }, 'guided', 2)).toBe(6);
+    expect(waveSeconds({ ...meta, waveSeconds: { guided: 6.5, fast: 6 } }, 'guided', 2)).toBe(10);
   });
 });
 
