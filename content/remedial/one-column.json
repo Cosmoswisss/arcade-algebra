@@ -1,9 +1,9 @@
 {
   "errorKind": "one-column",
-  "title": "One arrow is off",
+  "title": "Fix one arrow at a time",
   "text": {
-    "guided": "One arrow is exactly right. Only the other one needs to move.\nRead its column in the matrix: that is its target.",
-    "fast": "One column is right; fix the other one."
+    "guided": "One of your arrows is already perfect. Do not touch it: place the first arrow, then the second, and read each column on its own.",
+    "fast": "One column right, one wrong: fix them independently."
   },
   "scene": [
     {
@@ -17,8 +17,8 @@
           1
         ]
       ],
-      "caption": "Start from the normal plane.",
-      "ms": 1000
+      "caption": "Start from the identity: î = (1, 0), ĵ = (0, 1)",
+      "ms": 1800
     },
     {
       "matrix": [
@@ -31,8 +31,8 @@
           1
         ]
       ],
-      "caption": "Watch where î and ĵ go.",
-      "ms": 1800
+      "caption": "î stays put, only ĵ moves to (1, 1)",
+      "ms": 2600
     }
   ]
 }

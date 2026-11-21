@@ -1,9 +1,9 @@
 {
   "errorKind": "swapped-columns",
-  "title": "You swapped î and ĵ",
+  "title": "Which column is which?",
   "text": {
-    "guided": "Column 1 is **where î lands**, column 2 is **where ĵ lands**.\nYou put î where ĵ should go. Watch: î goes first, then ĵ.",
-    "fast": "Column 1 = î, column 2 = ĵ. You traded them."
+    "guided": "You gave î the destination of ĵ (and the other way round). Column 1 of the matrix is where î lands, column 2 is where ĵ lands. Read the matrix column by column, never row by row.",
+    "fast": "Columns swapped: column 1 is the image of î, column 2 the image of ĵ."
   },
   "scene": [
     {
@@ -17,8 +17,8 @@
           1
         ]
       ],
-      "caption": "Start from the normal plane.",
-      "ms": 1000
+      "caption": "Start from the identity: î = (1, 0), ĵ = (0, 1)",
+      "ms": 1800
     },
     {
       "matrix": [
@@ -31,8 +31,8 @@
           0
         ]
       ],
-      "caption": "Watch where î and ĵ go.",
-      "ms": 1800
+      "caption": "Swapped columns mirror the plane across the diagonal",
+      "ms": 2600
     }
   ]
 }

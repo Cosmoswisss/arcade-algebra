@@ -1,9 +1,9 @@
 {
   "errorKind": "sign-flip",
-  "title": "An arrow points backwards",
+  "title": "One arrow points the wrong way",
   "text": {
-    "guided": "One of your arrows has the right length but points the **opposite** way.\nA minus sign in a column flips that arrow.",
-    "fast": "Right length, wrong direction: check the signs of that column."
+    "guided": "An arrow with the right length but the opposite direction turns the plane over: the shape is mirrored and its area becomes negative. Check the sign of every coordinate of each arrow tip.",
+    "fast": "Opposite sign on one column mirrors the plane; recheck signs."
   },
   "scene": [
     {
@@ -17,8 +17,8 @@
           1
         ]
       ],
-      "caption": "Start from the normal plane.",
-      "ms": 1000
+      "caption": "Start from the identity: î = (1, 0), ĵ = (0, 1)",
+      "ms": 1800
     },
     {
       "matrix": [
@@ -31,8 +31,8 @@
           1
         ]
       ],
-      "caption": "Watch where î and ĵ go.",
-      "ms": 1800
+      "caption": "î at (-1, 0) mirrors the plane left to right",
+      "ms": 2600
     }
   ]
 }

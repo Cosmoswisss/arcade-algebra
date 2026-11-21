@@ -2,37 +2,11 @@
   "errorKind": "sign-x",
   "title": "Left is negative",
   "text": {
-    "guided": "Moving **left** means a negative x.",
-    "fast": "Left = negative x."
+    "guided": "The x coordinate is negative when you go left of the origin and positive when you go right. Your point is on the right side, but it should be on the left (or the other way round). Check the sign of x before the number.",
+    "fast": "Sign of x: positive to the right, negative to the left."
   },
   "scene": [
-    {
-      "matrix": [
-        [
-          1,
-          0
-        ],
-        [
-          0,
-          1
-        ]
-      ],
-      "caption": "Start here.",
-      "ms": 1000
-    },
-    {
-      "matrix": [
-        [
-          -1,
-          0
-        ],
-        [
-          0,
-          1
-        ]
-      ],
-      "caption": "Watch.",
-      "ms": 1600
-    }
+    { "matrix": [[1, 0], [0, 1]], "caption": "(2, 1) is right of the vertical axis", "ms": 2200 },
+    { "matrix": [[-1, 0], [0, 1]], "caption": "(−2, 1) is the mirror image across the vertical axis", "ms": 2600 }
   ]
 }

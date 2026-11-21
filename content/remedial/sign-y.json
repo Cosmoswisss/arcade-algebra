@@ -2,37 +2,11 @@
   "errorKind": "sign-y",
   "title": "Down is negative",
   "text": {
-    "guided": "Moving **down** means a negative y.",
-    "fast": "Down = negative y."
+    "guided": "The y coordinate is negative below the horizontal axis and positive above it. Your point is on the wrong side. Check the sign of y before the number.",
+    "fast": "Sign of y: positive above the horizontal axis, negative below."
   },
   "scene": [
-    {
-      "matrix": [
-        [
-          1,
-          0
-        ],
-        [
-          0,
-          1
-        ]
-      ],
-      "caption": "Start here.",
-      "ms": 1000
-    },
-    {
-      "matrix": [
-        [
-          1,
-          0
-        ],
-        [
-          0,
-          -1
-        ]
-      ],
-      "caption": "Watch.",
-      "ms": 1600
-    }
+    { "matrix": [[1, 0], [0, 1]], "caption": "(2, 1) is above the horizontal axis", "ms": 2200 },
+    { "matrix": [[1, 0], [0, -1]], "caption": "(2, −1) is the mirror image across the horizontal axis", "ms": 2600 }
   ]
 }

@@ -1,101 +1,69 @@
 [
   {
-    "id": "mix",
-    "title": "Mixing two arrows",
+    "id": "two-dials",
+    "title": "Two dials, one position",
     "text": {
-      "guided": "The drone has two thrusters, **u** and **v**.\nFiring u twice and v once moves it by **2·u + 1·v**. This mix is called a *linear combination*.\nWith u = (1, 0) and v = (1, 1): 2u + v = (3, 1).",
-      "fast": "a·u + b·v is a linear combination. u = (1, 0), v = (1, 1): 2u + v = (3, 1)."
+      "guided": "A drone has two thrusters, u and v. Turn dial **a** and it moves a times along u; turn dial **b** and it moves b times along v. Its final position is the **linear combination** a·u + b·v.\n\nFor example, with u = (1, 0) and v = (0, 1), the combination 2u + 3v is the point (2, 3).",
+      "fast": "A linear combination is $a\\,u + b\\,v$. With the standard basis, $2\\hat\\imath + 3\\hat\\jmath = (2, 3)$."
     },
     "examples": {
-      "games": "Like moving with two keys pressed different amounts.",
-      "physics": "Like two forces added together, each scaled.",
-      "ai": "Like mixing two feature directions with two weights."
+      "games": "A hero moves with two keys: how many steps right and how many steps up give the position.",
+      "physics": "Two forces along different directions combine into one resultant force.",
+      "ai": "An output is a weighted sum of two feature vectors: the weights are the coefficients."
     },
+    "scene": [
+      { "matrix": [[1, 0], [0, 1]], "caption": "u = (1, 0) and v = (0, 1)", "ms": 1800 },
+      { "matrix": [[1, 1], [1, -1]], "caption": "u = (1, 1) and v = (1, −1): the grid of combinations follows them", "ms": 2800 }
+    ],
     "check": {
       "kind": "point",
-      "prompt": "u = (1, 0), v = (1, 1). Place the point 2·u + 1·v.",
-      "given": {
-        "vectors": [
-          [
-            1,
-            0
-          ],
-          [
-            1,
-            1
-          ]
-        ],
-        "coeffs": [
-          2,
-          1
-        ]
-      },
-      "answer": [
-        3,
-        1
-      ],
-      "tolerance": 0.25
+      "prompt": "u = (1, 0) and v = (0, 1). Click the point you reach with 2u + 3v.",
+      "given": { "matrix": [[1, 0], [0, 1]] },
+      "answer": [2, 3],
+      "tolerance": 0.26
     }
   },
   {
-    "id": "tilted",
-    "title": "Tilted thrusters",
+    "id": "skewed-and-negative",
+    "title": "Any two arrows will do",
     "text": {
-      "guided": "u and v do not have to be along the axes.\nWith u = (1, 1) and v = (−1, 1): u + v = (0, 2). The x's cancel, the y's add.",
-      "fast": "Combine component by component: (1, 1) + (−1, 1) = (0, 2)."
+      "guided": "u and v do not have to be perpendicular. As long as they are not on the same line, you can reach **every** point of the plane by choosing the right a and b, and a can be negative to run a thruster backwards.\n\nIn the picture, î stands for u = (1, 1) and ĵ for v = (1, −1).",
+      "fast": "Any two linearly independent vectors span the plane. Coefficients may be negative or fractional."
     },
     "examples": {
-      "games": "Like strafing diagonally in two directions at once.",
-      "physics": "Like two ropes pulling at angles.",
-      "ai": "Like combining two correlated features."
+      "games": "Two diagonal buttons can still reach any tile, if you may press them a negative number of times.",
+      "physics": "Any two non-parallel directions are enough to express a force.",
+      "ai": "Any two independent features can express every point of the feature plane."
     },
     "check": {
       "kind": "point",
-      "prompt": "u = (1, 1), v = (−1, 1). Place the point u + v.",
-      "given": {
-        "vectors": [
-          [
-            1,
-            1
-          ],
-          [
-            -1,
-            1
-          ]
-        ],
-        "coeffs": [
-          1,
-          1
-        ]
-      },
-      "answer": [
-        0,
-        2
-      ],
-      "tolerance": 0.25
+      "prompt": "Here î stands for u = (1, 1) and ĵ for v = (1, −1). Click the point you reach with 2u + 1v.",
+      "given": { "matrix": [[1, 1], [1, -1]] },
+      "answer": [3, 1],
+      "tolerance": 0.26
     }
   },
   {
-    "id": "span",
-    "title": "Stuck on a line",
+    "id": "aligned-thrusters",
+    "title": "When the thrusters line up",
     "text": {
-      "guided": "If u and v point **along the same line**, mixing them only moves the drone along that line.\nThe set of points you can reach is called the **span**. Here it is just a line, not the whole plane.",
-      "fast": "Collinear u, v span only a line: points off it are unreachable."
+      "guided": "If u and v point along the **same line**, every combination stays on that line, however you turn the dials. A target off the line is **unreachable**.\n\nSo before you turn any dial, check: is v a multiple of u? If it is, only targets on that line can be reached.",
+      "fast": "If $v = ku$, the span is a line. Targets off that line are unreachable."
     },
     "examples": {
-      "games": "Like a character that can only walk forward and backward on a rail.",
-      "physics": "Like two forces along the same rope: you cannot pull sideways.",
-      "ai": "Like two features that are copies of each other: they add no new direction."
+      "games": "Two buttons that both move you diagonally up-right can never take you straight up.",
+      "physics": "Two forces on the same line can never produce a sideways force.",
+      "ai": "Two features that are multiples of each other add no new direction."
     },
+    "scene": [
+      { "matrix": [[1, 0], [0, 1]], "caption": "Two independent arrows span the whole plane", "ms": 2000 },
+      { "matrix": [[1, 2], [2, 4]], "caption": "u = (1, 2) and v = (2, 4): both on one line, so the plane collapses onto it", "ms": 3000 }
+    ],
     "check": {
       "kind": "choice",
-      "prompt": "u = (1, 2) and v = (2, 4). Can the drone reach (1, 0)?",
-      "options": [
-        "No: u and v are on one line",
-        "Yes: use 1·u − 0.5·v",
-        "Yes, with big enough coefficients"
-      ],
-      "answer": 0
+      "prompt": "u = (1, 2) and v = (2, 4). Can the drone reach the point (1, 0)?",
+      "options": ["Yes, with enough of both thrusters", "No: both thrusters only move along the same line", "Only with negative coefficients"],
+      "answer": 1
     }
   }
 ]

@@ -1,193 +1,71 @@
 [
   {
-    "id": "one-then-other",
-    "title": "One move, then another",
+    "id": "one-machine",
+    "title": "A machine is a matrix",
     "text": {
-      "guided": "Two machines in a row: the second one works on **what the first one produced**.\nStretch then rotate: the part is first made wider, then turned.",
-      "fast": "Composition: the second transformation acts on the output of the first."
+      "guided": "Think of a transformation as a **machine**: a part goes in, a changed part comes out. Each machine is a matrix. The TURN machine sends î to (0, 1) and ĵ to (−1, 0), so it turns everything a quarter turn to the left.\n\nTo follow a point through a machine, rebuild it from the two arrows.",
+      "fast": "A machine is a matrix $M$: $(x, y) \\mapsto M\\,(x, y)$. TURN has columns (0, 1) and (−1, 0)."
     },
     "examples": {
-      "games": "Like scaling a sprite, then rotating it.",
-      "physics": "Like changing reference frames twice in a row.",
-      "ai": "Like two layers of a network applied one after the other."
+      "games": "A filter applied to a sprite: it goes in unchanged and comes out turned or stretched.",
+      "physics": "A lens or a mirror in a beam path is one transformation of the beam.",
+      "ai": "Each layer of a network is one machine on the belt."
     },
     "scene": [
-      {
-        "matrix": [
-          [
-            1,
-            0
-          ],
-          [
-            0,
-            1
-          ]
-        ],
-        "caption": "The part.",
-        "ms": 800
-      },
-      {
-        "matrix": [
-          [
-            2,
-            0
-          ],
-          [
-            0,
-            1
-          ]
-        ],
-        "caption": "Machine 1: stretch x2.",
-        "ms": 1300
-      },
-      {
-        "matrix": [
-          [
-            0,
-            -1
-          ],
-          [
-            2,
-            0
-          ]
-        ],
-        "caption": "Machine 2: rotate 90°.",
-        "ms": 1500
-      }
+      { "matrix": [[1, 0], [0, 1]], "caption": "A part enters the belt", "ms": 1800 },
+      { "matrix": [[0, -1], [1, 0]], "caption": "TURN: î → (0, 1), ĵ → (−1, 0)", "ms": 2600 }
     ],
     "check": {
-      "kind": "basis",
-      "prompt": "Stretch x2, then rotate 90°. Place where î and ĵ end up (the matrix below is the rotation).",
-      "given": {
-        "matrix": [
-          [
-            0,
-            -1
-          ],
-          [
-            1,
-            0
-          ]
-        ]
-      },
-      "answer": [
-        [
-          0,
-          -1
-        ],
-        [
-          2,
-          0
-        ]
-      ],
-      "tolerance": 0.1
+      "kind": "point",
+      "prompt": "The TURN machine sends î to (0, 1) and ĵ to (−1, 0). Where does the point (2, 1) come out?",
+      "given": { "matrix": [[0, -1], [1, 0]] },
+      "answer": [-1, 2],
+      "tolerance": 0.26
     }
   },
   {
     "id": "order-matters",
-    "title": "Order matters",
+    "title": "The order changes the part",
     "text": {
-      "guided": "Rotate **then** stretch gives a different part than stretch **then** rotate.\nRotate first: the part turns, then the stretch pulls it sideways — along what used to be its height.",
-      "fast": "A·B ≠ B·A in general: rotate-then-stretch ≠ stretch-then-rotate."
+      "guided": "Put two machines one after the other and you get a new machine. But the **order** matters. Stretch ×2 along x and then turn gives a different result from turning first and then stretching.\n\nIn general, doing A then B is not the same as doing B then A.",
+      "fast": "Matrix multiplication is not commutative in general: $AB \\neq BA$."
     },
     "examples": {
-      "games": "Like turning then moving forward vs moving forward then turning.",
-      "physics": "Like rotating a book about two axes: the order changes the final pose.",
-      "ai": "Like normalising then clipping vs clipping then normalising."
+      "games": "Rotate the character and then move forward, or move forward and then rotate: you end up in different places.",
+      "physics": "Two rotations about different axes do not commute: the final orientation depends on the order.",
+      "ai": "Normalising then projecting is not the same as projecting then normalising."
     },
     "scene": [
-      {
-        "matrix": [
-          [
-            1,
-            0
-          ],
-          [
-            0,
-            1
-          ]
-        ],
-        "caption": "The part.",
-        "ms": 800
-      },
-      {
-        "matrix": [
-          [
-            0,
-            -1
-          ],
-          [
-            1,
-            0
-          ]
-        ],
-        "caption": "Rotate first…",
-        "ms": 1300
-      },
-      {
-        "matrix": [
-          [
-            0,
-            -2
-          ],
-          [
-            1,
-            0
-          ]
-        ],
-        "caption": "…then stretch x2: a different part.",
-        "ms": 1500
-      }
+      { "matrix": [[2, 0], [0, 1]], "caption": "STRETCH ×2 first: î → (2, 0)", "ms": 2200 },
+      { "matrix": [[0, -1], [2, 0]], "caption": "…then TURN: î → (0, 2), ĵ → (−1, 0)", "ms": 2600 },
+      { "matrix": [[0, -1], [1, 0]], "caption": "Now TURN first: î → (0, 1)", "ms": 2200 },
+      { "matrix": [[0, -2], [1, 0]], "caption": "…then STRETCH: î → (0, 1), ĵ → (−2, 0). Different part!", "ms": 3000 }
     ],
     "check": {
       "kind": "choice",
-      "prompt": "Does 'rotate then stretch' give the same part as 'stretch then rotate'?",
-      "options": [
-        "No, the order changes the result",
-        "Yes, always",
-        "Only if the stretch is big"
-      ],
-      "answer": 0
+      "prompt": "STRETCH then TURN gives the matrix [[0, −1], [2, 0]]. TURN then STRETCH gives [[0, −2], [1, 0]]. Are the two parts the same?",
+      "options": ["Yes, the same part", "No: the order changes the part", "Only if the numbers are small"],
+      "answer": 1
     }
   },
   {
-    "id": "product",
-    "title": "It's a product",
+    "id": "right-to-left",
+    "title": "Write it right to left",
     "text": {
-      "guided": "Doing A then B is the matrix **B·A** (the first move is written on the right).\nThat product is just another matrix: where î and ĵ end up after both moves.",
-      "fast": "A then B = B·A, itself a matrix."
+      "guided": "When you write the product AB, the machine on the **right**, B, acts first. It is written like a function: A(B(x)). So the belt runs right to left in the formula.\n\nTo build AB, find where B sends î and ĵ, then send those through A.",
+      "fast": "$AB$ means \"apply $B$, then $A$\". Columns of $AB$ are $A$ applied to the columns of $B$."
     },
     "examples": {
-      "games": "Like baking a whole animation into one transform.",
-      "physics": "Like combining two rotations into one.",
-      "ai": "Like folding two linear layers into one."
+      "games": "f(g(x)): the inner call runs first, like the first machine on the belt.",
+      "physics": "A sequence of operators acts on a state from the right: the one next to the state acts first.",
+      "ai": "In a network, h = W2·(W1·x): the matrix next to the input acts first."
     },
     "check": {
       "kind": "basis",
-      "prompt": "Shear (matrix below), then flip left-right. Place where î and ĵ end up.",
-      "given": {
-        "matrix": [
-          [
-            1,
-            1
-          ],
-          [
-            0,
-            1
-          ]
-        ]
-      },
-      "answer": [
-        [
-          -1,
-          -1
-        ],
-        [
-          0,
-          1
-        ]
-      ],
-      "tolerance": 0.1
+      "prompt": "A = STRETCH ×2 along x. B = TURN (a quarter turn left). Place the arrows of AB, the matrix of \"B first, then A\".",
+      "given": { "matrix": [[1, 0], [0, 1]] },
+      "answer": [[0, -2], [1, 0]],
+      "tolerance": 0.11
     }
   }
 ]

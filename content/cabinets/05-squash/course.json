@@ -1,185 +1,73 @@
 [
   {
-    "id": "areas-scale",
-    "title": "Areas get scaled",
+    "id": "area-factor",
+    "title": "How much bigger does it get?",
     "text": {
-      "guided": "Take the unit square: area **1**.\nAfter a matrix, it becomes a parallelogram. Its area is the **determinant**.\nWith $\\begin{bmatrix}3&0\\\\0&1\\end{bmatrix}$, the square is 3 times wider: area 3.",
-      "fast": "The unit square (area 1) becomes a parallelogram of area det(M). A 3× stretch gives area 3."
+      "guided": "A matrix moves the whole plane, so it also changes **areas**. Every area in the plane is multiplied by the same number: the **determinant**.\n\nIf î is stretched to (2, 0) and ĵ to (0, 3), the unit square becomes a 2 by 3 rectangle: its area is 6, so the determinant is 6.",
+      "fast": "$\\det M$ is the factor by which $M$ scales areas. For a diagonal matrix it is the product of the stretches."
     },
     "examples": {
-      "games": "Like a power-up that makes every sprite 3 times wider.",
-      "physics": "Like a gas expanding to 3 times its volume.",
-      "ai": "Like resizing an image: the number of pixels changes."
+      "games": "Zoom a map 2× wider and 3× taller: every region takes 6 times more screen.",
+      "physics": "Stretch a rubber sheet by 2 in one direction and 1.5 in the other: every patch grows by 3 times.",
+      "ai": "A layer that expands one feature by 2 and another by 1.5 enlarges every region of feature space by 3."
     },
     "scene": [
-      {
-        "matrix": [
-          [
-            1,
-            0
-          ],
-          [
-            0,
-            1
-          ]
-        ],
-        "caption": "Unit square: area 1.",
-        "ms": 1200
-      },
-      {
-        "matrix": [
-          [
-            3,
-            0
-          ],
-          [
-            0,
-            1
-          ]
-        ],
-        "caption": "3 times wider: area 3.",
-        "ms": 1800
-      }
+      { "matrix": [[1, 0], [0, 1]], "caption": "The unit square has area 1", "ms": 1800 },
+      { "matrix": [[2, 0], [0, 1.5]], "caption": "î → (2, 0), ĵ → (0, 1.5): the area is 2 × 1.5 = 3", "ms": 2800 }
     ],
     "check": {
       "kind": "number",
-      "prompt": "What is the new area of the unit square?",
-      "given": {
-        "matrix": [
-          [
-            3,
-            0
-          ],
-          [
-            0,
-            1
-          ]
-        ]
-      },
+      "prompt": "The matrix stretches î to (2, 0) and ĵ to (0, 1.5). By what factor is every area multiplied?",
+      "given": { "matrix": [[2, 0], [0, 1.5]] },
       "answer": 3,
       "tolerance": 0.25
     }
   },
   {
-    "id": "shear-keeps-area",
-    "title": "Leaning keeps the area",
+    "id": "negative-determinant",
+    "title": "Negative means flipped",
     "text": {
-      "guided": "A shear slides the top of the square sideways.\nThe parallelogram leans, but its base and height do not change: the area stays **1**.",
-      "fast": "Shears keep areas: det of $\\begin{bmatrix}1&1\\\\0&1\\end{bmatrix}$ is 1."
+      "guided": "Sometimes the plane is turned over like a page: î and ĵ swap sides. The area is the same size, but the shape is a mirror image. We record that with a **negative** determinant.\n\nSo |det| is the size of the area factor, and the sign says whether the plane was flipped.",
+      "fast": "$\\det M < 0$ means $M$ reverses orientation. $|\\det M|$ is the area factor."
     },
     "examples": {
-      "games": "Like italic text: slanted, same amount of ink.",
-      "physics": "Like pushing the top of a deck of cards.",
-      "ai": "Like a skew augmentation: same pixels, slanted."
+      "games": "Mirror your level horizontally: same size, but left and right are swapped.",
+      "physics": "A reflection in a mirror keeps lengths and areas but reverses handedness.",
+      "ai": "Swapping two input features keeps the information but reverses the orientation of the feature space."
     },
     "scene": [
-      {
-        "matrix": [
-          [
-            1,
-            0
-          ],
-          [
-            0,
-            1
-          ]
-        ],
-        "caption": "Area 1.",
-        "ms": 1000
-      },
-      {
-        "matrix": [
-          [
-            1,
-            1
-          ],
-          [
-            0,
-            1
-          ]
-        ],
-        "caption": "Same base, same height: still 1.",
-        "ms": 1800
-      }
+      { "matrix": [[1, 0], [0, 1]], "caption": "Start: the L points right", "ms": 1800 },
+      { "matrix": [[-1, 0], [0, 1]], "caption": "î → (−1, 0): the L is mirrored, determinant −1", "ms": 2800 }
     ],
     "check": {
       "kind": "number",
-      "prompt": "What is the new area?",
-      "given": {
-        "matrix": [
-          [
-            1,
-            1
-          ],
-          [
-            0,
-            1
-          ]
-        ]
-      },
-      "answer": 1,
+      "prompt": "This matrix swaps î and ĵ: î → (0, 1) and ĵ → (1, 0). What is its determinant?",
+      "given": { "matrix": [[0, 1], [1, 0]] },
+      "answer": -1,
       "tolerance": 0.25
     }
   },
   {
-    "id": "flip-and-squash",
-    "title": "Flipped or flattened",
+    "id": "crushed-flat",
+    "title": "Zero: crushed flat",
     "text": {
-      "guided": "If the matrix turns the square **over** (like a mirror), the determinant is **negative**.\nIf it squashes the square into a line, the area is **0**: the plane is flattened.",
-      "fast": "det < 0: the plane is flipped over. det = 0: everything is squashed onto a line."
+      "guided": "If both arrows end up on the same line, the plane is **crushed flat**: every shape becomes a line segment, with area 0. The determinant is 0.\n\nThat is also why a determinant of 0 is bad news: once the plane is flattened, you cannot tell where each point came from.",
+      "fast": "$\\det M = 0$ iff the columns are linearly dependent: the image is a line (or a point) and $M$ is not invertible."
     },
     "examples": {
-      "games": "Like a sprite mirrored left-right.",
-      "physics": "Like looking at your hand in a mirror: left becomes right.",
-      "ai": "Like projecting 2D data onto a single line: information is lost."
+      "games": "Squash a character against the wall until it is a line: you can no longer tell its height.",
+      "physics": "Projecting a 3D object onto a flat screen loses depth: the lost dimension cannot be recovered.",
+      "ai": "Two features that always move together carry the same information: the layer collapses them."
     },
     "scene": [
-      {
-        "matrix": [
-          [
-            1,
-            0
-          ],
-          [
-            0,
-            1
-          ]
-        ],
-        "caption": "Area 1.",
-        "ms": 1000
-      },
-      {
-        "matrix": [
-          [
-            -1,
-            0
-          ],
-          [
-            0,
-            2
-          ]
-        ],
-        "caption": "Mirrored and twice as tall: area −2.",
-        "ms": 1800
-      }
+      { "matrix": [[1, 0], [0, 1]], "caption": "Start: î = (1, 0), ĵ = (0, 1)", "ms": 1800 },
+      { "matrix": [[1, 0], [0, 0]], "caption": "ĵ → (0, 0): the plane is crushed onto the x axis, area 0", "ms": 2800 }
     ],
     "check": {
-      "kind": "number",
-      "prompt": "What is the (signed) new area?",
-      "given": {
-        "matrix": [
-          [
-            -1,
-            0
-          ],
-          [
-            0,
-            2
-          ]
-        ]
-      },
-      "answer": -2,
-      "tolerance": 0.25
+      "kind": "choice",
+      "prompt": "The matrix [[1, 2], [2, 4]] sends î to (1, 2) and ĵ to (2, 4). What happens to the plane?",
+      "options": ["It is flipped over", "It is crushed onto a line", "Every area doubles"],
+      "answer": 1
     }
   }
 ]

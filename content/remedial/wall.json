@@ -1,0 +1,12 @@
+{
+  "errorKind": "wall",
+  "title": "Same landing, different path",
+  "text": {
+    "guided": "Your shots end on the right point, but the ball crosses a wall on the way. The landing point is the same for any order of the shots, so choose a different split: go over or around the wall first, then finish the move.",
+    "fast": "The sum is order-independent, the path is not. Re-split the move so no segment crosses a wall."
+  },
+  "scene": [
+    { "matrix": [[1, 0], [0, 1]], "caption": "Two shots can reach the same point by different paths", "ms": 2400 },
+    { "matrix": [[1, 1], [0, 1]], "caption": "The landing point is the sum; the route is your choice", "ms": 2600 }
+  ]
+}

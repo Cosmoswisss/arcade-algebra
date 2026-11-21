@@ -1,38 +1,12 @@
 {
   "errorKind": "missed-zero",
-  "title": "Squashed flat",
+  "title": "When the plane is crushed",
   "text": {
-    "guided": "When î and ĵ end up on the **same line**, the square is flattened: area **0**.",
-    "fast": "Same line = area 0."
+    "guided": "This press has a determinant of exactly 0. Its two columns point along the same line, so the whole plane is squeezed onto that line and no area is left. Check: are the two columns multiples of each other? Then ad − bc = 0.",
+    "fast": "Dependent columns give det = 0: the image is a line, the area is 0."
   },
   "scene": [
-    {
-      "matrix": [
-        [
-          1,
-          0
-        ],
-        [
-          0,
-          1
-        ]
-      ],
-      "caption": "Start here.",
-      "ms": 1000
-    },
-    {
-      "matrix": [
-        [
-          1,
-          2
-        ],
-        [
-          0.5,
-          1
-        ]
-      ],
-      "caption": "Watch.",
-      "ms": 1600
-    }
+    { "matrix": [[1, 0], [0, 1]], "caption": "Start with the whole plane", "ms": 2000 },
+    { "matrix": [[1, 1], [1, 1]], "caption": "Both columns are (1, 1): everything lands on one line", "ms": 2800 }
   ]
 }

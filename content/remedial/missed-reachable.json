@@ -1,0 +1,12 @@
+{
+  "errorKind": "missed-reachable",
+  "title": "This one can be reached",
+  "text": {
+    "guided": "You gave up too early. u and v are **not** on the same line, so together they can reach any point of the plane. Find a and b: first the part along u, then the rest along v.",
+    "fast": "u and v are independent, so every target is reachable."
+  },
+  "scene": [
+    { "matrix": [[1, 1], [1, -1]], "caption": "u = (1, 1) and v = (1, −1) point in different directions", "ms": 2600 },
+    { "matrix": [[1, 1], [1, -1]], "caption": "So some a and b always land on the target", "ms": 2400 }
+  ]
+}

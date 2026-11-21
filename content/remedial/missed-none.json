@@ -1,38 +1,12 @@
 {
   "errorKind": "missed-none",
-  "title": "There was a way through",
+  "title": "A lens that turns everything",
   "text": {
-    "guided": "Look at the warped grid: some line through the origin stays on itself. Aim along it.",
-    "fast": "Some line kept its direction."
+    "guided": "This lens is a pure turn: it rotates every direction, so there is nothing to find. When the exit ray never lines up with the laser, whatever the angle, press NO STRAIGHT PATH.",
+    "fast": "No real eigenvector: the characteristic polynomial has no real root."
   },
   "scene": [
-    {
-      "matrix": [
-        [
-          1,
-          0
-        ],
-        [
-          0,
-          1
-        ]
-      ],
-      "caption": "Start here.",
-      "ms": 1000
-    },
-    {
-      "matrix": [
-        [
-          2,
-          0
-        ],
-        [
-          0,
-          3
-        ]
-      ],
-      "caption": "Watch which lines keep their direction.",
-      "ms": 1600
-    }
+    { "matrix": [[1, 0], [0, 1]], "caption": "Before the lens", "ms": 1800 },
+    { "matrix": [[0, -1], [1, 0]], "caption": "Every direction is rotated: no line is kept", "ms": 2800 }
   ]
 }

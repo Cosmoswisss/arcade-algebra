@@ -1,0 +1,12 @@
+{
+  "errorKind": "coef-swap",
+  "title": "a goes with u, b goes with v",
+  "text": {
+    "guided": "You used the right two numbers, but on the wrong thrusters: the first coefficient multiplies the **first** vector and the second multiplies the second. Rebuild the position in your head: a copies of u, then b copies of v.",
+    "fast": "Order matters: a multiplies u, b multiplies v."
+  },
+  "scene": [
+    { "matrix": [[1, 1], [0, 1]], "caption": "u = (1, 0) and v = (1, 1)", "ms": 2200 },
+    { "matrix": [[1, 1], [0, 1]], "caption": "2u + 1v = (3, 1) but 1u + 2v = (3, 2): swapping the coefficients moves the drone", "ms": 3200 }
+  ]
+}

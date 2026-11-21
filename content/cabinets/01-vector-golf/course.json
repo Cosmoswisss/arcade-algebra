@@ -1,88 +1,65 @@
 [
   {
-    "id": "a-move",
-    "title": "An arrow is a move",
+    "id": "vectors-are-moves",
+    "title": "A vector is a move",
     "text": {
-      "guided": "A vector is just a move: **how far right** and **how far up**.\nThe vector (3, 2) means *3 steps right, 2 steps up*. Negative numbers go left or down.",
-      "fast": "A vector (x, y) is a move: x to the right, y up. Negative = left or down."
+      "guided": "A vector such as (2, 1) is not a place: it is a **move**. It says \"go 2 to the right and 1 up\". Put two moves one after the other, the start of the second on the tip of the first, and the ball lands on the **sum**.\n\nTo add vectors, add the x's together and the y's together. Always x first, then y.",
+      "fast": "A vector is a displacement. $(a, b) + (c, d) = (a + c,\\, b + d)$: add component by component, x first."
     },
     "examples": {
-      "games": "In a game, (3, 2) is how far your character moves in one frame.",
-      "physics": "In physics, (3, 2) is a displacement: 3 m east, 2 m north.",
-      "ai": "In AI, (3, 2) is a point in a 2-feature space."
+      "games": "A character takes two steps in a row: the total move is the sum of the two steps.",
+      "physics": "Two forces on a ball add up: the resulting force is the sum of the two vectors.",
+      "ai": "A feature vector plus an update vector gives the new feature vector, one coordinate at a time."
     },
     "check": {
       "kind": "point",
-      "prompt": "Start at the origin and follow the arrow (3, 2). Place the point where you end up.",
-      "given": {
-        "vectors": [
-          [
-            3,
-            2
-          ]
-        ]
-      },
-      "answer": [
-        3,
-        2
-      ],
-      "tolerance": 0.25
+      "prompt": "The ball starts at the marked point (1, 1). Shot 1 = (2, 1), then shot 2 = (1, 2). Click where it lands.",
+      "given": { "vectors": [[1, 1]] },
+      "answer": [4, 4],
+      "tolerance": 0.26
     }
   },
   {
-    "id": "tip-to-tail",
-    "title": "Tip to tail",
+    "id": "negative-and-scaled",
+    "title": "Flip it, stretch it",
     "text": {
-      "guided": "Two moves in a row? Put the second arrow **where the first one ends**.\n(2, 0) then (1, 3) takes you to (3, 3): add the x's, add the y's.",
-      "fast": "Adding vectors = chaining them tip to tail: (2, 0) + (1, 3) = (3, 3)."
+      "guided": "A minus sign turns a vector around: -(1, 1) is (-1, -1), the same length pointing the other way. A number in front of a vector stretches it: 2 × (-1, 1) = (-2, 2).\n\nThe number multiplies **both** coordinates, never only one.",
+      "fast": "$k\\,(x, y) = (kx,\\, ky)$. A negative $k$ reverses the direction."
     },
     "examples": {
-      "games": "Like two dashes in a row: you end up at the sum.",
-      "physics": "Like walking 2 m east then 3 m north and 1 m east.",
-      "ai": "Like applying two small updates to the same parameters."
+      "games": "Double speed doubles both the sideways and the upward part of your move.",
+      "physics": "Doubling a force doubles every component of it; reversing a force flips both signs.",
+      "ai": "Scaling a gradient step by a learning rate multiplies every coordinate."
     },
+    "scene": [
+      { "matrix": [[1, 0], [0, 1]], "caption": "Start: î = (1, 0), ĵ = (0, 1)", "ms": 1800 },
+      { "matrix": [[2, 0], [0, 2]], "caption": "Times 2: every vector doubles, (1, 1) → (2, 2)", "ms": 2400 },
+      { "matrix": [[-1, 0], [0, -1]], "caption": "Times −1: every vector flips, (1, 1) → (−1, −1)", "ms": 2400 }
+    ],
     "check": {
       "kind": "point",
-      "prompt": "Shot 1 is (2, 0), shot 2 is (1, 3). Place where the ball stops.",
-      "given": {
-        "vectors": [
-          [
-            2,
-            0
-          ],
-          [
-            1,
-            3
-          ]
-        ]
-      },
-      "answer": [
-        3,
-        3
-      ],
-      "tolerance": 0.25
+      "prompt": "The ball starts at the marked point (2, 0). It takes the shot 2 × (−1, 1). Click where it lands.",
+      "given": { "vectors": [[2, 0]] },
+      "answer": [0, 2],
+      "tolerance": 0.26
     }
   },
   {
-    "id": "backwards",
-    "title": "Going backwards",
+    "id": "order-and-walls",
+    "title": "Any order, same landing",
     "text": {
-      "guided": "A minus sign points the arrow **the other way**.\n(2, 1) + (−3, 0) = (−1, 1): you went 2 right, then 3 left.",
-      "fast": "Negative components go left/down: (2, 1) + (−3, 0) = (−1, 1)."
+      "guided": "Adding vectors does not care about the order: (2, 1) then (1, 2) lands on the same point as (1, 2) then (2, 1). The **path** is different, though, and a wall can block one path but not the other.\n\nThat is how you play around a wall: choose shots whose sum is the same, but whose path is clear.",
+      "fast": "Vector addition is commutative: the landing point is the same in any order. Only the path changes, which matters when walls block it."
     },
     "examples": {
-      "games": "Like dashing right, then twice as far left.",
-      "physics": "Like a force pulling back against the motion.",
-      "ai": "Like a gradient step in the opposite direction."
+      "games": "Walk 3 east then 4 north, or 4 north then 3 east: you end on the same tile, but one route may cross a lava field.",
+      "physics": "The net displacement does not depend on the order of the legs of the trip.",
+      "ai": "Summing gradient updates in any order gives the same total update."
     },
     "check": {
       "kind": "choice",
-      "prompt": "What is (2, 1) + (−3, 0)?",
-      "options": [
-        "(−1, 1)",
-        "(5, 1)",
-        "(−1, −1)"
-      ],
+      "prompt": "Shots (2, 1) then (1, 2), compared with (1, 2) then (2, 1) from the same start. Where do the two balls end?",
+      "options": ["On the same point", "On different points", "On the same point only if there is no wall"],
       "answer": 0
     }
   }

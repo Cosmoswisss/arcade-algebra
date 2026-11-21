@@ -2,8 +2,8 @@
   "errorKind": "composition-order",
   "title": "Order matters",
   "text": {
-    "guided": "Two moves in a row: the **second** one acts on the result of the first.\nDoing them in the other order usually gives a different result.",
-    "fast": "A then B ≠ B then A. Check which move comes first."
+    "guided": "Doing A then B is not the same as B then A. In the product AB, the right-hand matrix B acts first. Try both orders on a single arrow and compare where it lands.",
+    "fast": "AB means B first, then A. The two orders differ."
   },
   "scene": [
     {
@@ -17,8 +17,8 @@
           1
         ]
       ],
-      "caption": "Start from the normal plane.",
-      "ms": 1000
+      "caption": "Start from the identity: î = (1, 0), ĵ = (0, 1)",
+      "ms": 1800
     },
     {
       "matrix": [
@@ -31,8 +31,8 @@
           0
         ]
       ],
-      "caption": "Watch where î and ĵ go.",
-      "ms": 1800
+      "caption": "A quarter turn: î goes to (0, 1) and ĵ goes to (-1, 0)",
+      "ms": 2600
     }
   ]
 }

@@ -1,38 +1,12 @@
 {
   "errorKind": "repaired-flat",
-  "title": "It was flat",
+  "title": "This one cannot be repaired",
   "text": {
-    "guided": "When det = 0, many points land on the **same spot**.\nYou cannot tell them apart any more, so no move can undo it.",
-    "fast": "det = 0: points merged, no inverse."
+    "guided": "This picture was crushed flat: its determinant is 0, so many different points were squeezed onto the same spot. No matrix can pull them apart again. Before you build an inverse, check the determinant ad − bc: if it is 0, press CAN'T REPAIR.",
+    "fast": "det = 0 means no inverse. Check ad − bc first."
   },
   "scene": [
-    {
-      "matrix": [
-        [
-          1,
-          0
-        ],
-        [
-          0,
-          1
-        ]
-      ],
-      "caption": "Start here.",
-      "ms": 1000
-    },
-    {
-      "matrix": [
-        [
-          1,
-          2
-        ],
-        [
-          0.5,
-          1
-        ]
-      ],
-      "caption": "Watch.",
-      "ms": 1600
-    }
+    { "matrix": [[1, 0], [0, 1]], "caption": "A picture with its two arrows", "ms": 2000 },
+    { "matrix": [[1, 1], [1, 1]], "caption": "Both arrows on the same line: no arrow can tell the points apart", "ms": 2800 }
   ]
 }

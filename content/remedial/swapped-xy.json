@@ -1,38 +1,12 @@
 {
   "errorKind": "swapped-xy",
-  "title": "x comes first",
+  "title": "x first, then y",
   "text": {
-    "guided": "A vector is written **(x, y)**: first how far right, then how far up.",
-    "fast": "(x, y): right first, up second."
+    "guided": "A vector is written (x, y): the first number is how far right, the second how far up. Your answer has the two numbers the wrong way round. Before you place a point, say it out loud: \"x is …, y is …\".",
+    "fast": "Coordinates are ordered pairs: (x, y), not (y, x)."
   },
   "scene": [
-    {
-      "matrix": [
-        [
-          1,
-          0
-        ],
-        [
-          0,
-          1
-        ]
-      ],
-      "caption": "Start here.",
-      "ms": 1000
-    },
-    {
-      "matrix": [
-        [
-          1,
-          0
-        ],
-        [
-          0,
-          1
-        ]
-      ],
-      "caption": "Watch.",
-      "ms": 1600
-    }
+    { "matrix": [[1, 0], [0, 1]], "caption": "(3, 1) means 3 right and 1 up", "ms": 2200 },
+    { "matrix": [[0, 1], [1, 0]], "caption": "Swap x and y and the point is mirrored across the diagonal", "ms": 2600 }
   ]
 }

@@ -1,209 +1,75 @@
 [
   {
-    "id": "undo-zoom",
-    "title": "Undo a zoom",
+    "id": "undo-a-transformation",
+    "title": "The inverse brings it back",
     "text": {
-      "guided": "A picture was zoomed ×2: î went to (2, 0) and ĵ to (0, 2).\nTo bring it back, the undo move must **halve** everything: î → (0.5, 0), ĵ → (0, 0.5).\nThat undo move is the **inverse** matrix.",
-      "fast": "The inverse undoes a move: the inverse of a ×2 zoom is a ×0.5 zoom."
+      "guided": "If a matrix M bends the plane, its **inverse** bends it back: do M and then the inverse and every point ends where it started.\n\nTo undo a stretch by 2 along x, shrink by 1/2: the inverse sends î to (0.5, 0).",
+      "fast": "$M^{-1}M = I$. The inverse undoes $M$: it sends the image of each basis arrow back to the arrow."
     },
     "examples": {
-      "games": "Like the undo button in a level editor.",
-      "physics": "Like playing a motion backwards in time.",
-      "ai": "Like de-normalising data back to its original scale."
+      "games": "Rewind a replay: the inverse of every move, played in reverse, returns to the start.",
+      "physics": "To recover the original measurement you apply the inverse of the instrument's distortion.",
+      "ai": "Decoding an embedding means applying the inverse of the encoder's matrix."
     },
     "scene": [
-      {
-        "matrix": [
-          [
-            1,
-            0
-          ],
-          [
-            0,
-            1
-          ]
-        ],
-        "caption": "Original.",
-        "ms": 800
-      },
-      {
-        "matrix": [
-          [
-            2,
-            0
-          ],
-          [
-            0,
-            2
-          ]
-        ],
-        "caption": "Zoomed ×2.",
-        "ms": 1400
-      },
-      {
-        "matrix": [
-          [
-            1,
-            0
-          ],
-          [
-            0,
-            1
-          ]
-        ],
-        "caption": "Undone by ×0.5.",
-        "ms": 1400
-      }
+      { "matrix": [[1, 0], [0, 1]], "caption": "The original picture", "ms": 1800 },
+      { "matrix": [[2, 0], [0, 1]], "caption": "A stretch by 2 along x bends it", "ms": 2200 },
+      { "matrix": [[1, 0], [0, 1]], "caption": "Its inverse shrinks by 1/2 and everything is back", "ms": 2400 }
     ],
     "check": {
       "kind": "basis",
-      "prompt": "The picture was zoomed by the matrix below. Place î and ĵ of the move that UNDOES it.",
-      "given": {
-        "matrix": [
-          [
-            2,
-            0
-          ],
-          [
-            0,
-            2
-          ]
-        ]
-      },
-      "answer": [
-        [
-          0.5,
-          0
-        ],
-        [
-          0,
-          0.5
-        ]
-      ],
-      "tolerance": 0.1
+      "prompt": "A matrix stretches the plane by 2 along x. Drag the arrows to build the inverse that undoes it.",
+      "given": { "matrix": [[1, 0], [0, 1]] },
+      "answer": [[0.5, 0], [0, 1]],
+      "tolerance": 0.11
     }
   },
   {
-    "id": "undo-shear",
-    "title": "Undo a lean",
+    "id": "inverse-of-a-turn",
+    "title": "Undo a turn: turn back",
     "text": {
-      "guided": "A shear pushed ĵ to (1, 1): the picture leans right.\nTo straighten it, push ĵ back **to the left**: ĵ → (−1, 1). î did not move, so it stays (1, 0).",
-      "fast": "Undo a shear by shearing the other way: ĵ (1, 1) is undone by ĵ (−1, 1)."
+      "guided": "A quarter turn to the left sends î to (0, 1) and ĵ to (−1, 0). To undo it, turn a quarter to the right: î goes to (0, −1) and ĵ to (1, 0).\n\nThe inverse of a rotation is the rotation by the same angle the other way.",
+      "fast": "$R_\\theta^{-1} = R_{-\\theta}$. For a quarter turn: î → (0, −1), ĵ → (1, 0)."
     },
     "examples": {
-      "games": "Like un-skewing a sprite that was drawn in italics.",
-      "physics": "Like pushing the deck of cards back into a stack.",
-      "ai": "Like reversing a skew augmentation."
+      "games": "Spin the camera 90° left, then 90° right: the scene is back.",
+      "physics": "A rotation of the frame is undone by the opposite rotation.",
+      "ai": "Rotating features by an angle and then by minus that angle returns the original features."
     },
     "scene": [
-      {
-        "matrix": [
-          [
-            1,
-            0
-          ],
-          [
-            0,
-            1
-          ]
-        ],
-        "caption": "Original.",
-        "ms": 800
-      },
-      {
-        "matrix": [
-          [
-            1,
-            1
-          ],
-          [
-            0,
-            1
-          ]
-        ],
-        "caption": "Leaning right.",
-        "ms": 1400
-      }
+      { "matrix": [[1, 0], [0, 1]], "caption": "Start", "ms": 1600 },
+      { "matrix": [[0, -1], [1, 0]], "caption": "Quarter turn left: î → (0, 1), ĵ → (−1, 0)", "ms": 2600 },
+      { "matrix": [[1, 0], [0, 1]], "caption": "A quarter turn right brings every point back", "ms": 2400 }
     ],
     "check": {
       "kind": "basis",
-      "prompt": "The picture was sheared by the matrix below. Place î and ĵ of the move that UNDOES it.",
-      "given": {
-        "matrix": [
-          [
-            1,
-            1
-          ],
-          [
-            0,
-            1
-          ]
-        ]
-      },
-      "answer": [
-        [
-          1,
-          -1
-        ],
-        [
-          0,
-          1
-        ]
-      ],
-      "tolerance": 0.1
+      "prompt": "A matrix turns the plane a quarter turn to the left (î → (0, 1), ĵ → (−1, 0)). Place the arrows of its inverse.",
+      "given": { "matrix": [[1, 0], [0, 1]] },
+      "answer": [[0, 1], [-1, 0]],
+      "tolerance": 0.11
     }
   },
   {
     "id": "no-way-back",
-    "title": "No way back",
+    "title": "Some things cannot be undone",
     "text": {
-      "guided": "Some moves squash the plane onto a line (det = 0).\nThen **many points land on the same spot**: you cannot tell where they came from. No inverse exists.",
-      "fast": "det = 0 ⇒ points merge ⇒ no inverse."
+      "guided": "If the matrix has determinant 0, it crushes the plane onto a line: points that were far apart land on the **same spot**. Once that has happened, nothing can tell them apart again.\n\nThat is why a matrix with determinant 0 has **no inverse**.",
+      "fast": "$\\det M = 0 \\Rightarrow$ no inverse: $M$ is not injective, so information is lost."
     },
     "examples": {
-      "games": "Like a 3D scene flattened into a shadow: you cannot rebuild the object from the shadow alone.",
-      "physics": "Like a projection on a wall: the depth is lost.",
-      "ai": "Like keeping only one feature out of two: the other one is gone."
+      "games": "A character squashed flat against a wall: you can no longer tell how tall it was.",
+      "physics": "A photo flattens 3D into 2D: depth is lost for good.",
+      "ai": "A layer that maps two different inputs to the same output cannot be inverted."
     },
     "scene": [
-      {
-        "matrix": [
-          [
-            1,
-            0
-          ],
-          [
-            0,
-            1
-          ]
-        ],
-        "caption": "Original.",
-        "ms": 800
-      },
-      {
-        "matrix": [
-          [
-            1,
-            2
-          ],
-          [
-            0.5,
-            1
-          ]
-        ],
-        "caption": "Squashed onto a line.",
-        "ms": 1600
-      }
+      { "matrix": [[1, 0], [0, 1]], "caption": "Different points, different places", "ms": 1800 },
+      { "matrix": [[1, 1], [1, 1]], "caption": "Both arrows end on (1, 1): the plane is crushed onto a line", "ms": 2800 }
     ],
     "check": {
       "kind": "choice",
-      "prompt": "A picture was squashed by [[1, 2], [0.5, 1]]. Can it be repaired?",
-      "options": [
-        "No: det = 0, points merged",
-        "Yes, with the inverse",
-        "Yes, by doing the move twice"
-      ],
-      "answer": 0
+      "prompt": "A matrix has determinant 0 and crushed a picture onto a line. Can you rewind it?",
+      "options": ["Yes, with the right inverse matrix", "No: points that were different now share the same spot", "Only if you know the original matrix"],
+      "answer": 1
     }
   }
 ]

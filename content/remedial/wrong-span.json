@@ -1,38 +1,12 @@
 {
   "errorKind": "wrong-span",
-  "title": "Look at the directions",
+  "title": "Aligned thrusters stay on their line",
   "text": {
-    "guided": "If u and v point in **different** directions, you can reach every point of the plane.\nIf they lie on the **same line**, you are stuck on that line.",
-    "fast": "Different directions = whole plane. Same line = only that line."
+    "guided": "Look at u and v: one is a multiple of the other, so they point along the same line. Every combination stays on that line, and this target is not on it. When the thrusters are aligned and the target is off the line, press UNREACHABLE.",
+    "fast": "v is a multiple of u: the span is a line, and the target is off it."
   },
   "scene": [
-    {
-      "matrix": [
-        [
-          1,
-          0
-        ],
-        [
-          0,
-          1
-        ]
-      ],
-      "caption": "Two directions: the whole plane.",
-      "ms": 1200
-    },
-    {
-      "matrix": [
-        [
-          1,
-          2
-        ],
-        [
-          0.5,
-          1
-        ]
-      ],
-      "caption": "Same line: only a line.",
-      "ms": 1600
-    }
+    { "matrix": [[1, 2], [2, 4]], "caption": "Both arrows lie on the same line", "ms": 2400 },
+    { "matrix": [[1, 2], [2, 4]], "caption": "Whatever a and b you choose, you stay on that line", "ms": 2600 }
   ]
 }

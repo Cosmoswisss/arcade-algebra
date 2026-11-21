@@ -1,0 +1,12 @@
+{
+  "errorKind": "wrong-none",
+  "title": "There is a straight path",
+  "text": {
+    "guided": "You gave up too early: this lens keeps at least one direction on its own line. Try the axes first, then the diagonals (45° and 135°), and look at the exit ray: when it lines up with the laser, you have found it.",
+    "fast": "A real eigenvector exists here. Test the axes and the diagonals."
+  },
+  "scene": [
+    { "matrix": [[2, 1], [1, 2]], "caption": "This lens stretches the diagonal (1, 1) by 3", "ms": 2800 },
+    { "matrix": [[2, 1], [1, 2]], "caption": "The diagonal stays on its line: that is the straight path", "ms": 2600 }
+  ]
+}

@@ -1,164 +1,69 @@
 [
   {
-    "id": "two-arrows",
+    "id": "arrows-are-the-matrix",
     "title": "Two arrows rule the plane",
     "text": {
-      "guided": "Every point of the plane is built from two arrows: **î = (1, 0)** and **ĵ = (0, 1)**.\nThe point (3, 2) is just *3 steps of î plus 2 steps of ĵ*.\nGrab î and watch: the whole grid follows it.",
-      "fast": "Every point is a mix of **î = (1, 0)** and **ĵ = (0, 1)**: (3, 2) = 3î + 2ĵ. Move î and the whole grid follows."
+      "guided": "Every point of the plane is built from two arrows: î = (1, 0) goes one step right, ĵ = (0, 1) goes one step up. Move those two arrows and the whole grid follows them, like a net pulled by two corners.\n\nThe matrix is just the list of where the arrows land: **column 1 = where î lands, column 2 = where ĵ lands**.",
+      "fast": "A 2×2 matrix is two columns: column 1 is the image of î = (1, 0), column 2 is the image of ĵ = (0, 1). Everything else follows by linearity."
     },
     "examples": {
-      "games": "In a game, î and ĵ are the two directions your character can walk.",
-      "physics": "In physics, î and ĵ are the two unit directions of your force diagram.",
-      "ai": "In an image model, î and ĵ are the two pixel axes of a picture."
+      "games": "Think of a game camera: dragging two handles at the corners of the screen stretches or tilts everything you see.",
+      "physics": "Think of a rubber sheet pinned at the origin: pull the tip of each unit arrow and every drawn shape deforms with it.",
+      "ai": "Think of a layer that remaps two input features to new directions: the weights are exactly where each basis arrow ends up."
     },
     "scene": [
-      {
-        "matrix": [
-          [
-            1,
-            0
-          ],
-          [
-            0,
-            1
-          ]
-        ],
-        "caption": "The normal plane: î = (1, 0), ĵ = (0, 1).",
-        "ms": 1500
-      },
-      {
-        "matrix": [
-          [
-            2,
-            0
-          ],
-          [
-            0,
-            1
-          ]
-        ],
-        "caption": "Stretch î to (2, 0): every point moves with it.",
-        "ms": 1800
-      }
+      { "matrix": [[1, 0], [0, 1]], "caption": "Start: î = (1, 0) and ĵ = (0, 1)", "ms": 1800 },
+      { "matrix": [[2, 0], [0, 1]], "caption": "î moves to (2, 0): the whole grid stretches to the right", "ms": 2200 },
+      { "matrix": [[1, 1], [0, 1]], "caption": "ĵ moves to (1, 1): the grid leans", "ms": 2200 }
     ],
     "check": {
       "kind": "basis",
-      "prompt": "This matrix stretches the plane. Place where î and ĵ land.",
-      "given": {
-        "matrix": [
-          [
-            2,
-            0
-          ],
-          [
-            0,
-            1
-          ]
-        ]
-      },
-      "answer": [
-        [
-          2,
-          0
-        ],
-        [
-          0,
-          1
-        ]
-      ],
-      "tolerance": 0.1
+      "prompt": "Make the plane twice as wide and keep its height: drag î and ĵ to the right spots.",
+      "given": { "matrix": [[1, 0], [0, 1]] },
+      "answer": [[2, 0], [0, 1]],
+      "tolerance": 0.11
     }
   },
   {
-    "id": "read-the-columns",
-    "title": "Read the columns",
+    "id": "follow-the-corner",
+    "title": "Where does a point go?",
     "text": {
-      "guided": "A matrix is a table with two **columns**.\nColumn 1 tells **where î lands**, column 2 tells **where ĵ lands**.\nIn $\\begin{bmatrix}1&1\\\\0&1\\end{bmatrix}$, î stays at (1, 0) and ĵ moves to (1, 1).",
-      "fast": "Column 1 = where î lands, column 2 = where ĵ lands. $\\begin{bmatrix}1&1\\\\0&1\\end{bmatrix}$ keeps î and sends ĵ to (1, 1)."
+      "guided": "A point like (2, 1) means \"2 steps of î and 1 step of ĵ\". When the arrows move, the point keeps its recipe: it lands on 2 × (new î) + 1 × (new ĵ).\n\nSo to follow any point, only ever track the two arrows.",
+      "fast": "$M\\,(x, y) = x\\cdot M\\hat\\imath + y\\cdot M\\hat\\jmath$. Track the columns, then recombine."
     },
     "examples": {
-      "games": "That is how a sprite gets sheared when it runs fast.",
-      "physics": "That is the shear of a deck of cards pushed from the top.",
-      "ai": "That is a skew used to augment training images."
+      "games": "A character stuck to a sticker on the screen moves with the sticker: same recipe, new axes.",
+      "physics": "A mark painted on the stretched sheet stays at the same grid coordinates, whatever the sheet does.",
+      "ai": "An input (x, y) is a weighted sum of the two basis directions; the layer just reweights them."
     },
     "scene": [
-      {
-        "matrix": [
-          [
-            1,
-            0
-          ],
-          [
-            0,
-            1
-          ]
-        ],
-        "caption": "Start from the normal plane.",
-        "ms": 1200
-      },
-      {
-        "matrix": [
-          [
-            1,
-            1
-          ],
-          [
-            0,
-            1
-          ]
-        ],
-        "caption": "Column 2 is (1, 1): ĵ leans right, the shape shears.",
-        "ms": 1800
-      }
+      { "matrix": [[1, 0], [0, 1]], "caption": "The point (2, 1) = 2 × î + 1 × ĵ", "ms": 2000 },
+      { "matrix": [[1, 1], [0, 1]], "caption": "New î = (1, 0), new ĵ = (1, 1): the point is now 2·(1, 0) + 1·(1, 1) = (3, 1)", "ms": 3000 }
     ],
     "check": {
-      "kind": "basis",
-      "prompt": "Place î and ĵ for the matrix [[1, 1], [0, 1]].",
-      "given": {
-        "matrix": [
-          [
-            1,
-            1
-          ],
-          [
-            0,
-            1
-          ]
-        ]
-      },
-      "answer": [
-        [
-          1,
-          1
-        ],
-        [
-          0,
-          1
-        ]
-      ],
-      "tolerance": 0.1
+      "kind": "point",
+      "prompt": "A matrix sends î to (1, 0) and ĵ to (1, 1). Place the point where (2, 1) lands.",
+      "given": { "matrix": [[1, 1], [0, 1]] },
+      "answer": [3, 1],
+      "tolerance": 0.2
     }
   },
   {
     "id": "column-order",
-    "title": "Order matters",
+    "title": "Columns have an order",
     "text": {
-      "guided": "Swap the two columns and you get a different move.\n$\\begin{bmatrix}0&1\\\\1&0\\end{bmatrix}$ sends î to (0, 1) and ĵ to (1, 0): it mirrors the plane across the diagonal.",
-      "fast": "Swapping columns swaps where î and ĵ go — a different transformation (a diagonal mirror)."
+      "guided": "Swapping the two columns gives a different transformation: the first column always belongs to î, the second to ĵ. Mix them up and your shape ends up mirrored across the diagonal.",
+      "fast": "Column 1 = image of î, column 2 = image of ĵ. Swapping columns reflects the plane across y = x."
     },
     "examples": {
-      "games": "Like swapping the left and up keys: the character goes the wrong way.",
-      "physics": "Like swapping two axes in your lab frame.",
-      "ai": "Like transposing an image: rows become columns."
+      "games": "Controls swapped: pressing right now moves you up, and up moves you right.",
+      "physics": "Exchanging the x and y axes of a lab frame mirrors every measurement across the diagonal.",
+      "ai": "Feeding features in the wrong order silently swaps what each weight means."
     },
     "check": {
       "kind": "choice",
-      "prompt": "In a matrix, which part tells you where î lands?",
-      "options": [
-        "Column 1",
-        "Column 2",
-        "Row 1"
-      ],
+      "prompt": "Which matrix swaps î and ĵ (î lands on (0, 1) and ĵ lands on (1, 0))?",
+      "options": ["[[0, 1], [1, 0]]", "[[1, 0], [0, 1]]", "[[0, 1], [0, 1]]"],
       "answer": 0
     }
   }

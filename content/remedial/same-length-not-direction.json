@@ -2,37 +2,11 @@
   "errorKind": "same-length-not-direction",
   "title": "Direction, not length",
   "text": {
-    "guided": "We are looking for a direction that **does not turn**. Its length may change: that is fine.",
-    "fast": "Same line matters, not same length."
+    "guided": "Your laser came out the same length, but it points somewhere else. An eigenvector is about **direction**: the exit ray must lie on the same line as the laser. It may be longer or shorter (even reversed), but it must not be turned.",
+    "fast": "Eigen means same line, not same length: Mv = λv for some scalar λ."
   },
   "scene": [
-    {
-      "matrix": [
-        [
-          1,
-          0
-        ],
-        [
-          0,
-          1
-        ]
-      ],
-      "caption": "Start here.",
-      "ms": 1000
-    },
-    {
-      "matrix": [
-        [
-          2,
-          1
-        ],
-        [
-          1,
-          2
-        ]
-      ],
-      "caption": "Watch which lines keep their direction.",
-      "ms": 1600
-    }
+    { "matrix": [[1, 0], [0, 1]], "caption": "The unit vector (1, 0) has length 1", "ms": 2200 },
+    { "matrix": [[0, 1], [1, 0]], "caption": "A reflection keeps the length but turns it to (0, 1): not an eigenvector", "ms": 3000 }
   ]
 }

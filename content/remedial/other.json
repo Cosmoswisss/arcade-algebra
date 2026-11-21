@@ -1,9 +1,9 @@
 {
   "errorKind": "other",
-  "title": "Look at the corners",
+  "title": "Read the corners",
   "text": {
-    "guided": "Follow the corner (1, 0): it goes where î goes.\nFollow the corner (0, 1): it goes where ĵ goes.",
-    "fast": "Track the two corners (1, 0) and (0, 1)."
+    "guided": "Look at the corners of the shape: the corner (1, 0) rides on î and the corner (0, 1) rides on ĵ. Find where those two corners sit in the target, and put the arrow tips there.",
+    "fast": "Find where the corners (1, 0) and (0, 1) land, then place î and ĵ there."
   },
   "scene": [
     {
@@ -17,8 +17,8 @@
           1
         ]
       ],
-      "caption": "Start from the normal plane.",
-      "ms": 1000
+      "caption": "Start from the identity: î = (1, 0), ĵ = (0, 1)",
+      "ms": 1800
     },
     {
       "matrix": [
@@ -27,12 +27,12 @@
           0
         ],
         [
-          1,
+          0,
           1
         ]
       ],
-      "caption": "Watch where î and ĵ go.",
-      "ms": 1800
+      "caption": "î carries the corner (1, 0), ĵ carries the corner (0, 1)",
+      "ms": 2600
     }
   ]
 }

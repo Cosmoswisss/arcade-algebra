@@ -1,38 +1,12 @@
 {
   "errorKind": "missed-repairable",
-  "title": "It could be undone",
+  "title": "Most pictures can be repaired",
   "text": {
-    "guided": "If det is **not 0**, the picture is only stretched, sheared or turned: every point can be traced back.",
-    "fast": "det ≠ 0: there is always an inverse."
+    "guided": "You gave up too early: this matrix has a determinant that is not 0, so it has an inverse. Compute ad − bc to be sure: if it is not 0, build the arrows that undo it.",
+    "fast": "det ≠ 0 means an inverse exists. Compute ad − bc before giving up."
   },
   "scene": [
-    {
-      "matrix": [
-        [
-          1,
-          0
-        ],
-        [
-          0,
-          1
-        ]
-      ],
-      "caption": "Start here.",
-      "ms": 1000
-    },
-    {
-      "matrix": [
-        [
-          2,
-          0
-        ],
-        [
-          0,
-          2
-        ]
-      ],
-      "caption": "Watch.",
-      "ms": 1600
-    }
+    { "matrix": [[2, 0], [0, 1]], "caption": "A stretch bends the picture, but keeps the two arrows apart", "ms": 2400 },
+    { "matrix": [[0.5, 0], [0, 1]], "caption": "The inverse shrinks it back", "ms": 2400 }
   ]
 }

@@ -2,8 +2,8 @@
   "errorKind": "scale",
   "title": "Right direction, wrong length",
   "text": {
-    "guided": "Your arrows point the right way but are too long or too short.\nThe numbers in each column give the exact length.",
-    "fast": "Directions are right; the lengths are not."
+    "guided": "The arrow length is the stretch factor. If the tip is twice as far from the origin, the plane is twice as stretched. Count the grid steps from the origin to the tip.",
+    "fast": "Same direction, wrong length: the length is the stretch factor."
   },
   "scene": [
     {
@@ -17,8 +17,8 @@
           1
         ]
       ],
-      "caption": "Start from the normal plane.",
-      "ms": 1000
+      "caption": "Start from the identity: î = (1, 0), ĵ = (0, 1)",
+      "ms": 1800
     },
     {
       "matrix": [
@@ -31,8 +31,8 @@
           2
         ]
       ],
-      "caption": "Watch where î and ĵ go.",
-      "ms": 1800
+      "caption": "Both arrows doubled: everything twice as big",
+      "ms": 2600
     }
   ]
 }

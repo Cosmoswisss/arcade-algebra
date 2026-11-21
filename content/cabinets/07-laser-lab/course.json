@@ -1,131 +1,68 @@
 [
   {
-    "id": "does-not-turn",
-    "title": "Arrows that do not turn",
+    "id": "directions-that-survive",
+    "title": "A direction that does not turn",
     "text": {
-      "guided": "Most arrows get **turned** by a matrix.\nBut some special directions only get **stretched** (or shrunk, or flipped). Those are the **eigenvectors**.\nFor $\\begin{bmatrix}2&0\\\\0&3\\end{bmatrix}$, the x-axis and the y-axis stay where they are.",
-      "fast": "An eigenvector v satisfies A·v = λ·v: same line, new length."
+      "guided": "Most vectors are **turned** by a matrix. But some special directions are only stretched: the vector comes out on the same line it went in on. Those are the **eigenvectors**.\n\nIf the matrix stretches x by 2 and keeps y, then a vector along the x axis just gets twice as long: it keeps its direction.",
+      "fast": "An eigenvector satisfies $M\\,v = \\lambda\\,v$: same direction, scaled by the eigenvalue $\\lambda$."
     },
     "examples": {
-      "games": "Like the axis a sprite is stretched along: it does not tilt.",
-      "physics": "Like the principal axes of a spinning object.",
-      "ai": "Like the main directions found by PCA."
+      "games": "Pulling a stretchy toy along its length keeps it straight; pulling it sideways bends it.",
+      "physics": "The principal axes of a deformation are the directions that are stretched without being rotated.",
+      "ai": "The directions along which a covariance matrix only scales, never rotates, are its principal components."
     },
     "scene": [
-      {
-        "matrix": [
-          [
-            1,
-            0
-          ],
-          [
-            0,
-            1
-          ]
-        ],
-        "caption": "Normal plane.",
-        "ms": 800
-      },
-      {
-        "matrix": [
-          [
-            2,
-            0
-          ],
-          [
-            0,
-            3
-          ]
-        ],
-        "caption": "The axes only stretch: they are eigen-directions.",
-        "ms": 1800
-      }
+      { "matrix": [[1, 0], [0, 1]], "caption": "Start: î = (1, 0), ĵ = (0, 1)", "ms": 1800 },
+      { "matrix": [[2, 0], [0, 1]], "caption": "x is stretched ×2, y is unchanged: î stays on the x axis", "ms": 2800 }
     ],
     "check": {
       "kind": "choice",
-      "prompt": "For the matrix [[2, 0], [0, 3]], which arrow keeps its direction?",
-      "options": [
-        "(1, 0)",
-        "(1, 1)",
-        "(1, 2)"
-      ],
-      "answer": 0
+      "prompt": "The matrix [[2, 0], [0, 1]] stretches x by 2 and keeps y. Which of these vectors stays on its own line?",
+      "options": ["(1, 1)", "(1, 0)", "(1, 2)"],
+      "answer": 1
     }
   },
   {
-    "id": "hidden-direction",
-    "title": "A hidden direction",
+    "id": "the-eigenvalue",
+    "title": "How much it stretches",
     "text": {
-      "guided": "With $\\begin{bmatrix}2&1\\\\0&3\\end{bmatrix}$, the x-axis still does not turn, but there is **another** one: (1, 1) goes to (3, 3), three times longer, same line.",
-      "fast": "[[2, 1], [0, 3]] has eigenvectors (1, 0) and (1, 1)."
+      "guided": "When a vector keeps its direction, it can still change **length**. The number that says by how much is the **eigenvalue**: M·v = λ·v. A negative eigenvalue flips the vector to the other side but keeps it on the same line.\n\nFor [[2, 0], [0, 3]], a vector along x is stretched by 2 and a vector along y by 3.",
+      "fast": "$M v = \\lambda v$. $\\lambda$ is read off as the factor along the eigen-direction."
     },
     "examples": {
-      "games": "Like a diagonal that stays diagonal after a skewed zoom.",
-      "physics": "Like a stress direction that only stretches.",
-      "ai": "Like a stable direction of a linear model."
+      "games": "A zoom that doubles width and triples height: along each axis, the zoom factor is the eigenvalue.",
+      "physics": "The eigenvalue along a principal axis is the stretch ratio in that direction.",
+      "ai": "The eigenvalue of a principal component is the variance (the \"importance\") along it."
     },
     "check": {
-      "kind": "choice",
-      "prompt": "For [[2, 1], [0, 3]], where does (1, 1) go?",
-      "options": [
-        "(3, 3): same line, 3× longer",
-        "(2, 3): turned",
-        "(1, 1): unchanged"
-      ],
-      "answer": 0
+      "kind": "number",
+      "prompt": "The matrix [[2, 0], [0, 3]] is read as î → (2, 0) and ĵ → (0, 3). By what factor is a vector along the x axis stretched?",
+      "given": { "matrix": [[2, 0], [0, 3]] },
+      "answer": 2,
+      "tolerance": 0.25
     }
   },
   {
     "id": "no-straight-path",
-    "title": "When every arrow turns",
+    "title": "Sometimes there is none",
     "text": {
-      "guided": "A rotation turns **every** direction.\nSo a quarter turn $\\begin{bmatrix}0&-1\\\\1&0\\end{bmatrix}$ has **no** real eigenvector.",
-      "fast": "Rotations (other than 0° and 180°) have no real eigenvectors."
+      "guided": "A quarter turn sends î to (0, 1) and ĵ to (−1, 0): **every** direction is rotated, so no vector stays on its own line. Some matrices have no real eigenvectors at all.\n\nWhen you see a pure turn, do not hunt for a direction: say there is no straight path.",
+      "fast": "A rotation by an angle that is not 0° or 180° has no real eigenvector: its eigenvalues are complex."
     },
     "examples": {
-      "games": "Like spinning a camera: nothing stays pointing the same way.",
-      "physics": "Like a turntable: every radius turns.",
-      "ai": "Like a rotation of the feature space: no direction is preserved."
+      "games": "A camera that spins the whole scene leaves no object pointing the same way.",
+      "physics": "A pure rotation of the plane keeps no direction fixed.",
+      "ai": "A rotation of feature space has no direction that is only scaled."
     },
     "scene": [
-      {
-        "matrix": [
-          [
-            1,
-            0
-          ],
-          [
-            0,
-            1
-          ]
-        ],
-        "caption": "Normal plane.",
-        "ms": 800
-      },
-      {
-        "matrix": [
-          [
-            0,
-            -1
-          ],
-          [
-            1,
-            0
-          ]
-        ],
-        "caption": "A quarter turn: every arrow turns.",
-        "ms": 1800
-      }
+      { "matrix": [[1, 0], [0, 1]], "caption": "Start", "ms": 1600 },
+      { "matrix": [[0, -1], [1, 0]], "caption": "Quarter turn: î → (0, 1), ĵ → (−1, 0). Every direction is turned", "ms": 2800 }
     ],
     "check": {
       "kind": "choice",
-      "prompt": "Does [[0, −1], [1, 0]] have a direction it does not turn?",
-      "options": [
-        "No, it is a rotation",
-        "Yes, (1, 0)",
-        "Yes, (1, 1)"
-      ],
-      "answer": 0
+      "prompt": "A quarter turn sends î to (0, 1) and ĵ to (−1, 0). Does any vector keep its direction?",
+      "options": ["Yes: the x axis", "No: every vector is turned", "Yes: the diagonal"],
+      "answer": 1
     }
   }
 ]

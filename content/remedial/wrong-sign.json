@@ -1,38 +1,12 @@
 {
   "errorKind": "wrong-sign",
-  "title": "Did it flip?",
+  "title": "Flipped means negative",
   "text": {
-    "guided": "The size was right but the **sign** was not.\nIf the square comes out **mirrored**, the area counts as negative.",
-    "fast": "Right size, wrong sign: mirrored = negative."
+    "guided": "You found the right size but the wrong sign. When the matrix turns the plane over, like a page, the shape is mirrored and the determinant is **negative**. Check the L: if it points the wrong way round, put a minus sign.",
+    "fast": "Right magnitude, wrong sign: det < 0 means the orientation is reversed (the shape is mirrored)."
   },
   "scene": [
-    {
-      "matrix": [
-        [
-          1,
-          0
-        ],
-        [
-          0,
-          1
-        ]
-      ],
-      "caption": "Start here.",
-      "ms": 1000
-    },
-    {
-      "matrix": [
-        [
-          -1,
-          0
-        ],
-        [
-          0,
-          1
-        ]
-      ],
-      "caption": "Watch.",
-      "ms": 1600
-    }
+    { "matrix": [[1, 0], [0, 1]], "caption": "Original: the L is the right way round", "ms": 2000 },
+    { "matrix": [[0, 1], [1, 0]], "caption": "Swapping î and ĵ mirrors it: determinant −1, not 1", "ms": 2800 }
   ]
 }
