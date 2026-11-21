@@ -13,9 +13,9 @@
     },
     "check": {
       "kind": "point",
-      "prompt": "The ball starts at the marked point (1, 1). Shot 1 = (2, 1), then shot 2 = (1, 2). Click where it lands.",
-      "given": { "vectors": [[1, 1]] },
-      "answer": [4, 4],
+      "prompt": "The ball starts at the marked point (-1, 0). Shot 1 = (2, 1), then shot 2 = (1, 2). Click where it lands.",
+      "given": { "vectors": [[-1, 0]] },
+      "answer": [2, 3],
       "tolerance": 0.26
     }
   },
