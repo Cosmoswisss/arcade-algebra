@@ -1,0 +1,38 @@
+{
+  "errorKind": "missed-none",
+  "title": "There was a way through",
+  "text": {
+    "guided": "Look at the warped grid: some line through the origin stays on itself. Aim along it.",
+    "fast": "Some line kept its direction."
+  },
+  "scene": [
+    {
+      "matrix": [
+        [
+          1,
+          0
+        ],
+        [
+          0,
+          1
+        ]
+      ],
+      "caption": "Start here.",
+      "ms": 1000
+    },
+    {
+      "matrix": [
+        [
+          2,
+          0
+        ],
+        [
+          0,
+          3
+        ]
+      ],
+      "caption": "Watch which lines keep their direction.",
+      "ms": 1600
+    }
+  ]
+}

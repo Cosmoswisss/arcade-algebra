@@ -1,0 +1,38 @@
+{
+  "errorKind": "same-length-not-direction",
+  "title": "Direction, not length",
+  "text": {
+    "guided": "We are looking for a direction that **does not turn**. Its length may change: that is fine.",
+    "fast": "Same line matters, not same length."
+  },
+  "scene": [
+    {
+      "matrix": [
+        [
+          1,
+          0
+        ],
+        [
+          0,
+          1
+        ]
+      ],
+      "caption": "Start here.",
+      "ms": 1000
+    },
+    {
+      "matrix": [
+        [
+          2,
+          1
+        ],
+        [
+          1,
+          2
+        ]
+      ],
+      "caption": "Watch which lines keep their direction.",
+      "ms": 1600
+    }
+  ]
+}

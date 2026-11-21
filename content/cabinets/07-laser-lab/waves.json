@@ -1,0 +1,194 @@
+[
+  {
+    "id": "axes-1",
+    "concept": "axes",
+    "params": {
+      "matrix": [
+        [
+          2,
+          0
+        ],
+        [
+          0,
+          3
+        ]
+      ]
+    }
+  },
+  {
+    "id": "axes-2",
+    "concept": "axes",
+    "params": {
+      "matrix": [
+        [
+          3,
+          0
+        ],
+        [
+          0,
+          1
+        ]
+      ]
+    }
+  },
+  {
+    "id": "axes-3",
+    "concept": "axes",
+    "params": {
+      "matrix": [
+        [
+          -1,
+          0
+        ],
+        [
+          0,
+          2
+        ]
+      ]
+    }
+  },
+  {
+    "id": "shear-one-1",
+    "concept": "shear-one",
+    "params": {
+      "matrix": [
+        [
+          1,
+          1
+        ],
+        [
+          0,
+          1
+        ]
+      ]
+    }
+  },
+  {
+    "id": "shear-one-2",
+    "concept": "shear-one",
+    "params": {
+      "matrix": [
+        [
+          1,
+          0
+        ],
+        [
+          1,
+          1
+        ]
+      ]
+    }
+  },
+  {
+    "id": "symmetric-1",
+    "concept": "symmetric",
+    "params": {
+      "matrix": [
+        [
+          2,
+          1
+        ],
+        [
+          1,
+          2
+        ]
+      ]
+    }
+  },
+  {
+    "id": "symmetric-2",
+    "concept": "symmetric",
+    "params": {
+      "matrix": [
+        [
+          2,
+          1
+        ],
+        [
+          0,
+          3
+        ]
+      ]
+    }
+  },
+  {
+    "id": "symmetric-3",
+    "concept": "symmetric",
+    "params": {
+      "matrix": [
+        [
+          1,
+          2
+        ],
+        [
+          2,
+          1
+        ]
+      ]
+    }
+  },
+  {
+    "id": "mirror-1",
+    "concept": "mirror",
+    "params": {
+      "matrix": [
+        [
+          0,
+          1
+        ],
+        [
+          1,
+          0
+        ]
+      ]
+    }
+  },
+  {
+    "id": "mirror-2",
+    "concept": "mirror",
+    "params": {
+      "matrix": [
+        [
+          -1,
+          0
+        ],
+        [
+          0,
+          1
+        ]
+      ]
+    }
+  },
+  {
+    "id": "none-1",
+    "concept": "none",
+    "params": {
+      "matrix": [
+        [
+          0,
+          -1
+        ],
+        [
+          1,
+          0
+        ]
+      ]
+    }
+  },
+  {
+    "id": "none-2",
+    "concept": "none",
+    "params": {
+      "matrix": [
+        [
+          0,
+          1
+        ],
+        [
+          -1,
+          0
+        ]
+      ]
+    }
+  }
+]

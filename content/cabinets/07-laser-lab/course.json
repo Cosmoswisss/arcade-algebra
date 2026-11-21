@@ -1,0 +1,131 @@
+[
+  {
+    "id": "does-not-turn",
+    "title": "Arrows that do not turn",
+    "text": {
+      "guided": "Most arrows get **turned** by a matrix.\nBut some special directions only get **stretched** (or shrunk, or flipped). Those are the **eigenvectors**.\nFor $\\begin{bmatrix}2&0\\\\0&3\\end{bmatrix}$, the x-axis and the y-axis stay where they are.",
+      "fast": "An eigenvector v satisfies A·v = λ·v: same line, new length."
+    },
+    "examples": {
+      "games": "Like the axis a sprite is stretched along: it does not tilt.",
+      "physics": "Like the principal axes of a spinning object.",
+      "ai": "Like the main directions found by PCA."
+    },
+    "scene": [
+      {
+        "matrix": [
+          [
+            1,
+            0
+          ],
+          [
+            0,
+            1
+          ]
+        ],
+        "caption": "Normal plane.",
+        "ms": 800
+      },
+      {
+        "matrix": [
+          [
+            2,
+            0
+          ],
+          [
+            0,
+            3
+          ]
+        ],
+        "caption": "The axes only stretch: they are eigen-directions.",
+        "ms": 1800
+      }
+    ],
+    "check": {
+      "kind": "choice",
+      "prompt": "For the matrix [[2, 0], [0, 3]], which arrow keeps its direction?",
+      "options": [
+        "(1, 0)",
+        "(1, 1)",
+        "(1, 2)"
+      ],
+      "answer": 0
+    }
+  },
+  {
+    "id": "hidden-direction",
+    "title": "A hidden direction",
+    "text": {
+      "guided": "With $\\begin{bmatrix}2&1\\\\0&3\\end{bmatrix}$, the x-axis still does not turn, but there is **another** one: (1, 1) goes to (3, 3), three times longer, same line.",
+      "fast": "[[2, 1], [0, 3]] has eigenvectors (1, 0) and (1, 1)."
+    },
+    "examples": {
+      "games": "Like a diagonal that stays diagonal after a skewed zoom.",
+      "physics": "Like a stress direction that only stretches.",
+      "ai": "Like a stable direction of a linear model."
+    },
+    "check": {
+      "kind": "choice",
+      "prompt": "For [[2, 1], [0, 3]], where does (1, 1) go?",
+      "options": [
+        "(3, 3): same line, 3× longer",
+        "(2, 3): turned",
+        "(1, 1): unchanged"
+      ],
+      "answer": 0
+    }
+  },
+  {
+    "id": "no-straight-path",
+    "title": "When every arrow turns",
+    "text": {
+      "guided": "A rotation turns **every** direction.\nSo a quarter turn $\\begin{bmatrix}0&-1\\\\1&0\\end{bmatrix}$ has **no** real eigenvector.",
+      "fast": "Rotations (other than 0° and 180°) have no real eigenvectors."
+    },
+    "examples": {
+      "games": "Like spinning a camera: nothing stays pointing the same way.",
+      "physics": "Like a turntable: every radius turns.",
+      "ai": "Like a rotation of the feature space: no direction is preserved."
+    },
+    "scene": [
+      {
+        "matrix": [
+          [
+            1,
+            0
+          ],
+          [
+            0,
+            1
+          ]
+        ],
+        "caption": "Normal plane.",
+        "ms": 800
+      },
+      {
+        "matrix": [
+          [
+            0,
+            -1
+          ],
+          [
+            1,
+            0
+          ]
+        ],
+        "caption": "A quarter turn: every arrow turns.",
+        "ms": 1800
+      }
+    ],
+    "check": {
+      "kind": "choice",
+      "prompt": "Does [[0, −1], [1, 0]] have a direction it does not turn?",
+      "options": [
+        "No, it is a rotation",
+        "Yes, (1, 0)",
+        "Yes, (1, 1)"
+      ],
+      "answer": 0
+    }
+  }
+]

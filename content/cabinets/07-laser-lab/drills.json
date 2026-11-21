@@ -1,0 +1,116 @@
+[
+  {
+    "errorKind": "same-length-not-direction",
+    "label": "direction, not length",
+    "waves": [
+      {
+        "id": "drill-same-length-not-direction-1",
+        "concept": "none",
+        "params": {
+          "matrix": [
+            [
+              0,
+              -1
+            ],
+            [
+              1,
+              0
+            ]
+          ]
+        }
+      },
+      {
+        "id": "drill-same-length-not-direction-2",
+        "concept": "symmetric",
+        "params": {
+          "matrix": [
+            [
+              2,
+              1
+            ],
+            [
+              1,
+              2
+            ]
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "errorKind": "missed-none",
+    "label": "there is a straight path",
+    "waves": [
+      {
+        "id": "drill-missed-none-1",
+        "concept": "shear-one",
+        "params": {
+          "matrix": [
+            [
+              1,
+              1
+            ],
+            [
+              0,
+              1
+            ]
+          ]
+        }
+      },
+      {
+        "id": "drill-missed-none-2",
+        "concept": "axes",
+        "params": {
+          "matrix": [
+            [
+              2,
+              0
+            ],
+            [
+              0,
+              3
+            ]
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "errorKind": "other",
+    "label": "follow the grid lines",
+    "waves": [
+      {
+        "id": "drill-other-1",
+        "concept": "axes",
+        "params": {
+          "matrix": [
+            [
+              3,
+              0
+            ],
+            [
+              0,
+              1
+            ]
+          ]
+        }
+      },
+      {
+        "id": "drill-other-2",
+        "concept": "symmetric",
+        "params": {
+          "matrix": [
+            [
+              2,
+              1
+            ],
+            [
+              0,
+              3
+            ]
+          ]
+        }
+      }
+    ]
+  }
+]

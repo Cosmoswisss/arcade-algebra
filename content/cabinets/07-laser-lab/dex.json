@@ -1,0 +1,77 @@
+[
+  {
+    "concept": "axes",
+    "name": "EIGENVECTOR",
+    "body": "A direction the matrix does not turn: A·v = λ·v. For a diagonal matrix, the axes.",
+    "demo": [
+      [
+        2,
+        0
+      ],
+      [
+        0,
+        3
+      ]
+    ]
+  },
+  {
+    "concept": "shear-one",
+    "name": "ONLY ONE",
+    "body": "A shear keeps exactly one direction: the one it slides along. Every other arrow tilts.",
+    "demo": [
+      [
+        1,
+        1
+      ],
+      [
+        0,
+        1
+      ]
+    ]
+  },
+  {
+    "concept": "symmetric",
+    "name": "HIDDEN AXES",
+    "body": "Some matrices hide their eigenvectors on diagonals: [[2, 1], [1, 2]] keeps (1, 1) and (1, −1).",
+    "demo": [
+      [
+        2,
+        1
+      ],
+      [
+        1,
+        2
+      ]
+    ]
+  },
+  {
+    "concept": "mirror",
+    "name": "MIRROR LINE",
+    "body": "A mirror keeps the mirror line (λ = 1) and flips the line across it (λ = −1).",
+    "demo": [
+      [
+        0,
+        1
+      ],
+      [
+        1,
+        0
+      ]
+    ]
+  },
+  {
+    "concept": "none",
+    "name": "NO STRAIGHT PATH",
+    "body": "A rotation turns every direction: no real eigenvector at all.",
+    "demo": [
+      [
+        0,
+        -1
+      ],
+      [
+        1,
+        0
+      ]
+    ]
+  }
+]

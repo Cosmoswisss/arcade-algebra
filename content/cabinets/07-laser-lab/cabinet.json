@@ -1,0 +1,39 @@
+{
+  "id": "laser-lab",
+  "order": 7,
+  "name": "Laser Lab",
+  "notion": "An eigenvector is a direction a matrix does not turn: it only stretches, shrinks or flips it.",
+  "tiers": [
+    {
+      "rule": "assist",
+      "banner": "The exit beam is shown live",
+      "waves": {
+        "guided": 3,
+        "fast": 2
+      }
+    },
+    {
+      "rule": "partial",
+      "banner": "NEW RULE · THE EXIT BEAM IS HIDDEN UNTIL YOU FIRE",
+      "waves": {
+        "guided": 3,
+        "fast": 2
+      }
+    },
+    {
+      "rule": "abstract",
+      "banner": "NEW RULE · ONLY THE LENS MATRIX",
+      "waves": {
+        "guided": 3,
+        "fast": 2
+      }
+    }
+  ],
+  "waveSeconds": {
+    "guided": 18,
+    "fast": 14
+  },
+  "boss": {
+    "waves": 2
+  }
+}

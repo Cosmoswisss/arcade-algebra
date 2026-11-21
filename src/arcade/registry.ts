@@ -7,6 +7,7 @@ import { createSquash } from './cabinets/squash/game';
 import { createRewind } from './cabinets/rewind/game';
 import { createDrone } from './cabinets/drone/game';
 import { createFactory } from './cabinets/factory/game';
+import { createLaserLab } from './cabinets/laser-lab/game';
 
 export type GameFactory = () => CabinetGame & { setup(ctx: KitContext): void };
 
@@ -18,4 +19,5 @@ export const GAMES: Partial<Record<CabinetId, GameFactory>> = {
   factory: createFactory,
   squash: createSquash,
   rewind: createRewind,
+  'laser-lab': createLaserLab,
 };

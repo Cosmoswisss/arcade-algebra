@@ -5,10 +5,8 @@ import { validateSquashParams } from '../arcade/cabinets/squash/params';
 import { validateRewindParams } from '../arcade/cabinets/rewind/params';
 import { validateDroneParams } from '../arcade/cabinets/drone/params';
 import { validateFactoryParams } from '../arcade/cabinets/factory/params';
+import { validateLaserParams } from '../arcade/cabinets/laser-lab/params';
 import type { ParamsValidator } from './types';
-
-/** Temporary validator for cabinets whose game is not built yet: accepts any object. */
-const pending: ParamsValidator = (p) => (typeof p === 'object' && p !== null ? null : 'params must be an object');
 
 export const PARAMS_VALIDATORS: Record<CabinetId, ParamsValidator> = {
   'vector-golf': validateGolfParams,
@@ -17,5 +15,5 @@ export const PARAMS_VALIDATORS: Record<CabinetId, ParamsValidator> = {
   factory: validateFactoryParams,
   squash: validateSquashParams,
   rewind: validateRewindParams,
-  'laser-lab': pending,
+  'laser-lab': validateLaserParams,
 };
