@@ -2,6 +2,7 @@ import { Application, Container, Graphics } from 'pixi.js';
 import { useEffect, useRef } from 'react';
 import type { CabinetContent, Wave } from '../../content/types';
 import type { Mode, Rule } from '../../engine/types';
+import type { Learner } from '../../engine/waves';
 import { sfx, unlockAudio } from './audio';
 import type { KitContext } from './context';
 import { Coords } from './coords';
@@ -22,7 +23,7 @@ export type GameFactory = () => CabinetGame & { setup(ctx: KitContext): void };
 
 /** How the stage is driven: a full run (the cabinet), a looping replay (a lesson scene), or one untimed wave ("Your turn"). */
 export type StageMode =
-  | { kind: 'run'; mode: Mode; startTier?: 0 | 1; onWaveResult: (o: WaveOutcome) => { newDex: string | null }; dex: () => { count: number; total: number; isNew: (concept: string) => boolean }; onExit: () => void }
+  | { kind: 'run'; mode: Mode; startTier?: 0 | 1; onWaveResult: (o: WaveOutcome) => { newDex: string | null }; dex: () => { count: number; total: number; isNew: (concept: string) => boolean }; onExit: () => void; learner?: Learner; onProve?: () => void }
   | { kind: 'demo'; wave: Wave; rule: Rule; seconds?: number }
   | { kind: 'challenge'; wave: Wave; rule: Rule; onDone: (r: ChallengeResult) => void };
 
@@ -129,12 +130,12 @@ export default function ArcadeStage(props: ArcadeStageProps) {
       let hud: Hud | null = null;
       if (mode.kind === 'run') {
         const runOpts = () => latest.current.mode as Extract<StageMode, { kind: 'run' }>;
-        runner = new Runner(latest.current.content, game, { mode: mode.mode, startTier: mode.startTier, onWaveResult: (o) => runOpts().onWaveResult(o) });
+        runner = new Runner(latest.current.content, game, { mode: mode.mode, startTier: mode.startTier, learner: mode.learner, onWaveResult: (o) => runOpts().onWaveResult(o) });
         const r = runner;
         hud = new Hud(latest.current.content.meta, latest.current.content.dex, {
           onLock: () => { if (r.phase === 'play') { r.lock(); sfx.lock(); } },
           onExit: () => runOpts().onExit(),
-          onRetry: () => r.start(),
+          onRetry: () => (r.phase === 'done' && runOpts().onProve ? runOpts().onProve!() : r.start()),
           dex: () => runOpts().dex(),
         });
         app.stage.addChild(hud.view);
@@ -167,6 +168,7 @@ export default function ArcadeStage(props: ArcadeStageProps) {
         if (runner) {
           if (e.code === 'Space') { e.preventDefault(); unlockAudio(); if (runner.phase === 'play') { if (runner.phaseClock > 0.3) { runner.lock(); sfx.lock(); } } else runner.click(); }
           if (e.code === 'Escape') (latest.current.mode as Extract<StageMode, { kind: 'run' }>).onExit();
+          if (import.meta.env.DEV && e.shiftKey && e.code === 'KeyC') runner.devClear();
         } else if (challenge && e.code === 'Space' && el.contains(document.activeElement)) { e.preventDefault(); lock(); }
       };
       window.addEventListener('keydown', onKey);

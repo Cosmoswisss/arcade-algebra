@@ -3,7 +3,7 @@ import { CABINETS } from './engine/types';
 import type { CabinetId } from './engine/types';
 
 export type Route =
-  | { name: 'title' } | { name: 'profile' } | { name: 'diagnostic' } | { name: 'hall' }
+  | { name: 'title' } | { name: 'profile' } | { name: 'diagnostic' } | { name: 'hall' } | { name: 'knowledge' } | { name: 'transfer'; id?: CabinetId }
   | { name: 'course'; id: CabinetId } | { name: 'play'; id: CabinetId };
 
 export function parseRoute(hash: string): Route {
@@ -12,6 +12,8 @@ export function parseRoute(hash: string): Route {
   if (a === 'profile') return { name: 'profile' };
   if (a === 'diagnostic') return { name: 'diagnostic' };
   if (a === 'hall') return { name: 'hall' };
+  if (a === 'knowledge') return { name: 'knowledge' };
+  if (a === 'transfer') return id ? { name: 'transfer', id } : { name: 'transfer' };
   if (a === 'course' && id) return { name: 'course', id };
   if (a === 'play' && id) return { name: 'play', id };
   return { name: 'title' };
@@ -23,6 +25,10 @@ export const href = {
   profile: '#/profile',
   diagnostic: '#/diagnostic',
   hall: '#/hall',
+  knowledge: '#/knowledge',
+  transfer: '#/transfer',
+  /** The check at the end of one cabinet. */
+  transferFor: (id: CabinetId) => `#/transfer/${id}`,
   course: (id: CabinetId) => `#/course/${id}`,
   play: (id: CabinetId) => `#/play/${id}`,
 };

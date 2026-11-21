@@ -67,6 +67,7 @@ export function Title() {
         <ol id="how" className="steps">
           <li><b>Learn</b><span>A one-minute lesson that replays a real wave of the game. Then your turn: the same game, untimed, with a guide robot.</span></li>
           <li><b>Play</b><span>A different arcade game for every idea. The first wave waits for you; then the clock runs, and you read coordinates, then the matrix alone.</span></li>
+          <li><b>Be tracked, openly</b><span>Every answer, in lessons and in games, updates an estimate of what you know, with how sure it is. Your weak spots become the next lessons.</span></li>
           <li><b>See your mistakes</b><span>Every miss is named — “you swapped î and ĵ” — replayed step by step, and trained on in the next wave.</span></li>
         </ol>
       </div>

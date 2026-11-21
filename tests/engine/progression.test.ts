@@ -55,11 +55,13 @@ describe('progression', () => {
     expect(cabinetState(p, 'vector-golf')).toBe('open');
     expect(cabinetState(p, 'drone')).toBe('locked');
   });
-  test('diagnostic placement opens and marks mastered cabinets', () => {
-    const p = placeFromDiagnostic(defaultProgress(), ['hole-in-the-wall']);
-    expect(p.mastery['hole-in-the-wall']).toBe(0.7);
-    expect(cabinetState(p, 'hole-in-the-wall')).toBe('mastered');
-    expect(cabinetState(p, 'drone')).toBe('locked');
+  test('diagnostic placement opens the next cabinet but does not mark the cabinet mastered', () => {
+    const p = placeFromDiagnostic(defaultProgress(), ['vector-golf']);
+    expect(p.mastery['vector-golf']).toBeGreaterThan(0.2);
+    expect(p.mastery['vector-golf']).toBeLessThan(0.6);
+    expect(cabinetState(p, 'vector-golf')).toBe('open');
+    expect(cabinetState(p, 'drone')).toBe('open');
+    expect(cabinetState(p, 'hole-in-the-wall')).toBe('locked');
   });
   test('a cabinet opens when every earlier one is finished or mastered', () => {
     const p = placeFromDiagnostic(defaultProgress(), ['vector-golf']);

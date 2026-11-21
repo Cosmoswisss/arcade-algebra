@@ -6,6 +6,8 @@ import { StoreProvider, useStore } from './store';
 import { Course } from './screens/Course';
 import { Diagnostic } from './screens/Diagnostic';
 import { Hall } from './screens/Hall';
+import { Knowledge } from './screens/Knowledge';
+import { Transfer } from './screens/Transfer';
 import { Profile } from './screens/Profile';
 import { Title } from './screens/Title';
 import { LogoMark } from './ui/icons';
@@ -17,6 +19,7 @@ function TopBar() {
       <a className="brand" href={href.title} aria-label="Linear Arcade, home"><LogoMark /><span>Linear Arcade</span></a>
       <nav aria-label="Main">
         {progress.profile && <a href={href.hall}>Arcade hall</a>}
+        {progress.profile && <a href={href.knowledge}>My knowledge</a>}
       </nav>
       {progress.profile && <a className="chip" href={href.hall} title="Your level and XP"><span className="mono">Lv {levelOf(progress.xp)}</span><span className="mono">{progress.xp} XP</span></a>}
     </header>
@@ -26,13 +29,15 @@ function TopBar() {
 /** PixiJS and the cabinets are about 1 MB: load them only when a cabinet is opened. */
 const Play = lazy(() => import('./screens/Play').then((m) => ({ default: m.Play })));
 
-const NEEDS_PROFILE: Route['name'][] = ['hall', 'course', 'play', 'diagnostic'];
+const NEEDS_PROFILE: Route['name'][] = ['hall', 'knowledge', 'transfer', 'course', 'play', 'diagnostic'];
 
 function Screen({ route }: { route: Route }) {
   switch (route.name) {
     case 'title': return <Title />;
     case 'profile': return <Profile />;
     case 'hall': return <Hall />;
+    case 'knowledge': return <Knowledge />;
+    case 'transfer': return <Transfer only={route.id} />;
     case 'diagnostic': return <Diagnostic />;
     case 'course': return <Course id={route.id} />;
     case 'play': return <Suspense fallback={<p className="loading" role="status">Powering up the game…</p>}><Play id={route.id} /></Suspense>;
@@ -54,7 +59,7 @@ function Shell() {
   if (guarded) return null;
 
   const fullscreen = route.name === 'play';
-  const key = route.name === 'course' || route.name === 'play' ? `${route.name}-${route.id}` : route.name;
+  const key = route.name === 'course' || route.name === 'play' ? `${route.name}-${route.id}` : route.name === 'transfer' ? `transfer-${route.id ?? 'all'}` : route.name;
   return (
     <>
       {!fullscreen && <TopBar />}

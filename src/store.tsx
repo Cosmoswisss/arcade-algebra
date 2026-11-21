@@ -1,8 +1,8 @@
 import { createContext, useCallback, useContext, useMemo, useRef, useState, type ReactNode } from 'react';
 import { loadContent, type LoadedContent as Loaded } from './content/load';
 import {
-  applyWaveResult, celebrate as celebrateZone, defaultProgress, loadProgressV2, placeFromDiagnostic, resetProgressV2, saveProgressV2,
-  type Applied, type ProgressV2, type WaveResult,
+  applyCourseResult, applyTransfer, applyWaveResult, celebrate as celebrateZone, defaultProgress, loadProgressV2, placeFromDiagnostic, resetProgressV2, saveProgressV2,
+  type Applied, type CourseResult, type ProgressV2, type TransferAnswers, type TransferAttempt, type WaveResult,
 } from './engine/progression';
 import type { CabinetId, Mode, Theme } from './engine/types';
 
@@ -15,7 +15,11 @@ interface Store {
   /** The latest progress, for callbacks that run outside React (the game). */
   latest: () => ProgressV2;
   setModeOverride: (id: CabinetId, mode: Mode) => void;
-  placement: (passed: CabinetId[]) => void;
+  /** Evidence from a lesson question (the cabinet's lesson screens). */
+  recordCourse: (id: CabinetId, r: CourseResult) => void;
+  /** Records a finished transfer check and returns it with the estimates before and after. */
+  finishTransfer: (answers: TransferAnswers[]) => TransferAttempt;
+  placement: (passed: CabinetId[], failed?: CabinetId[], inferred?: CabinetId[]) => void;
   /** The robot said this cleared zone's line on the map: do not say it again. */
   celebrate: (id: CabinetId) => void;
   reset: () => void;
@@ -23,6 +27,7 @@ interface Store {
 
 const Ctx = createContext<Store | null>(null);
 const content = loadContent();
+const conceptsOf = (id: CabinetId) => content.cabinets[id]?.dex.map((d) => d.concept);
 
 export function StoreProvider({ children }: { children: ReactNode }) {
   const [progress, setProgress] = useState<ProgressV2>(() => loadProgressV2());
@@ -33,9 +38,11 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     progress, content,
     latest: () => ref.current,
     setProfile: (mode, theme) => commit({ ...ref.current, profile: { mode, theme } }),
-    applyWave: (id, r) => { const a = applyWaveResult(ref.current, id, r); commit(a.next); return a; },
+    applyWave: (id, r) => { const a = applyWaveResult(ref.current, id, r, conceptsOf(id)); commit(a.next); return a; },
+    recordCourse: (id, r) => commit(applyCourseResult(ref.current, id, r, conceptsOf(id))),
     setModeOverride: (id, mode) => commit({ ...ref.current, modeOverride: { ...ref.current.modeOverride, [id]: mode } }),
-    placement: (passed) => commit(placeFromDiagnostic(ref.current, passed)),
+    finishTransfer: (answers) => { const r = applyTransfer(ref.current, answers, conceptsOf); commit(r.next); return r.attempt; },
+    placement: (passed, failed = [], inferred = []) => commit(placeFromDiagnostic(ref.current, passed, failed, conceptsOf, Date.now(), inferred)),
     celebrate: (id) => commit(celebrateZone(ref.current, id)),
     reset: () => { const p = resetProgressV2(); ref.current = p; setProgress(p); },
   }), [progress, commit]);

@@ -8,6 +8,7 @@ import { useStore } from '../store';
 import { CABINET_INFO } from '../ui/Cabinet';
 import { GridMap } from '../ui/GridMap';
 import { Robot } from '../ui/Robot';
+import { LearnerReport } from '../ui/LearnerReport';
 
 export function Hall() {
   const { progress, content, reset, celebrate } = useStore();
@@ -62,6 +63,8 @@ export function Hall() {
         }} />
       <p className="floor-msg" role="status">{message}</p>
 
+      <LearnerReport progress={progress} content={content} />
+
       {content.errors.length > 0 && (
         <details className="problems">
           <summary>{content.errors.length} content problem{content.errors.length > 1 ? 's' : ''} (affected games are switched off)</summary>
@@ -72,6 +75,7 @@ export function Hall() {
       <footer className="hall-foot">
         <a href={href.profile}>Change level or theme</a>
         <a href={href.diagnostic}>Take the placement test</a>
+        <a href={href.transfer}>Transfer check</a>
         {confirm
           ? <span>Erase all progress? <button className="linklike" onClick={() => { reset(); setConfirm(false); }}>Yes, erase</button> · <button className="linklike" onClick={() => setConfirm(false)}>Cancel</button></span>
           : <button className="linklike" onClick={() => setConfirm(true)}>Reset progress</button>}

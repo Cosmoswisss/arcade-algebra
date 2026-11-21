@@ -211,9 +211,13 @@ export class Hud {
       const done = r.phase === 'done';
       this.kicker.text = done ? 'BADGE EARNED' : `WAVE ${r.run.waveIndex + 1}`;
       this.title.text = done ? 'GAME CLEARED' : 'GAME OVER';
-      this.body.text = `Score ${r.run.score}\n\n${this.meta.notion}`;
+      this.body.text = done ? `Score ${r.run.score}
+
+Now prove it: a short check on new cases, with no help.` : `Score ${r.run.score}
+
+${this.meta.notion}`;
       this.btnA.visible = this.btnB.visible = true;
-      this.btnA.setText(done ? 'PLAY AGAIN' : 'RETRY');
+      this.btnA.setText(done ? 'TRANSFER CHECK' : 'RETRY');
     }
     if (r.phase !== 'card') this.body.position.set(L.w / 2, L.h / 2 - 20);
   }

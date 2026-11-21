@@ -2,8 +2,8 @@ import type { CabinetContent, DexCard, Wave } from '../../content/types';
 import type { Diagnosis } from '../../engine/diagnoseKinds';
 import { RULES } from '../../engine/types';
 import type { Mode, Rule } from '../../engine/types';
-import { isBossWave, nextWave, tierFor, waveSeconds } from '../../engine/waves';
-import type { RunState } from '../../engine/waves';
+import { nextWave, planWave, tierStart, waveSeconds } from '../../engine/waves';
+import type { Learner, RunState } from '../../engine/waves';
 
 /** What a cabinet's mini-game must provide. Everything else (flow, pacing, scoring) is the Runner's job. */
 export interface CabinetGame {
@@ -41,6 +41,8 @@ export interface WaveOutcome {
   /** This win completed the boss stage: the cabinet is cleared. */
   cleared: boolean;
   diagnosis: Diagnosis | null;
+  /** The mistake this wave trained, when it was a training wave. */
+  drillKind: string | null;
 }
 
 export interface RunnerOptions {
@@ -48,6 +50,8 @@ export interface RunnerOptions {
   /** 1 starts the run at the partial rule (a cabinet passed in the placement test). */
   startTier?: 0 | 1;
   rand?: () => number;
+  /** What the game knows about the learner: makes the next wave depend on weak concepts and recurring mistakes. */
+  learner?: Learner;
   /** Called once per wave; returns the Dex concept unlocked by this wave, if any. */
   onWaveResult: (o: WaveOutcome) => { newDex: string | null };
 }
@@ -71,6 +75,11 @@ export class Runner {
   rule: Rule = 'assist';
   boss = false;
   isDrill = false;
+  private drillKind: string | null = null;
+  /** The training wave is there because this mistake keeps coming back, not because of the last wave. */
+  recurring = false;
+  /** The highest tier reached in a lost run: the next run restarts one tier below it, not from the aids. */
+  private bestTier = 0;
   drillLabel = '';
   banner = '';
   /** Wave progress 0..1 and its duration in seconds. */
@@ -110,22 +119,27 @@ export class Runner {
   }
 
   start() {
-    this.run = { ...this.run, waveIndex: -1, lives: START_LIVES, score: 0, combo: 0, focus: null, lastWaveId: null };
+    // After a lost run, restart one tier below the best one reached (not from the aids), and keep the mistake to train on.
+    const first = this.opts.startTier ?? 0;
+    const resume = Math.max(first, this.bestTier - 1);
+    this.run = { ...this.run, waveIndex: resume > first ? tierStart(this.meta, this.opts.mode, resume) - tierStart(this.meta, this.opts.mode, first) - 1 : -1, hold: 0, lives: START_LIVES, score: 0, combo: 0, lastWaveId: null };
     this.bossWins = 0;
     this.setupWave();
   }
 
   private setupWave() {
     const prevRule = this.run.waveIndex < 0 ? null : this.rule;
-    const waveIndex = this.run.waveIndex + 1;
     const { meta } = this;
-    this.boss = isBossWave(meta, this.opts.mode, waveIndex, this.opts.startTier ?? 0);
-    const tierIndex = tierFor(meta, this.opts.mode, waveIndex, this.opts.startTier ?? 0);
+    const plan = planWave(this.content, this.run, this.opts.learner, this.opts.startTier ?? 0);
+    const { waveIndex, tierIndex } = plan;
+    this.boss = plan.boss;
     this.rule = this.boss ? 'abstract' : RULES[tierIndex];
-    this.run = { ...this.run, waveIndex, tierIndex };
-    const pick = nextWave(this.content, this.run, this.rand);
+    this.run = { ...this.run, waveIndex, tierIndex, hold: plan.hold };
+    const pick = nextWave(this.content, this.run, this.rand, this.opts.learner);
     this.wave = pick.wave;
     this.isDrill = pick.isDrill;
+    this.drillKind = pick.drillKind ?? null;
+    this.recurring = pick.recurring ?? false;
     this.drillLabel = pick.drillLabel ?? '';
     this.run.lastWaveId = pick.wave.id;
     this.duration = waveSeconds(meta, this.opts.mode, tierIndex);
@@ -135,11 +149,19 @@ export class Runner {
     this.lockSeen = false;
     this.outcome = null;
     this.game.startWave(pick.wave, this.rule);
-    if (this.isDrill) this.banner = `TRAINING · ${this.drillLabel.toUpperCase()}`;
+    if (this.isDrill) this.banner = this.recurring ? `YOUR RECURRING MISTAKE · ${this.drillLabel.toUpperCase()}` : `TRAINING · ${this.drillLabel.toUpperCase()}`;
     else if (this.boss) this.banner = `BOSS WAVE · ${this.bossWins + 1}/${meta.boss.waves} — no help this time`;
     else if (prevRule !== this.rule) this.banner = meta.tiers[tierIndex].banner;
     else this.banner = '';
     this.enter('brief');
+  }
+
+  /** Dev only (Shift+C in `npm run dev`): counts the boss as cleared and jumps to the end screen, to test what follows. */
+  devClear() {
+    const concept = this.content.dex[0]?.concept ?? 'dev';
+    this.bossWins = this.meta.boss.waves;
+    this.opts.onWaveResult({ correct: true, rule: 'abstract', firstTry: true, concept, boss: true, cleared: true, diagnosis: null, drillKind: null });
+    this.enter('done');
   }
 
   private enter(p: Phase) { this.phase = p; this.phaseClock = 0; }
@@ -184,7 +206,7 @@ export class Runner {
     const realBoss = this.boss && !this.isDrill;
     if (correct && realBoss) this.bossWins += 1;
     const cleared = correct && realBoss && this.bossWins >= this.meta.boss.waves;
-    const outcome: WaveOutcome = { correct, rule: this.rule, firstTry: correct, concept: wave.concept, boss: realBoss, cleared, diagnosis };
+    const outcome: WaveOutcome = { correct, rule: this.rule, firstTry: correct, concept: wave.concept, boss: realBoss, cleared, diagnosis, drillKind: this.isDrill ? this.drillKind : null };
     this.outcome = outcome;
     if (correct) {
       this.run.combo += 1;
@@ -203,7 +225,11 @@ export class Runner {
   }
 
   private afterReplay() {
-    if (this.run.lives <= 0) { this.enter('over'); return; }
+    if (this.run.lives <= 0) {
+      this.bestTier = Math.max(this.bestTier, this.boss ? this.meta.tiers.length - 1 : this.run.tierIndex);
+      this.enter('over');
+      return;
+    }
     if (this.pendingCard) { this.card = this.pendingCard; this.pendingCard = null; this.enter('card'); return; }
     this.afterCard();
   }

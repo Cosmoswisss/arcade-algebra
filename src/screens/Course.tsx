@@ -4,6 +4,8 @@ import { LazyStage, PLAYABLE } from '../arcade/playable';
 import { findWave } from '../content/lessons';
 import type { CourseStep } from '../content/types';
 import { lessonPlan, reminderFor, warmUpPick } from '../engine/adapt';
+import { cabinetEstimate } from '../engine/belief';
+import { changeLine } from '../engine/insight';
 import { effectiveMode } from '../engine/progression';
 import type { CabinetId, Mode } from '../engine/types';
 import { href } from '../router';
@@ -44,7 +46,7 @@ function LessonScene({ id, step }: { id: CabinetId; step: CourseStep }) {
 }
 
 export function Course({ id }: { id: CabinetId }) {
-  const { progress, content } = useStore();
+  const { progress, content, recordCourse, latest } = useStore();
   const cabinet = content.cabinets[id];
   // decided once when the course opens: what to skip, what to remind, what to warm up on
   const [plan] = useState(() => (cabinet ? lessonPlan(progress, id, cabinet) : { steps: [], skipped: 0 }));
@@ -59,6 +61,7 @@ export function Course({ id }: { id: CabinetId }) {
   // a first-try success shortens the NEXT lesson, not the one on screen
   const fastNext = useRef(false);
   const lines = content.robot;
+  const [logged, setLogged] = useState('');
 
   const theme = progress.profile?.theme ?? 'games';
   const steps = cabinet?.course ?? [];
@@ -97,6 +100,11 @@ export function Course({ id }: { id: CabinetId }) {
   const submit = (a: Answer) => {
     if (!step.check) return;
     const res = checkAnswer(step.check, a);
+    const concepts = cabinet?.dex.map((d) => d.concept);
+    const before = cabinetEstimate(progress.beliefs, id, concepts);
+    recordCourse(id, { correct: res.correct, choice: step.check.kind === 'choice', retry: attempt > 0, kind: res.diagnosis?.kind ?? null });
+    const after = cabinetEstimate(latest().beliefs, id, concepts);
+    setLogged(changeLine(cabinet?.meta.name ?? id, before, after));
     setDiagnosis(res.diagnosis);
     if (res.correct) solved(attempt === 0); else setView('wrong');
   };
@@ -196,6 +204,7 @@ export function Course({ id }: { id: CabinetId }) {
             <div className="wrong" role="status">
               <Robot name={lines.name} mood="oops" line={robotLine(lines, 'wrong', { errorKind: diagnosis?.kind })} />
               {diagnosis?.text && <p className="verdict-detail mono">{diagnosis.text}</p>}
+              <p className="evidence-line">{logged}</p>
               {remedial && (
                 <article className="remedial">
                   <h2>{remedial.title}</h2>
