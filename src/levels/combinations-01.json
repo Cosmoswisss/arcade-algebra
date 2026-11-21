@@ -1,0 +1,39 @@
+{
+  "id": "combinations-01",
+  "skill": "combinations",
+  "title": "Two of one, one of the other",
+  "prompt": "The dot sits at 2 × î + 1 × ĵ. Move the arrows so the dot lands on the target.",
+  "shape": [
+    [
+      0,
+      0
+    ],
+    [
+      2,
+      0
+    ],
+    [
+      2,
+      1
+    ]
+  ],
+  "target": {
+    "type": "point",
+    "from": [
+      2,
+      1
+    ],
+    "point": [
+      4,
+      3
+    ]
+  },
+  "movable": [
+    "i",
+    "j"
+  ],
+  "hints": [
+    "Watch the dot: it always sits at 2 green arrows plus 1 red arrow.",
+    "Try leaving ĵ alone and only moving î."
+  ]
+}

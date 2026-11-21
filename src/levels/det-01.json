@@ -1,0 +1,36 @@
+{
+  "id": "det-01",
+  "skill": "determinant",
+  "title": "Double the area",
+  "prompt": "Make the square cover exactly 2 units of area.",
+  "shape": [
+    [
+      0,
+      0
+    ],
+    [
+      1,
+      0
+    ],
+    [
+      1,
+      1
+    ],
+    [
+      0,
+      1
+    ]
+  ],
+  "target": {
+    "type": "area",
+    "det": 2
+  },
+  "movable": [
+    "i",
+    "j"
+  ],
+  "hints": [
+    "The area of the shape is the area of the parallelogram made by î and ĵ.",
+    "Try stretching only one arrow."
+  ]
+}

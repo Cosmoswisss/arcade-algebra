@@ -1,0 +1,36 @@
+{
+  "id": "det-03",
+  "skill": "determinant",
+  "title": "Flip it",
+  "prompt": "Make the area −1. Yes, negative!",
+  "shape": [
+    [
+      0,
+      0
+    ],
+    [
+      1,
+      0
+    ],
+    [
+      1,
+      1
+    ],
+    [
+      0,
+      1
+    ]
+  ],
+  "target": {
+    "type": "area",
+    "det": -1
+  },
+  "movable": [
+    "i",
+    "j"
+  ],
+  "hints": [
+    "A negative area means the plane got flipped over.",
+    "What happens if î and ĵ trade places?"
+  ]
+}

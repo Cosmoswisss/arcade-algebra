@@ -1,0 +1,34 @@
+{
+  "id": "vectors-01",
+  "skill": "vectors",
+  "title": "Point the arrow",
+  "prompt": "Drag the green arrow so its tip lands on the target.",
+  "shape": [
+    [
+      0,
+      0
+    ],
+    [
+      1,
+      0
+    ]
+  ],
+  "target": {
+    "type": "point",
+    "from": [
+      1,
+      0
+    ],
+    "point": [
+      3,
+      2
+    ]
+  },
+  "movable": [
+    "i"
+  ],
+  "hints": [
+    "An arrow is just a move: how far right, how far up?",
+    "The target is 3 steps right and 2 steps up."
+  ]
+}

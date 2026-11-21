@@ -1,0 +1,39 @@
+{
+  "id": "combinations-02",
+  "skill": "combinations",
+  "title": "One forward, one back",
+  "prompt": "This dot sits at 1 × î − 1 × ĵ. Bring it to the target.",
+  "shape": [
+    [
+      0,
+      0
+    ],
+    [
+      1,
+      0
+    ],
+    [
+      1,
+      -1
+    ]
+  ],
+  "target": {
+    "type": "point",
+    "from": [
+      1,
+      -1
+    ],
+    "point": [
+      0,
+      2
+    ]
+  },
+  "movable": [
+    "i",
+    "j"
+  ],
+  "hints": [
+    "Subtracting ĵ means walking it backwards.",
+    "î − ĵ must equal (0, 2). Many answers work!"
+  ]
+}

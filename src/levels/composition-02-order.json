@@ -1,0 +1,64 @@
+{
+  "id": "composition-02-order",
+  "skill": "composition",
+  "title": "First stretch, then you",
+  "prompt": "The shape was stretched first. Add your move so it lands in the hole.",
+  "shape": [
+    [
+      0,
+      0
+    ],
+    [
+      0.25,
+      0
+    ],
+    [
+      0.25,
+      0.5
+    ],
+    [
+      1,
+      0.5
+    ],
+    [
+      1,
+      1
+    ],
+    [
+      0,
+      1
+    ]
+  ],
+  "target": {
+    "type": "shape",
+    "matrix": [
+      [
+        0,
+        -1
+      ],
+      [
+        2,
+        0
+      ]
+    ]
+  },
+  "pre": [
+    [
+      2,
+      0
+    ],
+    [
+      0,
+      1
+    ]
+  ],
+  "movable": [
+    "i",
+    "j"
+  ],
+  "targetsError": "composition-order",
+  "hints": [
+    "The stretch already happened. What single move is left?",
+    "The hole is the stretched shape turned a quarter turn."
+  ]
+}

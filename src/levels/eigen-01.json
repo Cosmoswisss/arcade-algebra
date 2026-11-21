@@ -1,0 +1,44 @@
+{
+  "id": "eigen-01",
+  "skill": "eigen",
+  "title": "Don't turn",
+  "prompt": "This move stretches the plane. Find an arrow (blue) that keeps its direction: its image (dashed) only gets longer.",
+  "shape": [
+    [
+      0,
+      0
+    ],
+    [
+      1,
+      0
+    ],
+    [
+      1,
+      1
+    ],
+    [
+      0,
+      1
+    ]
+  ],
+  "target": {
+    "type": "direction"
+  },
+  "start": [
+    [
+      2,
+      0
+    ],
+    [
+      0,
+      3
+    ]
+  ],
+  "movable": [
+    "v"
+  ],
+  "hints": [
+    "Look at the grid: which lines did not tilt?",
+    "Try the axes."
+  ]
+}

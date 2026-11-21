@@ -1,0 +1,54 @@
+{
+  "id": "error-one-column",
+  "skill": "matrix-transform",
+  "title": "Lean over",
+  "prompt": "Slant the shape into the hole.",
+  "shape": [
+    [
+      0,
+      0
+    ],
+    [
+      0.25,
+      0
+    ],
+    [
+      0.25,
+      0.5
+    ],
+    [
+      1,
+      0.5
+    ],
+    [
+      1,
+      1
+    ],
+    [
+      0,
+      1
+    ]
+  ],
+  "target": {
+    "type": "shape",
+    "matrix": [
+      [
+        1,
+        1
+      ],
+      [
+        0,
+        1
+      ]
+    ]
+  },
+  "movable": [
+    "i",
+    "j"
+  ],
+  "targetsError": "one-column",
+  "hints": [
+    "One of the arrows does not need to move.",
+    "The bottom edge stays put. What about the top?"
+  ]
+}

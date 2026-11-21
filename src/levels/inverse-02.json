@@ -1,0 +1,63 @@
+{
+  "id": "inverse-02",
+  "skill": "inverse",
+  "title": "Undo the slant",
+  "prompt": "The shape was slanted to the right. Straighten it back.",
+  "shape": [
+    [
+      0,
+      0
+    ],
+    [
+      0.25,
+      0
+    ],
+    [
+      0.25,
+      0.5
+    ],
+    [
+      1,
+      0.5
+    ],
+    [
+      1,
+      1
+    ],
+    [
+      0,
+      1
+    ]
+  ],
+  "target": {
+    "type": "shape",
+    "matrix": [
+      [
+        1,
+        0
+      ],
+      [
+        0,
+        1
+      ]
+    ]
+  },
+  "pre": [
+    [
+      1,
+      1
+    ],
+    [
+      0,
+      1
+    ]
+  ],
+  "movable": [
+    "i",
+    "j"
+  ],
+  "hints": [
+    "Which arrow was slanted? Slant it the other way.",
+    "Leave î alone."
+  ]
+}

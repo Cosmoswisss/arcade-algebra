@@ -1,0 +1,54 @@
+{
+  "id": "transform-03-sign",
+  "skill": "matrix-transform",
+  "title": "Mirror",
+  "prompt": "Flip the shape into the hole.",
+  "shape": [
+    [
+      0,
+      0
+    ],
+    [
+      0.25,
+      0
+    ],
+    [
+      0.25,
+      0.5
+    ],
+    [
+      1,
+      0.5
+    ],
+    [
+      1,
+      1
+    ],
+    [
+      0,
+      1
+    ]
+  ],
+  "target": {
+    "type": "shape",
+    "matrix": [
+      [
+        -1,
+        0
+      ],
+      [
+        0,
+        1
+      ]
+    ]
+  },
+  "movable": [
+    "i",
+    "j"
+  ],
+  "targetsError": "sign-flip",
+  "hints": [
+    "Which corner moved to the other side?",
+    "The green corner is now on the left: î points left."
+  ]
+}

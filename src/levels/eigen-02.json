@@ -1,0 +1,44 @@
+{
+  "id": "eigen-02",
+  "skill": "eigen",
+  "title": "Hidden direction",
+  "prompt": "This move slants and stretches. Find an arrow that does not turn.",
+  "shape": [
+    [
+      0,
+      0
+    ],
+    [
+      1,
+      0
+    ],
+    [
+      1,
+      1
+    ],
+    [
+      0,
+      1
+    ]
+  ],
+  "target": {
+    "type": "direction"
+  },
+  "start": [
+    [
+      2,
+      1
+    ],
+    [
+      0,
+      3
+    ]
+  ],
+  "movable": [
+    "v"
+  ],
+  "hints": [
+    "One easy direction is along the x-axis. Is there another?",
+    "Try a diagonal."
+  ]
+}
