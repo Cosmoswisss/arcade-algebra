@@ -12,3 +12,13 @@ h1 { margin: 8px 0; font-size: 1.6rem; }
 .matrix-det { color: var(--muted); }
 button { font: inherit; border: 0; border-radius: 10px; padding: 10px 16px; cursor: pointer; background: var(--card); color: var(--fg); }
 button.primary { background: var(--accent); color: white; font-weight: 600; }
+.side { display: flex; flex-direction: column; gap: 12px; }
+.check { width: 100%; font-size: 1.1rem; }
+.feedback { border-radius: 12px; padding: 12px; margin-top: 8px; }
+.feedback.good { background: rgba(22,163,74,.15); }
+.feedback.bad { background: rgba(220,38,38,.12); }
+.actions { display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap; }
+.muted { color: var(--muted); }
+.hints { display: flex; flex-direction: column; gap: 8px; align-items: flex-start; }
+.hint { margin: 0; background: var(--card); padding: 8px 10px; border-radius: 8px; }
+.mastery-line { font-size: .85rem; margin: 0; }

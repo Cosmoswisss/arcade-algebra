@@ -43,7 +43,7 @@ export default function WarpGrid({ level, m, onChange, v, onVChange, ghost, heig
   const canMove = (k: 'i' | 'j' | 'v') => level.movable.includes(k);
 
   return (
-    <Mafs height={height} pan={false} zoom={false} viewBox={{ x: [-5, 5], y: [-4, 4] }}>
+    <Mafs height={height} pan={false} zoom={false} viewBox={{ x: [-3, 4.5], y: [-2, 3.5] }}>
       {/* the untouched plane, as a faint ghost */}
       <GridLines m={[[1, 0], [0, 1]]} color={GHOST_COLOR} opacity={0.25} />
       {ghost && <GridLines m={ghost} color={GHOST_COLOR} opacity={0.9} dashed />}
@@ -59,11 +59,18 @@ export default function WarpGrid({ level, m, onChange, v, onVChange, ghost, heig
           <Point x={apply(e, t.from)[0]} y={apply(e, t.from)[1]} color={SHAPE_COLOR} />
         </>
       )}
+      {t.type === 'shape' && (
+        <>
+          {/* corners carried by î and ĵ, so a swap is visible */}
+          <Point x={apply(t.matrix, [1, 0])[0]} y={apply(t.matrix, [1, 0])[1]} color={I_COLOR} opacity={0.5} />
+          <Point x={apply(t.matrix, [0, 1])[0]} y={apply(t.matrix, [0, 1])[1]} color={J_COLOR} opacity={0.5} />
+        </>
+      )}
       {t.type !== 'direction' && (
         <Polygon points={level.shape.map((p) => apply(e, p))} color={SHAPE_COLOR} fillOpacity={0.3} weight={2} />
       )}
       {t.type === 'area' && (
-        <Text x={-4.6} y={3.6} attach="e" size={18} color={SHAPE_COLOR}>{`area = ${fmt(det(e))}   (goal: ${fmt(t.det)})`}</Text>
+        <Text x={-2.8} y={3.2} attach="e" size={18} color={SHAPE_COLOR}>{`area = ${fmt(det(e))}   (goal: ${fmt(t.det)})`}</Text>
       )}
 
       <Vector tip={i} color={I_COLOR} weight={4} />
