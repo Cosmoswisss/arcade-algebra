@@ -7,14 +7,16 @@ Claude Code lit ce fichier automatiquement au début de chaque session ouverte d
 
 **Linear Arcade** : un jeu web pour apprendre l'algèbre linéaire à partir de zéro. On le fait pour le challenge Scholé de LauzHack 2026 : pas de chatbot, et le jeu doit s'adapter à l'élève.
 
-- **Pile technique :** Vite, React, TypeScript, Mafs et Vitest. Tout tourne dans le navigateur, il n'y a pas de serveur.
-- **Langue :** l'interface, le contenu des niveaux et le code sont **en anglais**. Les documents internes peuvent rester en français.
-- **Documents de référence :**
-  - la conception : `docs/superpowers/specs/2026-11-21-linalg-game-design.md`
-  - le plan : `docs/superpowers/plans/2026-11-21-linalg-game.md`
-  - le format des niveaux : `README.md`
+C'est **une salle d'arcade de 7 bornes**, une par notion. Chaque borne a son propre mini-jeu (PixiJS), précédé d'un **cours court** dans l'esprit de Codédex. **On vise la compréhension profonde, pas la réussite d'examens.**
 
-> ⚠️ **Une refonte est en cours de conception**, pour ajouter un vrai côté jeu et un cours avant chaque niveau. Tant que la section « Refonte » ci-dessous n'est pas remplie, **ne modifiez pas l'architecture** : `src/App.tsx`, `src/components/` et `src/engine/types.ts`.
+- **Pile technique (v2) :** Vite, React, TypeScript, PixiJS v8, Motion, KaTeX et Vitest. Tout tourne dans le navigateur, sans serveur.
+- **Langue :** l'interface, le contenu et le code sont **en anglais**. Les documents internes peuvent rester en français.
+- **Documents de référence (à lire avant de travailler) :**
+  - **la conception :** `docs/superpowers/specs/2026-11-21-linalg-game-v2-design.md`. **Les 8 règles pédagogiques de la section 4.3 sont obligatoires dans chaque borne.**
+  - **le plan :** `docs/superpowers/plans/2026-11-21-linear-arcade-v2.md`
+  - **le prototype validé :** `docs/prototypes/hole-in-the-wall.html`, à ouvrir dans un navigateur
+  - **le format du contenu :** `content/README.md`, créé par la Tâche 2 du plan. **N'écrivez pas de contenu avant qu'il existe.**
+- **Ce qui reste de la v1** (`src/components/`, `src/levels/`, Mafs) sera supprimé par la Tâche 17 du plan. N'y investissez plus de temps.
 
 ## Qui touche à quoi
 
@@ -22,16 +24,16 @@ Chacun ne modifie **que les fichiers de sa zone**. Pour toucher à un fichier d'
 
 | Zone | Responsable | Fichiers |
 |---|---|---|
-| **Moteur et interface** | Camson (pilote) | `src/engine/`, `src/components/`, `src/App.tsx`, `src/styles.css` |
-| **Niveaux, partie 1** | Ami 1 | `src/levels/vectors-*`, `combinations-*`, `transform-*`, `composition-*` |
-| **Niveaux, partie 2** | Ami 2 | `src/levels/det-*`, `inverse-*`, `eigen-*`, `error-*` |
-| **Partagés** (réservation obligatoire) | n'importe qui | `src/engine/types.ts`, `src/levels/loader.ts`, `package.json`, `CLAUDE.md`, `README.md`, `tests/levels/loader.test.ts` |
+| **Moteur, bornes, écrans, design** | Camson (pilote) | `src/`, `tests/` (sauf les tests de contenu des amis), `DESIGN.md` |
+| **Contenu des bornes 1 à 4** (cours, vagues, entraînements, cartes du Dex) | Ami 1 | `content/cabinets/01-vector-golf/`, `02-drone/`, `03-hole-in-the-wall/`, `04-factory/` |
+| **Contenu des bornes 5 à 7, et leçons de rattrapage** | Ami 2 | `content/cabinets/05-squash/`, `06-rewind/`, `07-laser-lab/`, `content/remedial/` |
+| **Partagés** (réservation obligatoire) | n'importe qui | `src/engine/types.ts`, `src/content/`, `content/README.md`, `package.json`, `CLAUDE.md`, `README.md` |
 
 Remplacez « Ami 1 » et « Ami 2 » par vos prénoms.
 
 ## Règles Git
 
-1. **Ne jamais travailler directement sur `main`.** Chaque personne a sa branche, nommée `<prénom>/<sujet>`, par exemple `ami1/levels-vectors`.
+1. **Ne jamais travailler directement sur `main`.** Chaque personne a sa branche, nommée `<prénom>/<sujet>`, par exemple `ami1/content-golf`.
 2. **Avant de commencer :** `git fetch`, puis on repart du `main` à jour. On relit ce fichier, en particulier les réservations.
 3. **Avant chaque commit :** `npm test` et `npx tsc --noEmit` doivent passer.
 4. **Un commit = un sujet.** Le message est en anglais et commence par `feat:`, `fix:`, `docs:` ou `content:`.
@@ -46,15 +48,15 @@ Avant de modifier un fichier partagé, ou un fichier d'une autre zone, **ajoutez
 
 | Qui | Fichier(s) | Pourquoi | Depuis |
 |---|---|---|---|
-| *(vide)* | | | |
+| Camson | `src/engine/types.ts`, `src/content/`, `content/README.md` | Tâche 2 du plan : figer le format du contenu | 21/11 |
 
-## Ajouter un niveau (pour les deux amis)
+## Écrire du contenu (pour les deux amis)
 
-1. Copier un fichier JSON existant de sa zone, et lui donner un `id` unique égal au nom du fichier.
-2. Respecter le format décrit dans `README.md`. La forme doit être **asymétrique**, et les cibles doivent rester entre x −3 et 4,5, y −2 et 3,5.
-3. Ajouter la solution du niveau dans `tests/levels/loader.test.ts`, dans l'objet `SOLUTIONS`. **Ce fichier est partagé : il faut le réserver.**
-4. Lancer `npm test`. Les tests vérifient que le niveau se charge et qu'il a une solution.
-
-## Refonte (à remplir après le brainstorming)
-
-*Vide pour l'instant. On y mettra la nouvelle structure (cours, puis jeu, puis niveaux) et la répartition du travail qui en découle.*
+1. **Attendre que `content/README.md` existe** : c'est le signal que le format est figé.
+2. **Écrire dans le dossier de sa borne**, en suivant le README, et en anglais. Pour chaque borne :
+   - **3 à 5 écrans de cours**, chacun avec une mini-question de **prédiction**, jamais une simple définition ;
+   - **au moins 6 vagues**, chacune taguée avec son concept ;
+   - **un entraînement par type d'erreur** de la borne ;
+   - **une carte du Dex par concept.**
+3. **Les textes sont courts** (2 à 4 phrases) et **donnent des coordonnées**, pas seulement des mots. Le mode `guided` détaille davantage, le mode `fast` va droit au but.
+4. **Lancer `npm test`** : les tests vérifient que le contenu se charge et que chaque vague et chaque question a une solution.
