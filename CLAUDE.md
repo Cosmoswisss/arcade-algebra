@@ -48,7 +48,7 @@ Avant de modifier un fichier partagé, ou un fichier d'une autre zone, **ajoutez
 
 | Qui | Fichier(s) | Pourquoi | Depuis |
 |---|---|---|---|
-| Massimo | `src/engine/types.ts`, `src/content/`, `content/README.md`, `content/robot.json`, `content/cabinets/*/course.json`, `content/cabinets/*/cabinet.json`, `content/remedial/` | cours jouable, robot, thème sport (spec `2026-11-21-course-as-game-design.md`) | 21/11 |
+| *(vide)* | | | |
 
 ## Écrire du contenu (pour les deux amis)
 
