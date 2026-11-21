@@ -27,7 +27,7 @@ export interface LessonPlayProps {
   onDone: (r: { correct: boolean; firstTry: boolean }) => void;
   /** 'lesson' only: the player wants to read the lesson again. */
   onBack?: () => void;
-  /** Speak through the robot (false for the placement test: no feedback there). */
+  /** Speak through the robot and show XP / Dex rewards (false for the placement test: no feedback there). */
   talk?: boolean;
 }
 
@@ -108,7 +108,7 @@ export function LessonPlay({ cabinet, play, theme, variant = 'lesson', rule, onD
           <LazyStage key={`${wave.id}-${attempt}`} cabinet={cabinet} content={cab} className="stage" mode={mode}
             label={`${cab.meta.name}: ${play.mission[theme]}`} onStatus={setStatus} onReady={(c) => { controls.current = c; }} />
         </Suspense>
-        {gain && <p className="stage-gain mono" role="status">{gain}</p>}
+        {talk && gain && <p className="stage-gain mono" role="status">{gain}</p>}
       </div>
       {status && status.goal && (
         <div className="stage-mission">
@@ -136,7 +136,7 @@ export function LessonPlay({ cabinet, play, theme, variant = 'lesson', rule, onD
           {remedial.scene && <MiniScene frames={remedial.scene} label={`Catch-up scene: ${remedial.title}`} />}
         </article>
       )}
-      {card && (
+      {talk && card && (
         <aside className="dex-card" role="status">
           <p className="eyebrow">New Transform Dex card</p>
           <h3>{card.name}</h3>
