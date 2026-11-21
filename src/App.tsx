@@ -7,7 +7,7 @@ import { useRoute } from './router';
 import Hall from './screens/Hall';
 import Play from './screens/Play';
 import Course from './screens/Course';
-import { DiagnosticSoon } from './screens/Placeholder';
+import Diagnostic from './screens/Diagnostic';
 import Profile from './screens/Profile';
 import Title from './screens/Title';
 import { AppCtx } from './state';
@@ -23,7 +23,7 @@ export default function App() {
   let screen: JSX.Element;
   switch (route.name) {
     case 'profile': screen = <Profile />; break;
-    case 'diagnostic': screen = <DiagnosticSoon />; break;
+    case 'diagnostic': screen = <Diagnostic />; break;
     case 'hall': screen = <Hall />; break;
     case 'course': screen = <Course id={route.id} />; break;
     case 'play': screen = <Play id={route.id} />; break;

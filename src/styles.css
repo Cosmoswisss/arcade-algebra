@@ -117,3 +117,4 @@ body::before { /* faint floor grid behind reading screens */
 .remedial-kicker { color: var(--danger); }
 .skip { text-align: right; }
 .check-matrix { font-size: 26px; margin: 0 0 var(--s4); }
+.actions-row { display: flex; flex-wrap: wrap; align-items: center; gap: var(--s4); margin-top: var(--s5); }
