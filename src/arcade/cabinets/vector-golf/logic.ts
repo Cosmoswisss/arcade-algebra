@@ -42,7 +42,7 @@ export function evaluateGolf(p: GolfParams, rule: Rule, playerShots: Vec2[], pre
   if (hitsWall(path, p.walls)) return { correct: false, diagnosis: { kind: 'hit-wall', text: 'Bonk! The ball hit a wall. Split the move into shots that go around it.', wrongParts: [true, true] } };
   const end = path[path.length - 1];
   const d = diagnoseVector(sub(end, p.start), sub(p.hole, p.start), HOLE_R);
-  return d ? { correct: false, diagnosis: { ...d, text: `The hole is ${vstr(sub(p.hole, p.start))} away from the start; your shots add up to ${vstr(sub(end, p.start))}.` } } : { correct: true, diagnosis: null };
+  return d ? { correct: false, diagnosis: { ...d, text: `The flag is ${vstr(sub(p.hole, p.start))} away from the start; your shots add up to ${vstr(sub(end, p.start))}.` } } : { correct: true, diagnosis: null };
 }
 
 export function goalText(p: GolfParams, rule: Rule): string {

@@ -88,7 +88,8 @@ export class Hud {
     this.mission.anchor.set(0.5, 0); this.mission.position.set(w / 2, narrow ? 150 : 98); this.mission.style.wordWrapWidth = Math.min(680, w - 56);
     this.check.anchor.set(0.5, 0); this.check.style.wordWrap = true; this.check.style.wordWrapWidth = Math.min(760, w - 32);
     this.lockBtn.position.set(120, h - 50);
-    this.pop.position.set(w / 2, h * 0.42); this.sub.position.set(w / 2, h * 0.42 + 52); this.sub.style.wordWrapWidth = Math.min(700, w - 48);
+    // the verdict sits at the top, on the same dark plate as the mission, never over the play field
+    this.pop.position.set(w / 2, narrow ? 120 : 62); this.sub.anchor.set(0.5, 0); this.sub.position.set(w / 2, narrow ? 150 : 92); this.sub.style.wordWrapWidth = Math.min(680, w - 56);
     this.caption.position.set(w / 2, h - 52); this.caption.style.wordWrap = true; this.caption.style.wordWrapWidth = Math.min(900, w - 32); this.hint.position.set(w / 2, h - 20);
     const mw = Math.min(640, w - 32), mh = Math.min(400, h - 40), cx = w / 2, cy = h / 2;
     this.modalBg.clear().rect(0, 0, w, h).fill({ color: NEON.bg, alpha: 0.55 }).roundRect(cx - mw / 2, cy - mh / 2, mw, mh, 18).fill({ color: NEON.surface, alpha: 0.97 }).roundRect(cx - mw / 2, cy - mh / 2, mw, mh, 18).stroke({ width: 3, color: NEON.accent });
@@ -141,12 +142,6 @@ export class Hud {
       this.check.style.fill = list.length && list.every((c) => c.ok) ? CSS.target : CSS.text;
       this.check.position.set(L.w / 2, this.mission.y + this.mission.height + 8);
     }
-    this.plate.clear();
-    if (inPlay) {
-      const bottom = (this.check.text ? this.check.y + this.check.height : this.mission.y + this.mission.height) + 10;
-      const pw = Math.min(Math.max(this.mission.width, this.check.width) + 40, L.w - 16);
-      this.plate.roundRect(L.w / 2 - pw / 2, this.mission.y - 10, pw, bottom - this.mission.y + 10, 10).fill({ color: NEON.bg, alpha: 0.82 }).stroke({ width: 1, color: NEON.line });
-    }
     this.banner.visible = inPlay && !!r.banner && r.phaseClock < 6;
     this.banner.text = r.banner; this.banner.alpha = Math.min(1, 6 - r.phaseClock);
     this.banner.style.wordWrap = true; this.banner.style.wordWrapWidth = L.w - 32;
@@ -163,6 +158,15 @@ export class Hud {
       (this.pop.style.dropShadow as { color: string }).color = o.correct ? CSS.target : CSS.j;
       this.sub.text = o.correct ? `+${r.lastGain}${r.run.combo > 1 ? `   (combo ×${r.run.combo})` : ''}` : (o.diagnosis?.text ?? 'Missed!');
       this.pop.scale.set(1 + Math.max(0, 0.25 - r.phaseClock) * 2);
+    }
+    this.plate.clear();
+    if (res) {
+      const pw = Math.min(Math.max(this.sub.width, this.pop.width) + 48, L.w - 16);
+      this.plate.roundRect(L.w / 2 - pw / 2, this.pop.y - 34, pw, this.sub.y + this.sub.height + 12 - (this.pop.y - 34), 10).fill({ color: NEON.bg, alpha: 0.85 }).stroke({ width: 1, color: NEON.line });
+    } else if (inPlay) {
+      const bottom = (this.check.text ? this.check.y + this.check.height : this.mission.y + this.mission.height) + 10;
+      const pw = Math.min(Math.max(this.mission.width, this.check.width) + 40, L.w - 16);
+      this.plate.roundRect(L.w / 2 - pw / 2, this.mission.y - 10, pw, bottom - this.mission.y + 10, 10).fill({ color: NEON.bg, alpha: 0.82 }).stroke({ width: 1, color: NEON.line });
     }
     // replay caption (rule 5)
     this.caption.visible = this.hint.visible = r.phase === 'replay';

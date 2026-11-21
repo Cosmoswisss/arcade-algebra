@@ -53,7 +53,8 @@ export interface RunnerOptions {
 /** A background tab can deliver a huge frame; never advance more than 50 ms at once. */
 export const clampDt = (ms: number) => Math.min(Math.max(ms, 0) / 1000, 0.05);
 
-const LOCK_SPEED = 6;
+/** After LOCK IN, the wave reaches its impact in this many seconds, however long it had left. */
+const IMPACT_SECONDS = 1;
 /** Lives per run. */
 export const START_LIVES = 5;
 /** Where an untimed wave waits (the wall far away) until LOCK IN. */
@@ -86,6 +87,8 @@ export class Runner {
   untimed = false;
   readonly maxLives = START_LIVES;
   private lockSeen = false;
+  /** Wave progress when the player locked in: the impact plays out from there in IMPACT_SECONDS. */
+  private lockFrom = 0;
   private pendingCard: DexCard | null = null;
   private rand: () => number;
 
@@ -99,7 +102,10 @@ export class Runner {
   get checklist() { return this.game.checklist(this.rule); }
   /** True once the player has committed (LOCK IN or an in-game answer button). */
   get locked() { return this.game.isLocked(); }
-  get secondsLeft() { return this.untimed ? Infinity : Math.max(0, ((1 - this.t) * this.duration) / (this.game.isLocked() ? LOCK_SPEED : 1)); }
+  get secondsLeft() {
+    if (this.game.isLocked()) return Math.max(0, ((1 - this.t) / Math.max(1e-9, 1 - this.lockFrom)) * IMPACT_SECONDS);
+    return this.untimed ? Infinity : Math.max(0, (1 - this.t) * this.duration);
+  }
 
   start() {
     this.run = { ...this.run, waveIndex: -1, lives: START_LIVES, score: 0, combo: 0, focus: null, lastWaveId: null };
@@ -140,9 +146,10 @@ export class Runner {
     const dt = clampDt(ms);
     this.phaseClock += dt;
     if (this.phase === 'play') {
-      if (this.game.isLocked() && !this.lockSeen) { this.lockSeen = true; this.lockBonus = this.untimed ? 0 : Math.round((1 - this.t) * 100); }
+      if (this.game.isLocked() && !this.lockSeen) { this.lockSeen = true; this.lockFrom = this.t; this.lockBonus = this.untimed ? 0 : Math.round((1 - this.t) * 100); }
       // an untimed wave stays put until the player locks in
-      if (!(this.untimed && !this.game.isLocked())) this.t = Math.min(1, this.t + (dt / this.duration) * (this.game.isLocked() ? LOCK_SPEED : 1));
+      if (this.game.isLocked()) this.t = Math.min(1, this.t + (dt * (1 - this.lockFrom)) / IMPACT_SECONDS);
+      else if (!this.untimed) this.t = Math.min(1, this.t + dt / this.duration);
       this.game.update(dt, this.t);
       if (this.t >= 1) this.resolve();
     } else if (this.phase === 'result') {
@@ -158,6 +165,7 @@ export class Runner {
   lock() {
     if (this.phase !== 'play' || this.game.isLocked()) return;
     this.lockSeen = true;
+    this.lockFrom = this.t;
     this.lockBonus = this.untimed ? 0 : Math.round((1 - this.t) * 100);
     this.game.lock();
   }
