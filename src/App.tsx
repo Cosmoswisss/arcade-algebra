@@ -6,7 +6,8 @@ import type { ProgressV2 } from './engine/progression';
 import { useRoute } from './router';
 import Hall from './screens/Hall';
 import Play from './screens/Play';
-import { CourseSoon, DiagnosticSoon } from './screens/Placeholder';
+import Course from './screens/Course';
+import { DiagnosticSoon } from './screens/Placeholder';
 import Profile from './screens/Profile';
 import Title from './screens/Title';
 import { AppCtx } from './state';
@@ -24,7 +25,7 @@ export default function App() {
     case 'profile': screen = <Profile />; break;
     case 'diagnostic': screen = <DiagnosticSoon />; break;
     case 'hall': screen = <Hall />; break;
-    case 'course': screen = <CourseSoon id={route.id} />; break;
+    case 'course': screen = <Course id={route.id} />; break;
     case 'play': screen = <Play id={route.id} />; break;
     default: screen = <Title />;
   }

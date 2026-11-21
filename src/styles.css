@@ -90,3 +90,30 @@ body::before { /* faint floor grid behind reading screens */
 .toast-actions { display: flex; gap: var(--s3); flex-wrap: wrap; }
 
 @media (prefers-reduced-motion: reduce) { .cabinet.suggested { animation: none; } .btn, .cabinet { transition: none; } }
+
+/* course */
+.course-head { display: flex; align-items: center; gap: var(--s4); flex-wrap: wrap; margin-bottom: var(--s5); }
+.course-head .kicker { margin: 0; }
+.dots { display: flex; gap: var(--s2); list-style: none; padding: 0; margin: 0 0 0 auto; }
+.dots li { width: 10px; height: 10px; border-radius: 50%; border: 2px solid var(--line); }
+.dots li.done { background: var(--player); border-color: var(--player); }
+.dots li.current { border-color: var(--accent); box-shadow: 0 0 8px rgba(240, 171, 252, .6); }
+.course-grid { display: grid; grid-template-columns: 5fr 7fr; gap: var(--s5); align-items: start; }
+@media (max-width: 900px) { .course-grid { grid-template-columns: 1fr; } }
+.panel { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r-lg); padding: var(--s6); }
+.course-text .lead p { margin: 0 0 var(--s4); }
+.example { margin: var(--s4) 0; padding: var(--s3) var(--s4); border-left: 3px solid var(--accent); color: var(--text-muted); font-style: italic; }
+.coord { font-family: var(--font-mono); font-size: .92em; color: var(--player); background: var(--surface-2); padding: 1px 5px; border-radius: var(--r-sm); }
+.mini-scene { width: 100%; border: 1px solid var(--line); border-radius: var(--r-lg); overflow: hidden; touch-action: none; }
+.scene-caption { margin: var(--s2) 0 var(--s4); color: var(--target); min-height: 1.4em; font-size: 15px; }
+.check { padding: var(--s5); }
+.check-prompt { font-size: var(--fs-lead); margin: 0 0 var(--s4); }
+.check .choices { margin-bottom: var(--s4); }
+.slider { display: flex; align-items: center; gap: var(--s4); margin-bottom: var(--s4); }
+.slider input { flex: 1; accent-color: var(--target); }
+.slider output { font-size: 24px; font-weight: 700; color: var(--target); min-width: 3ch; }
+.feedback-good p { color: var(--success); font-family: var(--font-mono); font-weight: 800; font-size: 20px; margin: 0 0 var(--s3); }
+.feedback-bad { color: var(--danger); font-weight: 700; }
+.remedial-kicker { color: var(--danger); }
+.skip { text-align: right; }
+.check-matrix { font-size: 26px; margin: 0 0 var(--s4); }
