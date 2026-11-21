@@ -51,16 +51,18 @@ export function evaluateGolf(p: GolfParams, rule: Rule, playerShots: Vec2[], pre
   if (played.some(([x, y]) => x === 0 && y === 0)) return { correct: false, diagnosis: { kind: 'other', text: `Every shot must move the ball: use all ${played.length} shots.`, wrongParts: [true, true] } };
   const end = path[path.length - 1];
   const d = diagnoseVector(sub(end, p.start), sub(p.hole, p.start), HOLE_R);
-  return d ? { correct: false, diagnosis: { ...d, text: `The flag is ${vstr(sub(p.hole, p.start))} away from the start; your shots add up to ${vstr(sub(end, p.start))}.` } } : { correct: true, diagnosis: null };
+  return d ? { correct: false, diagnosis: { ...d, text: `The hole is ${vstr(sub(p.hole, p.start))} away from the start; your shots add up to ${vstr(sub(end, p.start))}.` } } : { correct: true, diagnosis: null };
 }
 
 export function goalText(p: GolfParams, rule: Rule): string {
   const n = p.shots.length;
   const fixed = fixedShots(p);
   const given = p.shots.map((v, k) => (fixed[k] ? `shot ${k + 1} is fixed at ${vstr(v)}` : '')).filter(Boolean);
-  const how = given.length ? `${given.join(', ')}. Choose shot 1` : `${n} shot${n > 1 ? 's' : ''}`;
-  if (rule === 'assist') return `From ${vstr(p.start)} to the flag at ${vstr(p.hole)}: ${how}.`;
-  if (rule === 'partial') return `From ${vstr(p.start)} to the flag at ${vstr(p.hole)}: ${how}, path hidden.`;
+  const how = given.length ? `${given.join(', ')}: choose shot 1` : `${n} shot${n > 1 ? 's' : ''}`;
+  // two lines: where the hole is (the flag is not drawn while aiming), then where the ball starts and what to do
+  const hole = `⛳ Hole at ${vstr(p.hole)}`;
+  if (rule === 'assist') return `${hole}\nBall at ${vstr(p.start)} · ${how}`;
+  if (rule === 'partial') return `${hole}\nBall at ${vstr(p.start)} · ${how} · path hidden`;
   return `Shots ${p.shots.map(vstr).join(' then ')}: where does the ball stop?`;
 }
 

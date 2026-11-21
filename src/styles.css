@@ -231,7 +231,8 @@ main.narrow { max-width: 720px; }
 .stage-gain { position: absolute; top: 10px; right: 12px; margin: 0; color: var(--yellow); text-shadow: 0 0 10px rgba(253, 224, 71, 0.7); }
 .stage-caption { min-height: 2.6em; margin: var(--s2) 0; color: var(--text); font-size: 14px; }
 .stage-mission { margin-top: var(--s3); padding: var(--s3) var(--s4); background: var(--panel); border-left: 3px solid var(--yellow); }
-.stage-mission p { margin: 0; color: var(--yellow); font-size: 14px; }
+.stage-mission p { margin: 0; color: var(--yellow); font-size: 14px; white-space: pre-line; }
+.stage-mission p::first-line { font-size: 17px; font-weight: 700; }
 .checklist { list-style: none; margin: var(--s2) 0 0; padding: 0; display: flex; flex-wrap: wrap; gap: var(--s2) var(--s4); font-family: var(--font-mono); font-size: 13px; color: var(--dim); }
 .checklist .ok { color: var(--green); }
 .lesson-scene { margin: 0; }
