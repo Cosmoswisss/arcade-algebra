@@ -143,7 +143,8 @@ main.narrow { max-width: 720px; }
 .suggest .actions { margin-top: 0; }
 
 /* ---------- course ---------- */
-.course { max-width: 1120px; padding-top: var(--s5); }
+/* the course is wider than the other pages: the game scene needs room to be read */
+.course { max-width: 1440px; padding-top: var(--s5); }
 .back { display: inline-flex; align-items: center; gap: var(--s2); color: var(--dim); text-decoration: none; font-size: 14px; }
 .back:hover { color: var(--pink); }
 .course-head { display: flex; justify-content: space-between; align-items: flex-end; gap: var(--s5); flex-wrap: wrap; margin-top: var(--s5); }
@@ -156,7 +157,7 @@ main.narrow { max-width: 720px; }
 .ticks li { font-family: var(--font-mono); font-size: 12px; width: 32px; height: 6px; background: var(--line); color: transparent; overflow: hidden; }
 .ticks li.done { background: var(--cyan); }
 .ticks li.now { background: var(--pink); }
-.course-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: var(--s7); align-items: start; }
+.course-grid { display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, 3fr); gap: var(--s6); align-items: start; }
 .course-text p { font-size: 18px; line-height: 29px; }
 .course-text strong { color: var(--yellow); font-weight: 600; }
 .course-text code, .remedial code { background: var(--panel-2); padding: 1px 6px; font-size: 0.92em; }
@@ -241,9 +242,19 @@ main.narrow { max-width: 720px; }
 .ticks li button:focus-visible { outline: 2px solid var(--cyan); outline-offset: 3px; }
 .ticks li { height: 8px; }
 
+/* a played wave ("Your turn", warm-up, placement): the cabinet's own 16:10 shape, as wide as the page allows
+   while the whole frame, robot and LOCK IN still fit on screen */
+.lesson-play { width: min(100%, calc(70vh * 1.6)); margin-inline: auto; }
+.lesson-play .stage-frame { aspect-ratio: 16 / 10; min-height: 0; }
+.course-grid--play { grid-template-columns: minmax(0, 1fr); }
+.course-grid--play .course-side { position: static; order: 1; }
+.course-grid--play .course-text { order: 2; max-width: 72ch; }
+
 /* phones: the 4:3 frame follows the column width (a 300 px min-height would force it to 400 px wide) */
 @media (max-width: 640px) {
   .stage-frame { min-height: 0; }
+  .lesson-play { width: 100%; }
+  .lesson-play .stage-frame { aspect-ratio: 4 / 3; }
 }
 
 /* ---------- The Grid (world map) ---------- */

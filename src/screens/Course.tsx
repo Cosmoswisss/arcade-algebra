@@ -159,7 +159,8 @@ export function Course({ id }: { id: CabinetId }) {
         ))}
       </ol>
 
-      <div className="course-grid">
+      {/* "Your turn" on a wave: the game takes the whole width, the lesson text goes under it */}
+      <div className={`course-grid ${view === 'ask' && step.play ? 'course-grid--play' : ''}`}>
         <section className="course-text" aria-label="Lesson">
           {view === 'learn' && <Robot name={lines.name} line={step.robot} />}
           <RichText text={step.text[mode]} />
