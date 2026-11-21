@@ -2,11 +2,15 @@ import { useCallback, useEffect, useMemo, useRef, useState, type KeyboardEvent, 
 import type { SceneStep } from '../content/types';
 import { apply, basis, fromBasis } from '../engine/matrix';
 import type { Mat2, Vec2 } from '../engine/types';
+import { axisObstacles, placeLabels, type Rect } from '../arcade/kit/labelLayout';
 import { ARROW_LIMIT, ARROW_STEP, H, OX, OY, POINT_LIMIT, SHAPE, U, W, fmtN, snapTo } from './geometry';
 
 const sx = (x: number) => OX + x * U;
 const sy = (y: number) => OY - y * U;
 const IDENTITY: Mat2 = [[1, 0], [0, 1]];
+const LABEL_SIZE = 12;
+/** The fixed axes of the lesson plane and their tick numbers (drawn below). */
+const AXES = axisObstacles({ ox: OX, oy: OY, u: U, xr: [-3, 4], yr: [-2, 3], tick: { below: 10, left: 12, size: 10 } });
 const lerp = (a: number, b: number, k: number) => a + (b - a) * k;
 const ease = (x: number) => (x <= 0 ? 0 : x >= 1 ? 1 : 1 - Math.pow(1 - x, 3));
 const lerpM = (a: Mat2, b: Mat2, k: number): Mat2 => [[lerp(a[0][0], b[0][0], k), lerp(a[0][1], b[0][1], k)], [lerp(a[1][0], b[1][0], k), lerp(a[1][1], b[1][1], k)]];
@@ -74,6 +78,20 @@ export function MiniScene({ frames, interactive, matrix, onChange, point, onPoin
     }
     return out;
   }, [m]);
+  // coordinate labels, nudged off the axes, the tick numbers and each other
+  const labels = useMemo(() => {
+    const wanted: { key: string; text: string; color: string; x: number; y: number }[] = [
+      { key: 'i', text: `î ${fmtV(bi)}`, color: '#4ade80', x: sx(bi[0]) + 12, y: sy(bi[1]) + 16 },
+      { key: 'j', text: `ĵ ${fmtV(bj)}`, color: '#f87171', x: sx(bj[0]) + 12, y: sy(bj[1]) - 10 },
+    ];
+    if (marker) wanted.push({ key: 'marker', text: fmtV(marker), color: '#fde047', x: sx(marker[0]) + 9, y: sy(marker[1]) - 8 });
+    if (point) wanted.push({ key: 'point', text: fmtV(point), color: '#fde047', x: sx(point[0]) + 11, y: sy(point[1]) - 9 });
+    // SVG text sits on its baseline: the box starts one cap height above it
+    const boxes: Rect[] = wanted.map((l) => ({ x: l.x, y: l.y - LABEL_SIZE * 0.8, w: l.text.length * LABEL_SIZE * 0.62, h: LABEL_SIZE }));
+    const dots: Rect[] = [bi, bj, ...(marker ? [marker] : []), ...(point ? [point] : [])].map((v) => ({ x: sx(v[0]) - 8, y: sy(v[1]) - 8, w: 16, h: 16 }));
+    const offsets = placeLabels(boxes, [...AXES, ...dots], { x: 0, y: 0, w: W, h: H });
+    return wanted.map((l, k) => ({ ...l, x: l.x + offsets[k][0], y: l.y + offsets[k][1] }));
+  }, [bi, bj, marker, point]);
   const shape = SHAPE.map((p) => apply(m, p)).map((p) => `${sx(p[0])},${sy(p[1])}`).join(' ');
 
   const toPlane = useCallback((e: { clientX: number; clientY: number }): Vec2 | null => {
@@ -135,12 +153,11 @@ export function MiniScene({ frames, interactive, matrix, onChange, point, onPoin
           {[-2, -1, 1, 2, 3].map((y) => <text key={`ty${y}`} x={OX - 12} y={sy(y) + 3}>{y}</text>)}
         </g>
         <polygon points={shape} fill="#22d3ee" fillOpacity={0.28} stroke="#22d3ee" strokeWidth={2} strokeLinejoin="round" />
-        {marker && <g><circle cx={sx(marker[0])} cy={sy(marker[1])} r={5} fill="#fde047" /><text x={sx(marker[0]) + 9} y={sy(marker[1]) - 8} fill="#fde047" fontSize={12} style={labelStyle}>{fmtV(marker)}</text></g>}
-        {point && <g><circle cx={sx(point[0])} cy={sy(point[1])} r={7} fill="none" stroke="#fde047" strokeWidth={2.5} /><text x={sx(point[0]) + 11} y={sy(point[1]) - 9} fill="#fde047" fontSize={12} style={labelStyle}>{fmtV(point)}</text></g>}
+        {marker && <circle cx={sx(marker[0])} cy={sy(marker[1])} r={5} fill="#fde047" />}
+        {point && <circle cx={sx(point[0])} cy={sy(point[1])} r={7} fill="none" stroke="#fde047" strokeWidth={2.5} />}
         <line x1={OX} y1={OY} x2={sx(bi[0])} y2={sy(bi[1])} stroke="#4ade80" strokeWidth={3} strokeLinecap="round" />
         <line x1={OX} y1={OY} x2={sx(bj[0])} y2={sy(bj[1])} stroke="#f87171" strokeWidth={3} strokeLinecap="round" />
-        <text x={sx(bi[0]) + 12} y={sy(bi[1]) + 16} fill="#4ade80" fontSize={12} style={labelStyle}>î {fmtV(bi)}</text>
-        <text x={sx(bj[0]) + 12} y={sy(bj[1]) - 10} fill="#f87171" fontSize={12} style={labelStyle}>ĵ {fmtV(bj)}</text>
+        {labels.map((l) => <text key={l.key} x={l.x} y={l.y} fill={l.color} fontSize={LABEL_SIZE} style={labelStyle}>{l.text}</text>)}
         {interactive && <>{handle('i', bi, '#4ade80')}{handle('j', bj, '#f87171')}</>}
       </svg>
       {showCaption && <figcaption aria-live="polite">{interactive ? 'Drag the arrow tips, or focus one and use the arrow keys.' : caption}</figcaption>}

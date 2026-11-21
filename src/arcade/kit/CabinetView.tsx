@@ -5,6 +5,7 @@ import type { Mode } from '../../engine/types';
 import { sfx, unlockAudio } from './audio';
 import type { KitContext } from './context';
 import { Coords } from './coords';
+import { declutter } from './declutter';
 import { Fx } from './fx';
 import { Handle } from './handles';
 import { Hud } from './hud';
@@ -94,6 +95,7 @@ export default function CabinetView(props: CabinetViewProps) {
         drawSynthwave(bg, L, floor);
         r.tick(ms);
         game.frame?.(dt, r.phase, r.t, clock);
+        declutter(world, layer, coords.obstacles(), { x: 0, y: 0, w: L.w, h: L.h });
         if (r.phase !== prev) {
           if (r.phase === 'result' && r.outcome) {
             if (r.outcome.correct) { fx.burst(L.O[0] + L.U * 0.5, L.O[1] - L.U * 0.5, 90, [NEON.player, NEON.accent, NEON.target, NEON.i]); fx.flash(NEON.player, 0.55); sfx.win(r.run.combo); }
