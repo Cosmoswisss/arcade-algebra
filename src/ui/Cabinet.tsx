@@ -14,7 +14,7 @@ const BODY: Record<CabinetId, string> = {
 };
 const ACCENT = ['#f0abfc', '#22d3ee', '#fde047', '#a5b4fc', '#f0abfc', '#22d3ee', '#fde047'];
 const NAME: Record<CabinetId, string[]> = {
-  'vector-golf': ['VECTOR', 'GOLF'], drone: ['TWIN', 'DRONE'], 'hole-in-the-wall': ['HOLE IN', 'THE WALL'],
+  'vector-golf': ['VECTOR', 'GOLF'], drone: ['TWIN', 'DRONE'], 'hole-in-the-wall': ['CONSTEL-', 'LATION'],
   factory: ['MACHINE', 'FACTORY'], squash: ['SQUASH!'], rewind: ['REWIND'], 'laser-lab': ['LASER', 'LAB'],
 };
 
@@ -74,7 +74,7 @@ export const STATE_LABEL: Record<CabinetState, string> = { locked: 'Locked', ope
 export const CABINET_INFO: Record<CabinetId, { name: string; notion: string }> = {
   'vector-golf': { name: 'Vector Golf', notion: 'Vectors and addition' },
   drone: { name: 'Two-Thruster Drone', notion: 'Combinations and span' },
-  'hole-in-the-wall': { name: 'Hole in the Wall', notion: 'A matrix is a transformation' },
+  'hole-in-the-wall': { name: 'Constellation', notion: 'A matrix is a transformation' },
   factory: { name: 'Machine Factory', notion: 'Composition: order matters' },
   squash: { name: 'Squash!', notion: 'The determinant' },
   rewind: { name: 'Rewind', notion: 'The inverse' },

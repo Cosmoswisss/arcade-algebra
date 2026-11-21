@@ -35,8 +35,8 @@
       },
       "rule": "assist",
       "mission": {
-        "games": "The wall has a wide hole. Stretch your shape twice as wide to slip through.",
-        "physics": "Pull the sheet to twice its width, same height, before the wall arrives.",
+        "games": "Every star moved twice as far to the right. Stretch the grid to light them all.",
+        "physics": "Pull the sheet to twice its width, same height, until every star lights up.",
         "sport": "Widen the pitch 2× and keep its length: set î and ĵ."
       }
     }
@@ -77,8 +77,8 @@
       },
       "rule": "assist",
       "mission": {
-        "games": "This hole leans right. Tilt your shape to match it.",
-        "physics": "Shear the block: the top slides 1 to the right, the bottom stays put.",
+        "games": "These stars lean right. Tilt the grid until they all light up.",
+        "physics": "Shear the sheet: the top slides 1 to the right, the bottom stays put.",
         "sport": "Lean the formation: the back line stays, the front line slides 1 to the right."
       }
     }

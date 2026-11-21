@@ -265,7 +265,7 @@
   },
   {
     "errorKind": "other",
-    "label": "reading the corners",
+    "label": "finding (1, 0) and (0, 1)",
     "waves": [
       {
         "id": "drill-other-1",

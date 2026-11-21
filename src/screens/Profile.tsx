@@ -5,7 +5,7 @@ import { useStore } from '../store';
 import { ArrowRight } from '../ui/icons';
 
 const LEVELS: { mode: Mode; name: string; line: string }[] = [
-  { mode: 'guided', name: 'High school', line: 'Step-by-step lessons, slower walls, longer replays, more waves before each new rule.' },
+  { mode: 'guided', name: 'High school', line: 'Step-by-step lessons, slower waves, longer replays, more waves before each new rule.' },
   { mode: 'fast', name: 'University', line: 'Short lessons, quick replays you can skip, rules that tighten sooner.' },
 ];
 const THEMES: { theme: Theme; name: string; example: string }[] = [

@@ -1,12 +1,12 @@
 {
   "id": "hole-in-the-wall",
   "order": 3,
-  "name": "Hole in the Wall",
+  "name": "Constellation",
   "notion": "A matrix is just two arrows: where î lands and where ĵ lands.",
   "tiers": [
     {
       "rule": "assist",
-      "banner": "Green dot = where î lands · Red dot = where ĵ lands",
+      "banner": "Labelled stars: (1, 0) is green, (0, 1) is red",
       "waves": {
         "guided": 3,
         "fast": 2
@@ -14,7 +14,7 @@
     },
     {
       "rule": "partial",
-      "banner": "NEW RULE · NO MORE HINT DOTS — find the corners yourself",
+      "banner": "NEW RULE · BARE STARS — find (1, 0) and (0, 1) yourself",
       "waves": {
         "guided": 3,
         "fast": 2
@@ -22,7 +22,7 @@
     },
     {
       "rule": "abstract",
-      "banner": "NEW RULE · THE WALL ONLY SHOWS ITS MATRIX",
+      "banner": "NEW RULE · STAR MAP ONLY — read the matrix",
       "waves": {
         "guided": 4,
         "fast": 3
@@ -36,5 +36,8 @@
   "boss": {
     "waves": 2
   },
-  "story": {"intro":"The walls are coming and nobody knows how to bend the plane. That is your job now.","cleared":"Wall zone fixed. A matrix is where î and ĵ land, and you proved it."}
+  "story": {
+    "intro": "The night sky lost its map and the stars drifted. Move î and ĵ to put every star back.",
+    "cleared": "The sky is mapped again. A matrix is where î and ĵ land, and every star follows."
+  }
 }

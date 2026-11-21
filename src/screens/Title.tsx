@@ -55,7 +55,7 @@ export function Title() {
         <p className="eyebrow">7 arcade games · from vectors to eigenvectors</p>
         <h1>Linear Arcade</h1>
         <p className="lead">
-          Learn linear algebra by playing. Drag two arrows, fit your shape through the hole in the wall, and see
+          Learn linear algebra by playing. Drag two arrows, bend the plane until every star lights up, and see
           why a matrix is nothing more than <strong>where î and ĵ land</strong>.
         </p>
         <div className="actions">
@@ -66,7 +66,7 @@ export function Title() {
         </div>
         <ol id="how" className="steps">
           <li><b>Learn</b><span>A one-minute lesson that replays a real wave of the game. Then your turn: the same game, untimed, with a guide robot.</span></li>
-          <li><b>Play</b><span>A different arcade game for every idea. Walls come at you, so you read coordinates fast, then from the matrix alone.</span></li>
+          <li><b>Play</b><span>A different arcade game for every idea. The first wave waits for you; then the clock runs, and you read coordinates, then the matrix alone.</span></li>
           <li><b>See your mistakes</b><span>Every miss is named — “you swapped î and ĵ” — replayed step by step, and trained on in the next wave.</span></li>
         </ol>
       </div>

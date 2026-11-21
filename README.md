@@ -9,9 +9,9 @@ Linear Arcade aims for deep, concrete understanding rather than exam drills. You
 
 | # | Cabinet | Idea | You… |
 |---|---|---|---|
-| 1 | Vector Golf | vectors, addition | chain vector shots around walls into the hole |
+| 1 | Vector Golf | vectors, addition | chain vector shots around walls to the flag, then swing the club |
 | 2 | Two-Thruster Drone | linear combinations, span | mix two thrusters `a·u + b·v`, or spot that a target is unreachable |
-| 3 | Hole in the Wall | a matrix = where î and ĵ land | warp your shape with î and ĵ before the wall hits |
+| 3 | Constellation | a matrix = where î and ĵ land | move î and ĵ until the warped grid lights every star |
 | 4 | Machine Factory | composition | put transformation machines on a belt in the right order |
 | 5 | Squash! | determinant | bet on how the press scales the area, and whether it flips it |
 | 6 | Rewind | inverse | build the move that un-warps a picture, or say it can't be repaired |

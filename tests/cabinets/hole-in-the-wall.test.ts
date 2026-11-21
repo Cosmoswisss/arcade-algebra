@@ -33,3 +33,32 @@ describe('hole in the wall logic', () => {
     }
   });
 });
+
+describe('constellation stars', () => {
+  test('the stars always include where (1, 0) and (0, 1) land, first', async () => {
+    const { starAnchors } = await import('../../src/arcade/cabinets/hole-in-the-wall/logic');
+    const a = starAnchors(T);
+    expect(a[0]).toEqual([1, 0]); expect(a[1]).toEqual([0, 1]);
+    expect(a.length).toBeGreaterThanOrEqual(3); expect(a.length).toBeLessThanOrEqual(5);
+  });
+  test('every star of every bundled wave is on the visible plane', async () => {
+    const { starAnchors, starPoint } = await import('../../src/arcade/cabinets/hole-in-the-wall/logic');
+    const c = loadContent().cabinets['hole-in-the-wall']!;
+    for (const w of allPlayableWaves(c)) {
+      const m = (w.params as { matrix: Mat2 }).matrix;
+      for (const p of starAnchors(m)) { const s = starPoint(m, p); expect(s[0] >= -3 && s[0] <= 3 && s[1] >= -2 && s[1] <= 3, `${w.id} ${p} → ${s}`).toBe(true); }
+    }
+  });
+  test('a star lights when the player\'s grid point for its anchor lands on it', async () => {
+    const { litStars, starAnchors } = await import('../../src/arcade/cabinets/hole-in-the-wall/logic');
+    const anchors = starAnchors(T);
+    expect(litStars(T, [2, 1], [0, 1]).every(Boolean)).toBe(true);
+    const half = litStars(T, [2, 1], [0, 0]); // î right, ĵ wrong: (1, 0) lit, (0, 1) dark
+    expect(half[0]).toBe(true); expect(half[1]).toBe(false);
+    expect(half).toHaveLength(anchors.length);
+  });
+  test('checklist counts the lit stars from the partial rule on', () => {
+    const c = checklist(T, [2, 1], [0, 0], 'partial');
+    expect(c).toHaveLength(1); expect(c[0].label).toMatch(/stars? lit 1\/\d/); expect(c[0].ok).toBe(false);
+  });
+});

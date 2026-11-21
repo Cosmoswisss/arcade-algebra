@@ -34,7 +34,8 @@ export function CabinetGlyph({ id, size = 24 }: { id: CabinetId; size?: number }
   const g: Record<CabinetId, JSX.Element> = {
     'vector-golf': <><path d="M5 20l5-9 5 3 4-9" /><circle cx="19" cy="5" r="1.6" /><path d="M5 20h2" /></>,
     drone: <><circle cx="12" cy="12" r="2.2" /><path d="M10 10L5 5M14 10l5-5M10 14l-5 5M14 14l5 5" /><circle cx="4.5" cy="4.5" r="2" /><circle cx="19.5" cy="4.5" r="2" /><circle cx="4.5" cy="19.5" r="2" /><circle cx="19.5" cy="19.5" r="2" /></>,
-    'hole-in-the-wall': <><path d="M3 4h18v16H3z" /><path d="M9 9h6v2h-3v4H9z" /></>,
+    // Constellation: three stars joined by lines
+    'hole-in-the-wall': <><path d="M5 18L11 8l8 4" /><path d="M5 15.5v5M2.5 18h5M11 5.5v5M8.5 8h5M19 9.5v5M16.5 12h5" /></>,
     factory: <><path d="M3 17h18" /><circle cx="6" cy="19.5" r="1.5" /><circle cx="12" cy="19.5" r="1.5" /><circle cx="18" cy="19.5" r="1.5" /><path d="M6 17v-5h5v5M13 17V9h5v8" /></>,
     squash: <><path d="M5 3h14M12 3v6M7 9h10l-1 3H8z" /><path d="M4 21h16M6 21l1-5h10l1 5" /></>,
     rewind: <><path d="M4 12a8 8 0 1 0 3-6.2" /><path d="M4 4v5h5" /><path d="M12 8v4l3 2" /></>,
