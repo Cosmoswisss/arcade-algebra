@@ -159,11 +159,6 @@ export function createVectorGolf(): CabinetGame & { setup(ctx: KitContext): void
       const t = shotLabels[k]; t.visible = true; t.text = `shot ${k + 1} ${vstr(v)}${fixed[k] ? ' · fixed' : ''}`;
       t.position.set((from[0] + to[0]) / 2 + 10, (from[1] + to[1]) / 2 - 24);
     });
-    if (rule === 'assist' && phase !== 'result') {
-      // the landing point as coordinates only (no circle preview)
-      const end = endPoint(p.start, shots), e = S(end);
-      endT.text = `ends at ${vstr(end)}`; endT.position.set(e[0] + 14, e[1] + 8); endT.visible = true;
-    }
   }
 
   return {

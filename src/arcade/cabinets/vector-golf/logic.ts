@@ -59,17 +59,18 @@ export function goalText(p: GolfParams, rule: Rule): string {
   const fixed = fixedShots(p);
   const given = p.shots.map((v, k) => (fixed[k] ? `shot ${k + 1} is fixed at ${vstr(v)}` : '')).filter(Boolean);
   const how = given.length ? `${given.join(', ')}: choose shot 1` : `${n} shot${n > 1 ? 's' : ''}`;
-  // two lines: where the hole is (the flag is not drawn while aiming), then where the ball starts and what to do
+  // two lines: where the hole is (the flag is not drawn while aiming), then what to do
   const hole = `⛳ Hole at ${vstr(p.hole)}`;
-  if (rule === 'assist') return `${hole}\nBall at ${vstr(p.start)} · ${how}`;
-  if (rule === 'partial') return `${hole}\nBall at ${vstr(p.start)} · ${how} · path hidden`;
+  if (rule === 'assist') return `${hole}\n${how}`;
+  if (rule === 'partial') return `${hole}\n${how} · path hidden`;
   return `Shots ${p.shots.map(vstr).join(' then ')}: where does the ball stop?`;
 }
 
 export function checklist(p: GolfParams, rule: Rule, playerShots: Vec2[]): { label: string; ok: boolean }[] {
   if (rule === 'abstract') return [];
   const end = endPoint(p.start, playerShots);
-  const total = { label: `total move ${vstr(sub(end, p.start))}`, ok: Math.hypot(end[0] - p.hole[0], end[1] - p.hole[1]) <= HOLE_R };
+  // the total is shown as numbers only: never ticked or coloured, so the player checks it against the hole himself
+  const total = { label: `total move ${vstr(sub(end, p.start))}`, ok: false };
   if (rule === 'partial') return [total];
   // the wall item only where there are walls
   return p.walls.length ? [total, { label: 'no wall in the way', ok: !hitsWall(pathPoints(p.start, playerShots), p.walls) }] : [total];

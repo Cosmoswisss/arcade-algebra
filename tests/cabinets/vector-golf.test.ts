@@ -62,3 +62,18 @@ describe('vector golf: no shortcut through a zero shot', () => {
   });
   test('the goal names the fixed shot', () => expect(goalText(open, 'assist')).toMatch(/shot 2 is fixed.*\(1, 2\)/i));
 });
+
+describe('vector golf: no give-away while aiming', () => {
+  const p: GolfParams = { start: [-1, -1], shots: [[3, 2]], hole: [2, 1], walls: [] };
+  test('the total move is shown but never ticked, even on the hole', async () => {
+    const { checklist } = await import('../../src/arcade/cabinets/vector-golf/logic');
+    for (const rule of ['assist', 'partial'] as const) {
+      const c = checklist(p, rule, [[3, 2]]);
+      expect(c[0].label).toBe('total move (3, 2)'); expect(c[0].ok).toBe(false);
+    }
+  });
+  test('the mission gives the hole, not the ball', () => {
+    const g = goalText(p, 'assist');
+    expect(g).toContain('(2, 1)'); expect(g).not.toContain('(-1, -1)');
+  });
+});
