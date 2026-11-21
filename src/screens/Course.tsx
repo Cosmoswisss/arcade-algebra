@@ -67,7 +67,8 @@ export function Course({ id }: { id: CabinetId }) {
     if (!cabinet) return [];
     const out = [cabinet.meta.story.intro];
     if (plan.skipped > 0) out.push(`${robotLine(lines, 'placementSkip')} (${plan.skipped} lesson${plan.skipped > 1 ? 's' : ''} skipped)`);
-    if (reminder) out.push(`${robotLine(lines, 'reminder')} ${lines.errors[reminder]?.[0] ?? ''}`.trim());
+    // two separate lines: each robot line stays within 2 sentences
+    if (reminder) { out.push(robotLine(lines, 'reminder')); if (lines.errors[reminder]?.[0]) out.push(lines.errors[reminder][0]); }
     return out;
   }, [cabinet, plan.skipped, reminder, lines]);
 
@@ -192,7 +193,8 @@ export function Course({ id }: { id: CabinetId }) {
 
           {view === 'wrong' && (
             <div className="wrong" role="status">
-              <Robot name={lines.name} mood="oops" line={`${robotLine(lines, 'wrong', { errorKind: diagnosis?.kind })} ${diagnosis?.text ?? ''}`.trim()} />
+              <Robot name={lines.name} mood="oops" line={robotLine(lines, 'wrong', { errorKind: diagnosis?.kind })} />
+              {diagnosis?.text && <p className="verdict-detail mono">{diagnosis.text}</p>}
               {remedial && (
                 <article className="remedial">
                   <h2>{remedial.title}</h2>

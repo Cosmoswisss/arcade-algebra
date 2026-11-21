@@ -31,7 +31,8 @@ export interface LessonPlayProps {
   talk?: boolean;
 }
 
-type Feedback = { step: HintStep | 'right'; text: string; mood: RobotMood; kind: string | null };
+/** `text` is the robot's line (2 sentences max); `detail` is the game's diagnosis, shown under the bubble. */
+type Feedback = { step: HintStep | 'right'; text: string; mood: RobotMood; kind: string | null; detail?: string };
 
 /** "Your turn": one wave of the real game, untimed, with the robot and the hint ladder (spec §5.7, idea 2). */
 export function LessonPlay({ cabinet, play, theme, variant = 'lesson', rule, onDone, onBack, talk = true }: LessonPlayProps) {
@@ -79,12 +80,13 @@ export function LessonPlay({ cabinet, play, theme, variant = 'lesson', rule, onD
     const n = failures + 1;
     setFailures(n);
     const step = nextHintStep(n);
-    const named = `${robotLine(lines, 'wrong', { errorKind: kind ?? undefined })} ${r.diagnosis?.text ?? ''}`.trim();
-    if (step === 'named') setFeedback({ step, mood: 'oops', kind, text: named });
-    else if (step === 'hint') setFeedback({ step, mood: 'thinking', kind, text: robotLine(lines, 'hint') });
-    else if (step === 'replay-then-drill') { setFeedback({ step, mood: 'thinking', kind, text: named }); controls.current?.showReplay(); }
+    const named = robotLine(lines, 'wrong', { errorKind: kind ?? undefined });
+    const detail = r.diagnosis?.text;
+    if (step === 'named') setFeedback({ step, mood: 'oops', kind, text: named, detail });
+    else if (step === 'hint') setFeedback({ step, mood: 'thinking', kind, text: robotLine(lines, 'hint'), detail });
+    else if (step === 'replay-then-drill') { setFeedback({ step, mood: 'thinking', kind, text: named, detail }); controls.current?.showReplay(); }
     // on the training wave, keep naming the mistake: the player must know what to fix
-    else setFeedback({ step, mood: 'oops', kind, text: `${robotLine(lines, 'retry')} ${r.diagnosis?.text ?? ''}`.trim() });
+    else setFeedback({ step, mood: 'oops', kind, text: robotLine(lines, 'retry'), detail });
   };
 
   const retry = (next: { wave?: Wave; rule?: Rule }) => {
@@ -102,7 +104,8 @@ export function LessonPlay({ cabinet, play, theme, variant = 'lesson', rule, onD
   if (!cab) return <p className="lead">This game is not available.</p>;
   return (
     <div className="lesson-play">
-      {talk && <div ref={robotRef} className="lesson-robot"><Robot name={lines.name} mood={feedback?.mood ?? 'idle'} line={feedback?.text ?? play.mission[theme]} /></div>}
+      {talk && <div ref={robotRef} className="lesson-robot"><Robot name={lines.name} mood={feedback?.mood ?? 'idle'} line={feedback?.text ?? play.mission[theme]} />
+        {feedback?.detail && <p className="verdict-detail mono">{feedback.detail}</p>}</div>}
       <div className="stage-frame">
         <Suspense fallback={<p className="stage-loading">Powering up…</p>}>
           <LazyStage key={`${wave.id}-${attempt}`} cabinet={cabinet} content={cab} className="stage" mode={mode}
