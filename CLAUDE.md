@@ -48,7 +48,7 @@ Avant de modifier un fichier partagé, ou un fichier d'une autre zone, **ajoutez
 
 | Qui | Fichier(s) | Pourquoi | Depuis |
 |---|---|---|---|
-| *(vide)* | | | |
+| Massimo | `content/cabinets/03-hole-in-the-wall/`, `content/cabinets/01-vector-golf/`, `content/README.md`, `content/robot.json`, `README.md` | bornes plus lisibles, Constellation remplace Hole in the Wall, Vector Golf thématisé | 21/11 |
 
 ## Écrire du contenu (pour les deux amis)
 
