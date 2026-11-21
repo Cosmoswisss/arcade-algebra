@@ -1,0 +1,244 @@
+[
+  {
+    "errorKind": "swapped-xy",
+    "label": "x first, then y",
+    "waves": [
+      {
+        "id": "drill-swapped-xy-1",
+        "concept": "vector",
+        "params": {
+          "start": [
+            -2,
+            -1
+          ],
+          "shots": [
+            [
+              3,
+              1
+            ]
+          ],
+          "hole": [
+            1,
+            0
+          ],
+          "walls": []
+        }
+      },
+      {
+        "id": "drill-swapped-xy-2",
+        "concept": "vector",
+        "params": {
+          "start": [
+            -2,
+            -1
+          ],
+          "shots": [
+            [
+              1,
+              3
+            ]
+          ],
+          "hole": [
+            -1,
+            2
+          ],
+          "walls": []
+        }
+      }
+    ]
+  },
+  {
+    "errorKind": "sign-x",
+    "label": "left is negative",
+    "waves": [
+      {
+        "id": "drill-sign-x-1",
+        "concept": "negative",
+        "params": {
+          "start": [
+            2,
+            0
+          ],
+          "shots": [
+            [
+              -3,
+              1
+            ]
+          ],
+          "hole": [
+            -1,
+            1
+          ],
+          "walls": []
+        }
+      },
+      {
+        "id": "drill-sign-x-2",
+        "concept": "negative",
+        "params": {
+          "start": [
+            1,
+            -1
+          ],
+          "shots": [
+            [
+              -2,
+              2
+            ]
+          ],
+          "hole": [
+            -1,
+            1
+          ],
+          "walls": []
+        }
+      }
+    ]
+  },
+  {
+    "errorKind": "sign-y",
+    "label": "down is negative",
+    "waves": [
+      {
+        "id": "drill-sign-y-1",
+        "concept": "negative",
+        "params": {
+          "start": [
+            -1,
+            2
+          ],
+          "shots": [
+            [
+              2,
+              -3
+            ]
+          ],
+          "hole": [
+            1,
+            -1
+          ],
+          "walls": []
+        }
+      },
+      {
+        "id": "drill-sign-y-2",
+        "concept": "negative",
+        "params": {
+          "start": [
+            0,
+            2
+          ],
+          "shots": [
+            [
+              1,
+              -2
+            ]
+          ],
+          "hole": [
+            1,
+            0
+          ],
+          "walls": []
+        }
+      }
+    ]
+  },
+  {
+    "errorKind": "hit-wall",
+    "label": "going around walls",
+    "waves": [
+      {
+        "id": "drill-hit-wall-1",
+        "concept": "detour",
+        "params": {
+          "start": [
+            -2,
+            -1
+          ],
+          "shots": [
+            [
+              0,
+              3
+            ],
+            [
+              3,
+              0
+            ]
+          ],
+          "hole": [
+            1,
+            2
+          ],
+          "walls": [
+            [
+              [
+                -1,
+                -2
+              ],
+              [
+                -1,
+                1.5
+              ]
+            ]
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "errorKind": "other",
+    "label": "adding the shots",
+    "waves": [
+      {
+        "id": "drill-other-1",
+        "concept": "addition",
+        "params": {
+          "start": [
+            -2,
+            -1
+          ],
+          "shots": [
+            [
+              2,
+              0
+            ],
+            [
+              1,
+              3
+            ]
+          ],
+          "hole": [
+            1,
+            2
+          ],
+          "walls": []
+        }
+      },
+      {
+        "id": "drill-other-2",
+        "concept": "addition",
+        "params": {
+          "start": [
+            -2,
+            0
+          ],
+          "shots": [
+            [
+              1,
+              1
+            ],
+            [
+              2,
+              1
+            ]
+          ],
+          "hole": [
+            1,
+            2
+          ],
+          "walls": []
+        }
+      }
+    ]
+  }
+]

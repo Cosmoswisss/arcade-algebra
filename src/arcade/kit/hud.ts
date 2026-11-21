@@ -100,7 +100,7 @@ export class Hud {
     const inPlay = r.phase === 'play';
     this.score.text = `SCORE ${r.run.score}`;
     this.combo.text = r.run.combo > 1 ? `COMBO ×${r.run.combo}` : '';
-    this.info.text = `${this.meta.name.toUpperCase()} · WAVE ${r.run.waveIndex + 1} · ${RULE_LABEL[r.rule]}${inPlay ? ` · wall in ${r.secondsLeft.toFixed(1)}s` : ''}`;
+    this.info.text = `${this.meta.name.toUpperCase()} · WAVE ${r.run.waveIndex + 1} · ${RULE_LABEL[r.rule]}${inPlay ? ` · ⏱ ${r.secondsLeft.toFixed(1)}s` : ''}`;
     this.lives.text = '♥'.repeat(Math.max(0, r.run.lives)) + '♡'.repeat(Math.max(0, 3 - r.run.lives));
     const d = this.cb.dex(); this.dex.text = `TRANSFORM DEX ${d.count}/${d.total}`;
     // mission + checklist during play (rules 1 and 3)

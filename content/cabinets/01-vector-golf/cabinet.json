@@ -1,0 +1,39 @@
+{
+  "id": "vector-golf",
+  "order": 1,
+  "name": "Vector Golf",
+  "notion": "A vector is a move: how far right, how far up. Two moves in a row add up tip to tail.",
+  "tiers": [
+    {
+      "rule": "assist",
+      "banner": "The path is drawn for you",
+      "waves": {
+        "guided": 3,
+        "fast": 2
+      }
+    },
+    {
+      "rule": "partial",
+      "banner": "NEW RULE · THE PATH IS HIDDEN — add the arrows in your head",
+      "waves": {
+        "guided": 3,
+        "fast": 2
+      }
+    },
+    {
+      "rule": "abstract",
+      "banner": "NEW RULE · ONLY THE NUMBERS — predict where the ball stops",
+      "waves": {
+        "guided": 3,
+        "fast": 2
+      }
+    }
+  ],
+  "waveSeconds": {
+    "guided": 16,
+    "fast": 12
+  },
+  "boss": {
+    "waves": 2
+  }
+}
