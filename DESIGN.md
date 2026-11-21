@@ -1,4 +1,4 @@
-# DESIGN.md: Linear Arcade, "Neon Grid"
+# DESIGN.md: Arcade Algebra, "Neon Grid"
 
 The game is an arcade hall at night. Dark glass, thin bright lines, a perspective grid. The look serves one job:
 **make coordinates and shapes readable**. Everything decorative is secondary to the plane, the arrows and the numbers.

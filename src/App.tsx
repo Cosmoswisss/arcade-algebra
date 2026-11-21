@@ -16,7 +16,7 @@ function TopBar() {
   const { progress } = useStore();
   return (
     <header className="topbar">
-      <a className="brand" href={href.title} aria-label="Linear Arcade, home"><LogoMark /><span>Linear Arcade</span></a>
+      <a className="brand" href={href.title} aria-label="Arcade Algebra, home"><LogoMark /><span>Arcade Algebra</span></a>
       <nav aria-label="Main">
         {progress.profile && <a href={href.hall}>Arcade hall</a>}
         {progress.profile && <a href={href.knowledge}>My knowledge</a>}

@@ -1,9 +1,9 @@
-# Linear Arcade
+# Arcade Algebra
 
 **Learn linear algebra from scratch by playing seven neon arcade cabinets.**
 Built at LauzHack 2026 for the Scholé challenge: a learning experience that adapts to the learner, with no chatbot.
 
-Linear Arcade aims for deep, concrete understanding rather than exam drills. You bend the plane with your own hands, and you prove you understood by **predicting before you see**.
+Arcade Algebra aims for deep, concrete understanding rather than exam drills. You bend the plane with your own hands, and you prove you understood by **predicting before you see**.
 
 ## The arcade
 

@@ -44,7 +44,7 @@ export interface Progress {
   lastError: ErrorKind | null;
 }
 
-// ---------- v2: Linear Arcade ----------
+// ---------- v2: Arcade Algebra ----------
 export type CabinetId = 'vector-golf' | 'drone' | 'hole-in-the-wall' | 'factory' | 'squash' | 'rewind' | 'laser-lab';
 export const CABINETS: CabinetId[] = ['vector-golf', 'drone', 'hole-in-the-wall', 'factory', 'squash', 'rewind', 'laser-lab'];
 export type Mode = 'guided' | 'fast';

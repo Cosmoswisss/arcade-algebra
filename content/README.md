@@ -1,4 +1,4 @@
-# Écrire le contenu de Linear Arcade
+# Écrire le contenu de Arcade Algebra
 
 **Ce fichier est le signal que le format est figé.** Vous pouvez écrire.
 

@@ -1,11 +1,11 @@
-# CLAUDE.md : règles communes pour les sessions Claude de l'équipe (Linear Arcade)
+# CLAUDE.md : règles communes pour les sessions Claude de l'équipe (Arcade Algebra)
 
 Claude Code lit ce fichier automatiquement au début de chaque session ouverte dans ce repo.
 **Plusieurs personnes travaillent en parallèle, chacune avec son propre Claude.** Le but de ces règles : que personne n'écrase le travail d'un autre.
 
 ## Le projet en bref
 
-**Linear Arcade** : un jeu web pour apprendre l'algèbre linéaire à partir de zéro. On le fait pour le challenge Scholé de LauzHack 2026 : pas de chatbot, et le jeu doit s'adapter à l'élève.
+**Arcade Algebra** : un jeu web pour apprendre l'algèbre linéaire à partir de zéro. On le fait pour le challenge Scholé de LauzHack 2026 : pas de chatbot, et le jeu doit s'adapter à l'élève.
 
 C'est **une salle d'arcade de 7 bornes**, une par notion. Chaque borne a son propre mini-jeu (PixiJS), précédé d'un **cours court** dans l'esprit de Codédex. **On vise la compréhension profonde, pas la réussite d'examens.**
 

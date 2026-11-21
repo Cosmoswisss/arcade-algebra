@@ -53,7 +53,7 @@ export function Title() {
     <main className="title">
       <div className="title-copy">
         <p className="eyebrow">7 arcade games · from vectors to eigenvectors</p>
-        <h1>Linear Arcade</h1>
+        <h1>Arcade Algebra</h1>
         <p className="lead">
           Learn linear algebra by playing. Drag two arrows, bend the plane until every star lights up, and see
           why a matrix is nothing more than <strong>where î and ĵ land</strong>.
