@@ -124,6 +124,8 @@ export function createConstellation(): CabinetGame & { setup(ctx: KitContext): v
   }
 
   return {
+    // no clock in Constellation: reading the stars and deducing î and ĵ takes the time it takes
+    untimed: true,
     setup(c: KitContext) {
       ctx = c;
       labels.addChild(tipI, tipJ, ...starLabels, mapT, mapI, mapJ, matI, matJ, matCap);
@@ -180,7 +182,6 @@ export function createConstellation(): CabinetGame & { setup(ctx: KitContext): v
           drawStarMap(rule === 'abstract');
           const blink = 0.35 + 0.65 * (Math.sin(clock * 14) * 0.5 + 0.5);
           drawMatrix(M(), phase === 'result' && !lastCorrect ? [near(i, col(target, 0)) ? 1 : blink, near(j, col(target, 1)) ? 1 : blink] : [1, 1]);
-          if (phase === 'play' && t > 0.8) glow(starG, [[0, 0], [L.w, 0], [L.w, L.h], [0, L.h]], NEON.j, 4, true, (Math.sin(clock * 20) * 0.5 + 0.5) * 0.5);
         } else {
           gridG.clear(); starG.clear(); playG.clear();
           tipI.visible = tipJ.visible = false; starLabels.forEach((s) => { s.visible = false; });

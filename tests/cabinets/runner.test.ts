@@ -58,6 +58,21 @@ describe('runner pace', () => {
   });
 });
 
+describe('untimed cabinets', () => {
+  test('a game that asks for it is untimed on every wave, boss included', () => {
+    const { game } = fakeGame(() => true);
+    const r = new Runner(content, { ...game, untimed: true }, { mode: 'guided', onWaveResult: () => ({ newDex: null }) });
+    r.start();
+    for (let w = 0; w < 12 && r.phase !== 'done'; w++) {
+      play(r);
+      expect(r.untimed).toBe(true);
+      wait(r, 60000); expect(r.phase).toBe('play');      // never runs out
+      finishWave(r); toNext(r);
+    }
+    expect(r.phase).toBe('done');
+  });
+});
+
 describe('runner start tier', () => {
   test('a placed cabinet starts its first wave under the partial rule', () => {
     const { game, log } = fakeGame(() => true);

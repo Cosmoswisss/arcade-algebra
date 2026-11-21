@@ -22,6 +22,8 @@ export interface CabinetGame {
   replay(k: number): string;
   /** Optional: called every frame for drawing that does not depend on the phase logic (e.g. a wall passing through). */
   frame?(dt: number, phase: Phase, t: number, clock: number): void;
+  /** Optional: no time limit on any wave (the game waits for LOCK IN), for cabinets where reading takes time. */
+  untimed?: boolean;
   /** Optional: extra HUD drawn by the cabinet (e.g. the live matrix). */
   hud?(): void;
   destroy(): void;
@@ -127,7 +129,7 @@ export class Runner {
     this.drillLabel = pick.drillLabel ?? '';
     this.run.lastWaveId = pick.wave.id;
     this.duration = waveSeconds(meta, this.opts.mode, tierIndex);
-    this.untimed = waveIndex === 0 && !this.boss;
+    this.untimed = this.game.untimed === true || (waveIndex === 0 && !this.boss);
     this.t = this.untimed ? UNTIMED_T : 0;
     this.lockBonus = 0;
     this.lockSeen = false;
