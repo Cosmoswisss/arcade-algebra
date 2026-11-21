@@ -1,51 +1,58 @@
 import { useState } from 'react';
 import type { Mode, Theme } from '../engine/types';
-import { go } from '../router';
-import { useApp } from '../state';
+import { go, href } from '../router';
+import { useStore } from '../store';
+import { ArrowRight } from '../ui/icons';
 
-const LEVELS: { mode: Mode; label: string; sub: string }[] = [
-  { mode: 'guided', label: 'High school', sub: 'More animations, step by step' },
-  { mode: 'fast', label: 'University', sub: 'Shorter lessons, faster pace' },
+const LEVELS: { mode: Mode; name: string; line: string }[] = [
+  { mode: 'guided', name: 'High school', line: 'Step-by-step lessons, slower walls, longer replays, more waves before each new rule.' },
+  { mode: 'fast', name: 'University', line: 'Short lessons, quick replays you can skip, rules that tighten sooner.' },
 ];
-const THEMES: { theme: Theme; label: string; sub: string }[] = [
-  { theme: 'games', label: 'Video games', sub: 'Sprites, cameras, characters' },
-  { theme: 'physics', label: 'Physics', sub: 'Forces, frames, motion' },
-  { theme: 'ai', label: 'AI', sub: 'Images, data, models' },
+const THEMES: { theme: Theme; name: string; example: string }[] = [
+  { theme: 'games', name: 'Games', example: 'A character stuck to a sticker on the screen moves whenever the sticker does.' },
+  { theme: 'physics', name: 'Physics', example: 'A mark painted on a rubber sheet stays at the same grid coordinates while the sheet stretches.' },
+  { theme: 'ai', name: 'AI', example: 'A layer reweights two input directions: its weights are where each basis arrow ends up.' },
 ];
 
-/** Two clicks, no typing: the learner shapes the lessons without writing a prompt. */
-export default function Profile() {
-  const { progress, setProgress } = useApp();
+export function Profile() {
+  const { progress, setProfile } = useStore();
   const [mode, setMode] = useState<Mode | null>(progress.profile?.mode ?? null);
   const [theme, setTheme] = useState<Theme | null>(progress.profile?.theme ?? null);
-  const done = mode && theme;
+  const example = THEMES.find((t) => t.theme === theme)?.example;
   return (
-    <main className="screen narrow">
-      <p className="kicker">Before you play</p>
-      <h1 className="h1">Two quick questions</h1>
-      <section className="question">
-        <h2 className="h2">Where are you at?</h2>
-        <div className="choices">
-          {LEVELS.map((l) => (
-            <button key={l.mode} className={`choice ${mode === l.mode ? 'selected' : ''}`} onClick={() => setMode(l.mode)} aria-pressed={mode === l.mode}>
-              <span className="choice-label">{l.label}</span><span className="choice-sub">{l.sub}</span>
-            </button>
-          ))}
-        </div>
-      </section>
-      <section className="question">
-        <h2 className="h2">Which examples speak to you?</h2>
-        <div className="choices">
-          {THEMES.map((t) => (
-            <button key={t.theme} className={`choice ${theme === t.theme ? 'selected' : ''}`} onClick={() => setTheme(t.theme)} aria-pressed={theme === t.theme}>
-              <span className="choice-label">{t.label}</span><span className="choice-sub">{t.sub}</span>
-            </button>
-          ))}
-        </div>
-      </section>
-      <button className="btn btn-primary btn-big" disabled={!done} onClick={() => { setProgress((p) => ({ ...p, profile: { mode: mode!, theme: theme! } })); go('/diagnostic'); }}>
-        Continue
-      </button>
+    <main className="narrow">
+      <p className="eyebrow">Two clicks, then you play</p>
+      <h1>Who is playing?</h1>
+      <p className="lead">This sets the pace of the lessons and the examples you will read. You can change it later.</p>
+
+      <fieldset className="choices">
+        <legend>Your level</legend>
+        {LEVELS.map((l) => (
+          <label key={l.mode} className={`choice ${mode === l.mode ? 'is-on' : ''}`}>
+            <input type="radio" name="level" checked={mode === l.mode} onChange={() => setMode(l.mode)} />
+            <span className="choice-name">{l.name}</span>
+            <span className="choice-line">{l.line}</span>
+          </label>
+        ))}
+      </fieldset>
+
+      <fieldset className="choices choices-row">
+        <legend>Examples from</legend>
+        {THEMES.map((t) => (
+          <label key={t.theme} className={`choice chip ${theme === t.theme ? 'is-on' : ''}`}>
+            <input type="radio" name="theme" checked={theme === t.theme} onChange={() => setTheme(t.theme)} />
+            <span className="choice-name">{t.name}</span>
+          </label>
+        ))}
+      </fieldset>
+      <p className="example" aria-live="polite">{example ? <>Example: {example}</> : <>Pick a theme to see an example.</>}</p>
+
+      <div className="actions">
+        <button className="btn btn-primary" disabled={!mode || !theme}
+          onClick={() => { if (mode && theme) { setProfile(mode, theme); go(href.diagnostic); } }}>
+          Continue <ArrowRight size={18} />
+        </button>
+      </div>
     </main>
   );
 }

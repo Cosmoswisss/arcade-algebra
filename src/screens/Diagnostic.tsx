@@ -1,91 +1,86 @@
+import { motion, useReducedMotion } from 'motion/react';
 import { useMemo, useState } from 'react';
-import MiniScene from '../arcade/kit/MiniScene';
-import { checkAnswer } from '../content/checkAnswer';
-import type { Answer } from '../content/checkAnswer';
+import { checkAnswer, type Answer } from '../ui/answers';
 import { diagnosticQuestions } from '../content/diagnostic';
-import { placeFromDiagnostic } from '../engine/progression';
 import type { CabinetId } from '../engine/types';
-import { go } from '../router';
-import { useApp } from '../state';
-import RichText from './RichText';
-import { displayOrder } from '../content/shuffle';
+import { go, href } from '../router';
+import { useStore } from '../store';
+import { ArrowRight, Check } from '../ui/icons';
+import { QuestionPanel } from '../ui/QuestionPanel';
 
-const matrixTex = (m: [[number, number], [number, number]]) =>
-  String.raw`\begin{bmatrix}\color{#4ade80}{${m[0][0]}} & \color{#f87171}{${m[0][1]}} \\ \color{#4ade80}{${m[1][0]}} & \color{#f87171}{${m[1][1]}}\end{bmatrix}`;
-
-/** A 2-minute placement test: one prediction per cabinet 1–5. No feedback during the test; passed cabinets open as "mastered". */
-export default function Diagnostic() {
-  const { content, setProgress } = useApp();
-  const qs = useMemo(() => diagnosticQuestions(content.cabinets), [content]);
-  const [k, setK] = useState(-1);
-  const [answer, setAnswer] = useState<Answer | null>(null);
+/** A short, skippable test: five predictions, one per cabinet 1 to 5. Passing one lights its cabinet up. */
+export function Diagnostic() {
+  const { content, placement } = useStore();
+  const items = useMemo(() => diagnosticQuestions(content.cabinets).map(({ cabinet, question }) => ({ id: cabinet, name: content.cabinets[cabinet]!.meta.name, question })), [content]);
+  const reduce = useReducedMotion();
+  const [index, setIndex] = useState(0);
   const [passed, setPassed] = useState<CabinetId[]>([]);
-  const [done, setDone] = useState(false);
+  const [saved, setSaved] = useState(false);
 
-  const finish = (list: CabinetId[]) => { setProgress((p) => placeFromDiagnostic(p, list)); setDone(true); };
-  const advance = (list: CabinetId[]) => { setAnswer(null); if (k + 1 >= qs.length) finish(list); else setK(k + 1); };
-  const submit = () => {
-    const q = qs[k];
-    const a = answer ?? (q.question.kind === 'number' ? 0 : null);
-    const ok = a !== null && checkAnswer(q.question, a).correct;
-    const next = ok ? [...passed, q.cabinet] : passed;
+  const finish = (result: CabinetId[]) => { placement(result); setSaved(true); };
+  const answer = (a: Answer) => {
+    const item = items[index];
+    const ok = checkAnswer(item.question, a).correct;
+    const next = ok ? [...passed, item.id] : passed;
     setPassed(next);
-    advance(next);
+    if (index + 1 >= items.length) finish(next);
+    else setIndex(index + 1);
   };
 
-  if (done) return (
-    <main className="screen narrow">
-      <p className="kicker">Placement done</p>
-      <h1 className="h1">{passed.length ? 'You already know some of this' : 'Fresh start'}</h1>
-      <p className="lead">{passed.length
-        ? `These cabinets are marked as mastered and open right away: ${passed.map((id) => content.cabinets[id]?.meta.name).join(', ')}. You can still play them for the badge.`
-        : 'No problem — the arcade starts at the very first idea and builds up from there.'}</p>
-      <button className="btn btn-primary btn-big" onClick={() => go('/hall')}>Enter the arcade</button>
-    </main>
-  );
+  if (items.length === 0) {
+    return (
+      <main className="narrow">
+        <h1>No placement test yet</h1>
+        <p className="lead">No cabinet content is available to build it from.</p>
+        <a className="btn btn-primary" href={href.hall}>Go to the hall</a>
+      </main>
+    );
+  }
 
-  if (k < 0) return (
-    <main className="screen narrow">
-      <p className="kicker">Placement · about 2 minutes</p>
-      <h1 className="h1">What do you already know?</h1>
-      <p className="lead">{qs.length} quick predictions, one per idea. No score, no feedback: it only opens the cabinets you already master, so you don't repeat what you know.</p>
-      <div className="actions-row">
-        <button className="btn btn-primary btn-big" onClick={() => setK(0)}>Start the placement</button>
-        <button className="btn btn-quiet" onClick={() => finish([])}>Skip — start from zero</button>
-      </div>
-    </main>
-  );
+  if (saved) {
+    return (
+      <main className="narrow">
+        <p className="eyebrow">Placement test · done</p>
+        <h1>{passed.length === 0 ? 'You start from the first cabinet' : 'Some cabinets are already lit'}</h1>
+        <p className="lead">
+          {passed.length === 0
+            ? 'No problem: the first cabinet opens with a short lesson, and the game adapts as you play.'
+            : 'You already predicted these correctly, so they open as mastered. Clear their boss to earn the badge.'}
+        </p>
+        <ul className="placed">
+          {items.map((it, i) => {
+            const ok = passed.includes(it.id);
+            return (
+              <motion.li key={it.id} className={ok ? 'is-ok' : ''}
+                initial={reduce ? false : { opacity: 0, x: -12 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: reduce ? 0 : 0.25 * i }}>
+                <span className="mono">{String(i + 1).padStart(2, '0')}</span>
+                <span>{it.name}</span>
+                <span className="placed-state">{ok ? <><Check size={16} /> mastered</> : 'to learn'}</span>
+              </motion.li>
+            );
+          })}
+        </ul>
+        <div className="actions"><a className="btn btn-primary" href={href.hall}>Enter the arcade hall <ArrowRight size={18} /></a></div>
+      </main>
+    );
+  }
 
-  const { question: q, cabinet } = qs[k];
+  const item = items[index];
   return (
-    <main className="screen course">
+    <main className="course">
       <header className="course-head">
-        <p className="kicker">Placement · {k + 1}/{qs.length} · {content.cabinets[cabinet]?.meta.name}</p>
-        <ol className="dots">{qs.map((x, i) => <li key={x.cabinet} className={i < k ? 'done' : i === k ? 'current' : ''} />)}</ol>
+        <div>
+          <p className="eyebrow">Placement test · question {index + 1} of {items.length}</p>
+          <h1>{item.name}</h1>
+        </div>
+        <button className="linklike" onClick={() => go(href.hall)}>Skip the test</button>
       </header>
-      <div className="course-grid">
-        <section className="panel">
-          <p className="kicker">Predict</p>
-          <p className="check-prompt">{q.prompt}</p>
-          {(q.kind === 'basis' || q.kind === 'number' || (q.kind === 'point' && q.given.matrix)) && <RichText className="check-matrix" text={`$${matrixTex(q.given.matrix!)}$`} />}
-          {q.kind === 'number' && (
-            <label className="slider">
-              <input type="range" min={-6} max={6} step={0.5} value={typeof answer === 'number' ? answer : 0} onChange={(e) => setAnswer(Number(e.target.value))} />
-              <output className="mono">{typeof answer === 'number' ? answer : 0}</output>
-            </label>
-          )}
-          {q.kind === 'choice' && <div className="choices">{displayOrder(q.options.length, q.answer, cabinet).map((i) => <button key={q.options[i]} className={`choice ${answer === i ? 'selected' : ''}`} onClick={() => setAnswer(i)}><span className="choice-label">{q.options[i]}</span></button>)}</div>}
-          <div className="actions-row">
-            <button className="btn btn-primary" onClick={submit} disabled={answer === null && q.kind !== 'number'}>Next</button>
-            <button className="btn btn-quiet" onClick={() => advance(passed)}>I don't know</button>
-          </div>
-        </section>
-        {(q.kind === 'basis' || q.kind === 'point') && (
-          <section className="course-play">
-            <MiniScene playKey={k} input={q.kind} vectors={q.kind === 'point' ? q.given.vectors : undefined} onBasis={setAnswer} onPoint={setAnswer} />
-            <p className="muted small">Drag the {q.kind === 'basis' ? 'green and red arrows' : 'yellow point'}.</p>
-          </section>
-        )}
+      <ol className="ticks" aria-label="Test progress">
+        {items.map((it, i) => <li key={it.id} className={i < index ? 'done' : i === index ? 'now' : ''}>{i + 1}</li>)}
+      </ol>
+      <div className="narrow-card">
+        <p className="tiny">No feedback during the test: it only decides which cabinets open already.</p>
+        <QuestionPanel q={item.question} resetKey={item.id} onSubmit={answer} submitLabel={index + 1 >= items.length ? 'Finish' : 'Next question'} />
       </div>
     </main>
   );

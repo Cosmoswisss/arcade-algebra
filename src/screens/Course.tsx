@@ -1,120 +1,128 @@
-import { useState } from 'react';
-import MiniScene from '../arcade/kit/MiniScene';
-import { checkAnswer } from '../content/checkAnswer';
-import type { Answer } from '../content/checkAnswer';
-import type { Remedial } from '../content/types';
-import { modeFor } from '../engine/progression';
-import type { CabinetId } from '../engine/types';
-import { go } from '../router';
-import { useApp } from '../state';
-import RichText from './RichText';
-import { displayOrder } from '../content/shuffle';
+import { useMemo, useState } from 'react';
+import { checkAnswer, type Answer, type Mistake } from '../ui/answers';
+import type { CourseStep } from '../content/types';
+import { effectiveMode } from '../engine/progression';
+import type { CabinetId, Mat2, Mode } from '../engine/types';
+import { PLAYABLE } from '../arcade/playable';
+import { href } from '../router';
+import { useStore } from '../store';
+import { ArrowLeft, ArrowRight, Check } from '../ui/icons';
+import { MiniScene } from '../ui/MiniScene';
+import { QuestionPanel } from '../ui/QuestionPanel';
+import { RichText } from '../ui/RichText';
 
-/** KaTeX for a matrix with column 1 green (î) and column 2 red (ĵ). */
-const matrixTex = (m: [[number, number], [number, number]]) =>
-  String.raw`\begin{bmatrix}\color{#4ade80}{${m[0][0]}} & \color{#f87171}{${m[0][1]}} \\ \color{#4ade80}{${m[1][0]}} & \color{#f87171}{${m[1][1]}}\end{bmatrix}`;
+type View = 'learn' | 'ask' | 'wrong' | 'right';
+const IDENTITY: Mat2 = [[1, 0], [0, 1]];
+const THEME_NAME = { games: 'Games', physics: 'Physics', ai: 'AI' } as const;
 
-type Feedback = null | { correct: true } | { correct: false; text: string; remedial: Remedial | null };
+export function Course({ id }: { id: CabinetId }) {
+  const { progress, content } = useStore();
+  const cabinet = content.cabinets[id];
+  const [mode, setMode] = useState<Mode>(effectiveMode(progress, id));
+  const [stepIndex, setStepIndex] = useState(0);
+  const [view, setView] = useState<View>('learn');
+  const [diagnosis, setDiagnosis] = useState<Mistake | null>(null);
+  const [attempt, setAttempt] = useState(0);
 
-/** A short Codédex-style course before each cabinet: text, a scene to watch and play with, then a prediction. */
-export default function Course({ id }: { id: CabinetId }) {
-  const { content, progress } = useApp();
-  const c = content.cabinets[id];
-  const [step, setStep] = useState(0);
-  const [answer, setAnswer] = useState<Answer | null>(null);
-  const [feedback, setFeedback] = useState<Feedback>(null);
-  const [caption, setCaption] = useState('');
-  const [playKey, setPlayKey] = useState(0);
-  if (!c) return <main className="screen narrow"><p className="lead">This course is not available.</p></main>;
-  const mode = modeFor(progress, id);
   const theme = progress.profile?.theme ?? 'games';
-  const s = c.course[step];
-  const q = s.check;
-  const last = step === c.course.length - 1;
-  const showingRemedial = feedback && !feedback.correct && feedback.remedial;
+  const steps = cabinet?.course ?? [];
+  const step: CourseStep | undefined = steps[stepIndex];
+  const frames = useMemo(() => step?.scene, [step]);
 
-  const submit = () => {
-    if (answer === null) return;
-    const r = checkAnswer(q, answer);
-    if (r.correct) { setFeedback({ correct: true }); return; } // keep the right answer on screen
-    setFeedback({ correct: false, text: r.text, remedial: content.remedial[r.kind ?? 'other'] ?? content.remedial.other ?? null });
-    setPlayKey((k) => k + 1);
+  if (!cabinet || !step) {
+    return (
+      <main className="narrow">
+        <h1>This lesson is not available</h1>
+        <p className="lead">Its content is missing or broken. The hall lists what is wrong.</p>
+        <a className="btn btn-primary" href={href.hall}>Back to the hall</a>
+      </main>
+    );
+  }
+
+  const last = stepIndex === steps.length - 1;
+  const playable = PLAYABLE.has(id);
+  const nextStep = () => { setStepIndex((i) => i + 1); setView('learn'); setDiagnosis(null); window.scrollTo(0, 0); };
+  const submit = (a: Answer) => {
+    const res = checkAnswer(step.check, a);
+    setDiagnosis(res.diagnosis);
+    setView(res.correct ? 'right' : 'wrong');
   };
-  const next = () => { setStep(step + 1); setAnswer(null); setFeedback(null); setPlayKey((k) => k + 1); };
-  const retry = () => { setAnswer(null); setFeedback(null); setPlayKey((k) => k + 1); };
+  const remedial = diagnosis ? (content.remedial[diagnosis.kind] ?? content.remedial.other) : undefined;
 
   return (
-    <main className="screen course">
+    <main className="course">
+      <a className="back" href={href.hall}><ArrowLeft size={16} /> Arcade hall</a>
       <header className="course-head">
-        <button className="btn btn-quiet" onClick={() => go('/hall')}>← Arcade</button>
-        <p className="kicker">Course · {c.meta.name}</p>
-        <ol className="dots" aria-label={`Step ${step + 1} of ${c.course.length}`}>
-          {c.course.map((st, k) => <li key={st.id} className={k < step ? 'done' : k === step ? 'current' : ''} />)}
-        </ol>
+        <div>
+          <p className="eyebrow">Cabinet {cabinet.meta.order} · {cabinet.meta.name} · lesson {stepIndex + 1} of {steps.length}</p>
+          <h1>{step.title}</h1>
+        </div>
+        <div className="seg" role="group" aria-label="Lesson pace">
+          {(['guided', 'fast'] as const).map((m) => (
+            <button key={m} type="button" aria-pressed={mode === m} className={mode === m ? 'is-on' : ''} onClick={() => setMode(m)}>
+              {m === 'guided' ? 'Step by step' : 'Short'}
+            </button>
+          ))}
+        </div>
       </header>
+      <ol className="ticks" aria-label="Lesson progress">
+        {steps.map((s, i) => <li key={s.id} className={i < stepIndex ? 'done' : i === stepIndex ? 'now' : ''} aria-current={i === stepIndex ? 'step' : undefined}>{i + 1}</li>)}
+      </ol>
+
       <div className="course-grid">
-        <section className="course-text panel">
-          {showingRemedial ? (
+        <section className="course-text" aria-label="Lesson">
+          <RichText text={step.text[mode]} />
+          <aside className="example"><b>{THEME_NAME[theme]} example</b><span>{step.examples[theme]}</span></aside>
+        </section>
+
+        <section className="course-side" aria-label={view === 'learn' ? 'Scene' : 'Your turn'}>
+          {view === 'learn' && (
             <>
-              <p className="kicker remedial-kicker">Let's look again</p>
-              <h1 className="h2">{feedback.remedial!.title}</h1>
-              <p className="feedback-bad">{feedback.text}</p>
-              <RichText className="lead" text={feedback.remedial!.text[mode]} />
-              <button className="btn btn-primary" onClick={retry}>Try again</button>
-            </>
-          ) : (
-            <>
-              <h1 className="h2">{s.title}</h1>
-              <RichText className="lead" text={s.text[mode]} />
-              <blockquote className="example">{s.examples[theme]}</blockquote>
-              <button className="btn btn-quiet" onClick={() => setPlayKey((k) => k + 1)}>↻ Replay the animation</button>
+              <MiniScene frames={frames} matrix={IDENTITY} label={`Animated scene for the lesson “${step.title}”`} />
+              <div className="actions"><button className="btn btn-primary" onClick={() => setView('ask')}>Your turn: predict it <ArrowRight size={18} /></button></div>
             </>
           )}
-        </section>
-        <section className="course-play">
-          <MiniScene
-            playKey={`${step}-${playKey}`}
-            scene={showingRemedial ? feedback.remedial!.scene : s.scene}
-            input={showingRemedial ? 'none' : q.kind === 'basis' || q.kind === 'point' ? q.kind : 'none'}
-            shown={feedback?.correct && q.kind === 'basis' ? q.answer : q.kind === 'number' ? q.given.matrix : undefined}
-            vectors={q.kind === 'point' ? q.given.vectors : undefined}
-            onBasis={(m) => setAnswer(m)} onPoint={(p) => setAnswer(p)} onCaption={setCaption}
-          />
-          <p className="scene-caption mono">{caption || ' '}</p>
-          {!showingRemedial && (
-            <div className="check panel">
-              <p className="kicker">Predict</p>
-              <p className="check-prompt">{q.prompt}</p>
-              {(q.kind === 'basis' || q.kind === 'number' || (q.kind === 'point' && q.given.matrix)) && (
-                <RichText className="check-matrix" text={`$${matrixTex(q.given.matrix!)}$`} />
+
+          {view === 'ask' && (
+            <>
+              <h2 id="q-title">Your turn</h2>
+              <QuestionPanel q={step.check} resetKey={`${step.id}-${attempt}`} onSubmit={submit}>
+                <button className="linklike" onClick={() => setView('learn')}>Watch the scene again</button>
+              </QuestionPanel>
+            </>
+          )}
+
+          {view === 'wrong' && (
+            <div className="wrong" role="status">
+              <p className="verdict-ko"><b>Not yet.</b> {diagnosis?.text}</p>
+              {remedial && (
+                <article className="remedial">
+                  <h2>{remedial.title}</h2>
+                  <RichText text={remedial.text[mode]} />
+                  {remedial.scene && <MiniScene frames={remedial.scene} label={`Catch-up scene: ${remedial.title}`} />}
+                </article>
               )}
-              {q.kind === 'number' && (
-                <label className="slider">
-                  <input type="range" min={-6} max={6} step={0.5} value={typeof answer === 'number' ? answer : 0} onChange={(e) => setAnswer(Number(e.target.value))} disabled={!!feedback} />
-                  <output className="mono">{typeof answer === 'number' ? answer : 0}</output>
-                </label>
-              )}
-              {q.kind === 'choice' && (
-                <div className="choices">
-                  {displayOrder(q.options.length, q.answer, s.id).map((k) => <button key={q.options[k]} className={`choice ${answer === k ? 'selected' : ''}`} onClick={() => setAnswer(k)} disabled={!!feedback}><span className="choice-label">{q.options[k]}</span></button>)}
-                </div>
-              )}
-              {(q.kind === 'basis' || q.kind === 'point') && !feedback && <p className="muted small">Drag the {q.kind === 'basis' ? 'green and red arrows' : 'yellow point'} in the scene above.</p>}
-              {feedback?.correct ? (
-                <div className="feedback-good">
-                  <p>Correct ✓</p>
-                  {last
-                    ? <button className="btn btn-primary btn-big" onClick={() => go(`/play/${id}`)}>Enter the cabinet</button>
-                    : <button className="btn btn-primary" onClick={next}>Next</button>}
-                </div>
-              ) : (
-                <button className="btn btn-primary" onClick={() => { if (q.kind === 'number' && answer === null) setAnswer(0); submit(); }} disabled={answer === null && q.kind !== 'number'}>Check</button>
-              )}
+              <div className="actions"><button className="btn btn-primary" onClick={() => { setAttempt((n) => n + 1); setView('ask'); }}>Try the question again</button></div>
+            </div>
+          )}
+
+          {view === 'right' && (
+            <div className="right" role="status">
+              <p className="verdict-ok"><Check size={20} /> <b>Yes.</b> That is the idea{last ? ' — you are ready for the cabinet.' : '.'}</p>
+              <div className="actions">
+                {!last && <button className="btn btn-primary" onClick={nextStep}>Next lesson <ArrowRight size={18} /></button>}
+                {last && playable && <a className="btn btn-primary" href={href.play(id)}>Enter the cabinet <ArrowRight size={18} /></a>}
+                {last && !playable && <a className="btn btn-primary" href={href.hall}>Back to the hall</a>}
+              </div>
             </div>
           )}
         </section>
       </div>
-      {mode === 'fast' && <p className="skip"><button className="btn btn-quiet" onClick={() => go(`/play/${id}`)}>Skip the course →</button></p>}
+
+      <footer className="course-foot">
+        {playable && <a href={href.play(id)}>Skip to the game</a>}
+        <a href={href.hall}>Back to the hall</a>
+      </footer>
     </main>
   );
 }

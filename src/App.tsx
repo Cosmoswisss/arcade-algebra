@@ -1,47 +1,76 @@
-import { AnimatePresence, motion } from 'motion/react';
-import { useEffect, useMemo, useState } from 'react';
-import { loadContent } from './content/load';
-import { loadProgressV2, saveProgressV2 } from './engine/progression';
-import type { ProgressV2 } from './engine/progression';
-import { useRoute } from './router';
-import Hall from './screens/Hall';
-import Play from './screens/Play';
-import Course from './screens/Course';
-import Diagnostic from './screens/Diagnostic';
-import Profile from './screens/Profile';
-import Title from './screens/Title';
-import { AppCtx } from './state';
+import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
+import { Suspense, lazy, useEffect } from 'react';
+import { levelOf } from './engine/progression';
+import { go, href, useRoute, type Route } from './router';
+import { StoreProvider, useStore } from './store';
+import { Course } from './screens/Course';
+import { Diagnostic } from './screens/Diagnostic';
+import { Hall } from './screens/Hall';
+import { Profile } from './screens/Profile';
+import { Title } from './screens/Title';
+import { LogoMark } from './ui/icons';
 
-const content = loadContent();
-
-export default function App() {
-  const route = useRoute();
-  const [progress, setProgressState] = useState<ProgressV2>(() => loadProgressV2());
-  useEffect(() => { saveProgressV2(progress); }, [progress]);
-  const state = useMemo(() => ({ content, progress, setProgress: setProgressState }), [progress]);
-
-  let screen: JSX.Element;
-  switch (route.name) {
-    case 'profile': screen = <Profile />; break;
-    case 'diagnostic': screen = <Diagnostic />; break;
-    case 'hall': screen = <Hall />; break;
-    case 'course': screen = <Course id={route.id} />; break;
-    case 'play': screen = <Play id={route.id} />; break;
-    default: screen = <Title />;
-  }
-  const key = route.name + ('id' in route ? route.id : '');
-  useEffect(() => {
-    const name = 'id' in route ? content.cabinets[route.id]?.meta.name : null;
-    const titles: Record<string, string> = { title: 'Linear Arcade', profile: 'Your profile · Linear Arcade', diagnostic: 'Placement · Linear Arcade', hall: 'The arcade · Linear Arcade', course: `${name} course · Linear Arcade`, play: `${name} · Linear Arcade` };
-    document.title = titles[route.name] ?? 'Linear Arcade';
-  }, [key]);
+function TopBar() {
+  const { progress } = useStore();
   return (
-    <AppCtx.Provider value={state}>
+    <header className="topbar">
+      <a className="brand" href={href.title} aria-label="Linear Arcade, home"><LogoMark /><span>Linear Arcade</span></a>
+      <nav aria-label="Main">
+        {progress.profile && <a href={href.hall}>Arcade hall</a>}
+      </nav>
+      {progress.profile && <a className="chip" href={href.hall} title="Your level and XP"><span className="mono">Lv {levelOf(progress.xp)}</span><span className="mono">{progress.xp} XP</span></a>}
+    </header>
+  );
+}
+
+/** PixiJS and the cabinets are about 1 MB: load them only when a cabinet is opened. */
+const Play = lazy(() => import('./screens/Play').then((m) => ({ default: m.Play })));
+
+const NEEDS_PROFILE: Route['name'][] = ['hall', 'course', 'play', 'diagnostic'];
+
+function Screen({ route }: { route: Route }) {
+  switch (route.name) {
+    case 'title': return <Title />;
+    case 'profile': return <Profile />;
+    case 'hall': return <Hall />;
+    case 'diagnostic': return <Diagnostic />;
+    case 'course': return <Course id={route.id} />;
+    case 'play': return <Suspense fallback={<p className="loading" role="status">Powering up the cabinet…</p>}><Play id={route.id} /></Suspense>;
+    default: return (
+      <main className="narrow">
+        <h1>Page not found</h1>
+        <a className="btn btn-primary" href={href.hall}>Back to the hall</a>
+      </main>
+    );
+  }
+}
+
+function Shell() {
+  const route = useRoute();
+  const { progress } = useStore();
+  const reduce = useReducedMotion();
+  const guarded = NEEDS_PROFILE.includes(route.name) && progress.profile === null;
+  useEffect(() => { if (guarded) go(href.profile); }, [guarded]);
+  if (guarded) return null;
+
+  const fullscreen = route.name === 'play';
+  const key = route.name === 'course' || route.name === 'play' ? `${route.name}-${route.id}` : route.name;
+  return (
+    <>
+      {!fullscreen && <TopBar />}
       <AnimatePresence mode="wait">
-        <motion.div key={key} className="route" initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -12 }} transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}>
-          {screen}
+        <motion.div key={key} initial={reduce ? false : { opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} exit={reduce ? undefined : { opacity: 0, y: -8 }} transition={{ duration: 0.25 }}>
+          <Screen route={route} />
         </motion.div>
       </AnimatePresence>
-    </AppCtx.Provider>
+    </>
+  );
+}
+
+export default function App() {
+  return (
+    <StoreProvider>
+      <Shell />
+    </StoreProvider>
   );
 }

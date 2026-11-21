@@ -1,101 +1,104 @@
-# DESIGN.md — Linear Arcade
+# DESIGN.md: Linear Arcade, "Neon Grid"
 
-Direction: **Neon Grid** — a dark arcade hall at night. Light only comes from things that *mean* something: the arrows, the target, the player. Everything else is dark glass and thin violet lines. Calm when you read, loud when you play.
+The game is an arcade hall at night. Dark glass, thin bright lines, a perspective grid. The look serves one job:
+**make coordinates and shapes readable**. Everything decorative is secondary to the plane, the arrows and the numbers.
 
-> Not based on a UXKIN comparison (not connected for this project). Decisions come from the validated prototype `docs/prototypes/hole-in-the-wall.html` and the rules below.
+## 1. Principles
 
-## 1. Color — dark only
+1. **Lines, not blobs.** Hairline strokes and glow on active things only. No big gradients, no blur panels.
+2. **Color carries meaning.** î is green, ĵ is red, the target is yellow, the player is cyan. Never reuse these colors for decoration.
+3. **Numbers are first-class.** Coordinates and matrices are set in the mono face, always visible, never faded out before they can be read.
+4. **Each cabinet is different.** Each has its own silhouette, marquee glyph and accent. No row of identical cards.
+5. **Waiting is a feature.** Briefings, replays and cards wait for a click or SPACE. Nothing disappears in under 3 s.
 
-Every color has one job. Glow is reserved for meaning; never decorate with it.
+### What would make it look machine-made (do not ship)
+- Purple-to-blue gradients on everything, neon blobs behind text, glassmorphism.
+- Emoji as icons. Use the SVG glyphs in `src/ui/icons.tsx` (stroke 1.75, 24 px grid).
+- Three equal cards in a row with an icon on top, a title and two lines of filler.
+- Centered hero with a vague claim ("Unlock your potential"). Say what the thing does, with a number or a coordinate.
+- Everything rounded 16 px. Arcade hardware is cut: use 2 px radii and chamfered corners (`clip-path`).
 
-| Token | Value | Role |
+## 2. Color
+
+| Token | Value | Use |
 |---|---|---|
-| `--bg` | `#05030f` | page and game background |
-| `--surface` | `#0e0a24` | panels: course text, Dex card, briefing |
-| `--surface-2` | `#16113a` | raised items: cabinet tiles, inputs, hover |
-| `--line` | `#2e2a7a` | borders, grid lines, separators |
-| `--line-soft` | `#6366f1` @ 35% | perspective floor, faint grid |
-| `--text` | `#e0e7ff` | body and headings (≈15:1 on bg) |
-| `--text-muted` | `#a5b4fc` | secondary text, captions, tick labels (≈9:1) |
-| `--text-dim` | `#8b8fc7` | disabled, hints (≥4.5:1) |
-| `--i` | `#4ade80` | **î, u, column 1** — nothing else is green |
-| `--j` | `#f87171` | **ĵ, v, column 2**; also errors (they never appear together on the same element) |
-| `--target` | `#fde047` | the goal: holes, targets, primary call-to-action, XP |
-| `--player` | `#22d3ee` | what the player controls / owns: their shape, score, focus ring |
-| `--accent` | `#f0abfc` | arcade chrome: titles, cabinet frames, "NEW RULE" banners |
-| `--danger` | `#f87171` | lives, SMASH, destructive buttons (reset) |
-| `--success` | `#4ade80` | ✓ checklist, PERFECT |
+| `--ink` | `#05030f` | page and canvas background (fixed) |
+| `--panel` | `#0e0a24` | panels, briefing, cards |
+| `--panel-2` | `#16103a` | raised panel, hover |
+| `--line` | `#2b2260` | hairlines, grid lines in UI |
+| `--grid` | `#6366f1` | the plane's grid and axes (violet) |
+| `--text` | `#e0e7ff` | body text |
+| `--dim` | `#a5b4fc` | secondary text, tick labels |
+| `--pink` | `#f0abfc` | accent, brand, new-rule banners (fixed) |
+| `--cyan` | `#22d3ee` | the player's shape (fixed) |
+| `--yellow` | `#fde047` | the target, rewards, the key action (fixed) |
+| `--green` | `#4ade80` | î and u (fixed) |
+| `--red` | `#f87171` | ĵ and v, errors, lives (fixed) |
 
-Rules
-- Never put two glowing colors side by side on chrome; one glow per component.
-- No gradients on text, no purple→blue backgrounds. The only gradient allowed is the horizon sun in the game scene.
-- Mastery gauges and XP bars use `--target` on `--surface-2`.
+Contrast: `--text` on `--ink` is 15:1, `--dim` on `--ink` is 8.4:1, `--ink` on `--yellow` is 15:1. Minimum body contrast 4.5:1.
+Glow = the same color at 6% / 16% / 100% alpha strokes of width 5x / 2.4x / 1x (see `src/arcade/kit/neon.ts`).
 
-## 2. Typography
+## 3. Type
 
-Two families, both from Google Fonts:
+| Role | Family | Use |
+|---|---|---|
+| Display | **Chakra Petch** 600 (angular, technical) | titles, marquees, buttons |
+| Text | **IBM Plex Sans** 400/500/600 | course text, labels: highly readable |
+| Numbers | **JetBrains Mono** 500/700 | coordinates, matrices, HUD, score |
 
-- **JetBrains Mono** (500, 700, 800) — the arcade voice: titles, HUD, buttons, numbers, matrices, coordinates. Always tabular, never italic.
-- **Atkinson Hyperlegible** (400, 700) — the teacher's voice: course text, briefings' explanation lines, Dex body. Built for readability; used only for sentences.
+Self-hosted through `@fontsource` (no network). Scale (px / line-height): 12/16 caption, 14/20 small, 16/26 body, 20/28 lead,
+28/34 title, 44/48 display. Body text lines are at most 68 characters. Mono is used for anything the player must read as a number.
 
-| Token | Size / line-height | Family · weight | Use |
-|---|---|---|---|
-| `--fs-display` | 56 / 1.05 | Mono 800, uppercase, tracking .04em | title screen, GAME OVER |
-| `--fs-h1` | 36 / 1.15 | Mono 800, uppercase | cabinet name, Dex card name |
-| `--fs-h2` | 24 / 1.25 | Mono 700 | course step title |
-| `--fs-lead` | 20 / 1.5 | Atkinson 400 | course text (body of learning) |
-| `--fs-body` | 17 / 1.55 | Atkinson 400 | Dex body, remedial text |
-| `--fs-ui` | 15 / 1.3 | Mono 700, uppercase, tracking .06em | buttons, HUD labels, banners |
-| `--fs-small` | 13 / 1.35 | Mono 500 | tick labels, captions, "click to skip" |
-
-Course text width: max 62ch. Numbers and coordinates are always in Mono, even inside Atkinson sentences (`<code class="coord">(2, 1)</code>`).
-
-## 3. Spacing
-
-8-based scale: `--s1 4px` · `--s2 8px` · `--s3 12px` · `--s4 16px` · `--s5 24px` · `--s6 32px` · `--s7 48px` · `--s8 64px`.
-Page gutter 16px on phones, 32px from 768px. Content max width 1200px. The course screen is a 2-column layout (text 5fr | scene 7fr) above 900px, stacked below.
-
-## 4. Shape and depth
-
-- Radius: `--r-sm 6px` (chips, inputs) · `--r-md 12px` (buttons, panels) · `--r-lg 18px` (cards, briefing). Cabinet tiles use `--r-md` with a 2px frame.
-- No drop shadows. Depth = **glow** and **frames**:
-  - `--glow-sm`: `0 0 8px` of the component's meaning color at 60%
-  - `--glow-lg`: `0 0 24px` at 45% — only on the one thing that needs attention now (current cabinet, PLAY, LOCK IN).
-- Borders 1px `--line`; framed chrome 2px in `--accent`.
+## 4. Space, shape, depth
+- Spacing scale: 4, 8, 12, 16, 24, 32, 48, 72.
+- Radius: 2 px. Panels have a **chamfered top-left corner** (10 px). Pills only for status chips.
+- Depth is a 1 px `--line` border plus, for the active thing, a colored glow (`0 0 0 1px color, 0 0 18px color/35%`). No drop-shadows under cards.
+- The page background is `--ink` with a faint perspective floor (the same one as in the game) fixed at the bottom, 18% opacity.
 
 ## 5. Components
 
-**Arcade button**
-- Primary: `--target` background, `--bg` text, Mono 700 uppercase, 48px tall, `--r-md`. Hover: lift 1px + `--glow-sm` yellow. Active: press 1px. Focus: 2px `--player` ring offset 3px. Disabled: `--surface-2` bg, `--text-dim` text, no glow.
-- Secondary: transparent, 2px `--accent` frame, `--accent` text. Hover: `--surface-2` fill.
-- Quiet: text only, `--text-muted`, underline on hover.
-- Danger: like secondary in `--danger`; always asks for confirmation.
+**Arcade button.** Three kinds. *Primary*: yellow face, ink text, chamfered, a 3 px darker bottom edge that compresses on press.
+*Secondary*: 1 px `--line` border, text color, pink border on hover. *Ghost*: text only, underline on hover. Focus: 2 px `--pink` outline offset 3 px (never removed).
+Disabled: 40% opacity and no glow.
 
-**Cabinet tile (map)** — 132×176, `--surface` body, a "screen" inset (`--bg`, 1px `--line`) with the cabinet's line-icon (SVG, 2px strokes, no emoji), name in Mono 700 uppercase below.
-- locked: 45% opacity, lock glyph, no glow.
-- open: `--player` frame.
-- current/suggested: `--accent` frame + `--glow-lg` + "▶ PLAY" in `--target`, gentle 2s pulse.
-- mastered: `--player` frame with a hollow badge outline.
-- finished: badge filled in `--target`.
+**Cabinet (hall).** A tall SVG machine with a marquee on top (glyph and name), a screen and a coin slot. Four states:
+*locked* (unlit, padlock), *open* (screen glows in its accent), *current / recommended* (pink border and "PLAY" tag, gentle pulse), *finished* (badge on the marquee).
+Each cabinet has its own silhouette and glyph; accents rotate pink, cyan, yellow and violet. Number of the cabinet is always shown.
 
-**Course panel** — `--surface`, `--r-lg`, padding `--s6`. Step indicator as small Mono dots (`●●○○`). Title h2, text in Atkinson lead, theme example in a left-bordered (`--accent`) quote. The check question sits below the scene, never hidden behind scroll on desktop.
+**Course panel.** Two columns on desktop: text (max 68ch) left, live scene right. The step progress is a row of 3 to 5 ticks. The prediction question sits under the scene.
+On mobile the scene goes first.
 
-**Dex card** — `--surface`, 3px `--target` frame, `--r-lg`. Kicker "NEW TRANSFORM UNLOCKED" in Mono small `--target`; name h1 `--accent`; looped mini animation; body in Atkinson; key coordinates in Mono `--text-muted`.
+**Dex card.** Chamfered, 3:4, a looping mini-scene on top, the concept name in Display, two sentences, the key coordinates in mono. Locked cards show a dashed outline and "???".
 
-**HUD (in game, PixiJS)** — Mono only. Score `--player`, combo `--accent`, lives `--danger` (♥), Dex counter `--target`. Matrix: brackets `--text`, column 1 `--i`, column 2 `--j`. Mission line `--text`, checklist ✓ in `--success`. Banners centered, `--accent`, stay ≥ 3s.
+**HUD (in game).** Top bar: score, combo, wave and rule, lives (SVG hearts), Dex count. Mission and live checklist centered under it. The matrix readout bottom right in mono.
 
-**Briefing / modal** — centered, `--surface` 95%, 3px `--accent` frame, `--r-lg`; always closed by the player (click / SPACE), CTA pulses only after 0.4s.
+**Banner "NEW RULE".** Full-width strip, pink text on `--panel`, 1 px pink line above and below, stays at least 4 s.
 
-**Inputs** (profile choices, sliders) — large choice tiles (min 64px tall) with 2px `--line` frame; selected = `--player` frame + `--glow-sm`. Sliders: track `--surface-2`, thumb `--target`.
+**Status chip / meter.** Mono text, 1 px border, 2 px radius. Meters are 6 px tall with a hard end (no rounded caps).
 
 ## 6. Motion
+- Screen changes: 250 ms fade and 12 px slide (Motion). Respect `prefers-reduced-motion`: no slide, no pulse, no shake.
+- In-game juice (shake, flash, particles) is switched off under reduced motion; sound has its own mute toggle.
+- Pulses are slow (1.6 s). Nothing flashes faster than 3 times per second.
 
-- UI transitions (Motion): fade + 12px slide, 250ms, ease-out. No bounce on text.
-- Game feedback: particles, flash (≤ 0.35 opacity), shake (≤ 0.45s). Reveal/replay interpolations ease-out cubic.
-- Respect `prefers-reduced-motion`: no shake, no flash, halve particle count, keep interpolations.
+## 7. Layout and responsive
+- Desktop: content max-width 1120 px, 12 columns, 24 px gutters. Tablet and phone: single column, 16 px side padding.
+- Game canvas fills the viewport; HUD text scales with the shorter side. At 375 px the briefing must fit without scrolling and handles must be at least 44 px to grab.
+- `touch-action: none` on the canvas only.
 
-## 7. Imagery and icons
+## 8. Accessibility
+- All interactive text meets 4.5:1. Never rely on color alone: î/ĵ are also labeled "î" and "ĵ" and in the checklist.
+- Everything reachable by keyboard outside the canvas. In game: SPACE = lock in / continue, arrows nudge the selected handle by one snap step, Tab cycles handles.
+- Course scenes and the hall have text alternatives (`aria-label`). The canvas has a live region that announces the mission and the result.
+- Text never disappears in under 3 s. Briefing, replay and cards wait for the player.
 
-- Icons: hand-made SVG line icons, 2px stroke, square caps, in the component's meaning color. **No emoji as icons**, no icon font.
-- Rewind's pictures are simple vector scenes (mountains, city, face) drawn in the palette — no photos.
-- The horizon sun with stripes appears only in game scenes, never on reading screens.
+## 9. Voice
+English, short, concrete. Say coordinates, not adjectives: "send î to (1.5, 0)", not "stretch it a bit".
+Errors name the mistake: "You swapped î and ĵ: column 1 is where î lands."
+
+## 10. Review checklist (use before shipping a screen)
+- [ ] Could this screen belong to any other product? If yes, add something specific to linear algebra (a coordinate, a matrix, a grid).
+- [ ] Is every number readable in mono at its size?
+- [ ] Is there a visible focus ring on every control?
+- [ ] Are cabinets visibly different from each other?
+- [ ] No emoji, no default gradients, no equal-card rows.

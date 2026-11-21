@@ -1,79 +1,92 @@
-import { GAMES } from '../arcade/registry';
-import { cabinetState, levelOf, resetProgressV2 } from '../engine/progression';
-import { CABINETS } from '../engine/types';
-import type { CabinetId } from '../engine/types';
-import { go } from '../router';
-import { useApp } from '../state';
-import { CabinetIcon } from './icons';
+import { useState } from 'react';
+import { CABINETS, type CabinetId } from '../engine/types';
+import { cabinetState, levelOf, recommendedCabinet } from '../engine/progression';
+import { PLAYABLE } from '../arcade/playable';
+import { href } from '../router';
+import { useStore } from '../store';
+import { CABINET_INFO, Cabinet, STATE_LABEL } from '../ui/Cabinet';
 
-const STATE_LABEL = { locked: 'Locked', open: 'Open', mastered: 'Mastered', finished: 'Cleared' } as const;
+export function Hall() {
+  const { progress, content, reset } = useStore();
+  const [message, setMessage] = useState('');
+  const [confirm, setConfirm] = useState(false);
+  const isAvailable = (id: CabinetId) => !!content.cabinets[id] && PLAYABLE.has(id);
+  const rec = recommendedCabinet(progress, isAvailable);
+  const dexTotal = Object.values(content.cabinets).reduce((n, c) => n + (c?.dex.length ?? 0), 0);
+  const level = levelOf(progress.xp);
+  const into = progress.xp % 100;
+  const mode = progress.profile?.mode === 'fast' ? 'University' : 'High school';
 
-/** The arcade hall: the course map. One cabinet per idea, in order. */
-export default function Hall() {
-  const { content, progress, setProgress } = useApp();
-  const totalDex = Object.values(content.cabinets).reduce((n, c) => n + (c?.dex.length ?? 0), 0);
-  const xpInLevel = progress.xp % 100;
-  const isAvail = (id: CabinetId) => !!content.cabinets[id] && !!GAMES[id];
-  const suggested = CABINETS.find((id) => isAvail(id) && ['open', 'mastered'].includes(cabinetState(progress, id, isAvail)));
-
-  const available = (id: CabinetId) => !!content.cabinets[id] && !!GAMES[id];
-  const open = (id: CabinetId) => {
-    if (cabinetState(progress, id, available) === 'locked' || !content.cabinets[id]) return;
-    go(`/course/${id}`);
+  const note = (id: CabinetId, available: boolean): string => {
+    const s = cabinetState(progress, id, isAvailable);
+    if (!available) return 'Coming soon';
+    if (id === rec) return 'Recommended';
+    return STATE_LABEL[s];
   };
 
   return (
-    <main className="screen hall">
+    <main className="hall">
       <header className="hall-head">
         <div>
-          <p className="kicker">The arcade</p>
-          <h1 className="h1">Pick a cabinet</h1>
+          <p className="eyebrow">The arcade hall</p>
+          <h1>Pick a cabinet</h1>
+          <p className="lead">
+            {rec ? <>Next up: <strong>{CABINET_INFO[rec].name}</strong> — {CABINET_INFO[rec].notion.toLowerCase()}.</> : <>Every cabinet is cleared. Replay any of them to beat your score.</>}
+          </p>
         </div>
-        <dl className="stats">
-          <div><dt>Level</dt><dd className="mono">{levelOf(progress.xp)}</dd></div>
-          <div className="xp"><dt>XP</dt><dd><span className="bar" role="meter" aria-valuenow={xpInLevel} aria-valuemin={0} aria-valuemax={100}><span style={{ width: `${xpInLevel}%` }} /></span><span className="mono small">{progress.xp}</span></dd></div>
-          <div><dt>Badges</dt><dd className="mono">{progress.finished.length}/7</dd></div>
-          <div><dt>Transform Dex</dt><dd className="mono">{progress.dex.length}/{totalDex}</dd></div>
-        </dl>
+        <section className="player" aria-label="Your progress">
+          <div className="player-level"><span className="mono big">{level}</span><span>level</span></div>
+          <div className="player-meter">
+            <div className="meter" role="progressbar" aria-valuenow={into} aria-valuemin={0} aria-valuemax={100} aria-label="XP to next level"><i style={{ width: `${into}%` }} /></div>
+            <p className="tiny mono">{into} / 100 XP</p>
+          </div>
+          <dl className="player-stats">
+            <div><dt>Badges</dt><dd className="mono">{progress.finished.length}/{CABINETS.length}</dd></div>
+            <div><dt>Transform Dex</dt><dd className="mono">{progress.dex.length}/{dexTotal || '?'}</dd></div>
+            <div><dt>Pace</dt><dd>{mode}</dd></div>
+          </dl>
+        </section>
       </header>
 
-      <ol className="cabinets">
+      <ol className="floor">
         {CABINETS.map((id, k) => {
-          const st = cabinetState(progress, id, isAvail);
-          const c = content.cabinets[id];
-          const playable = !!c && !!GAMES[id];
-          const isSuggested = id === suggested;
+          const state = cabinetState(progress, id, isAvailable);
+          const available = isAvailable(id);
+          const open = available && state !== 'locked';
+          const name = content.cabinets[id]?.meta.name ?? CABINET_INFO[id].name;
+          const label = `Cabinet ${k + 1}, ${name}. ${note(id, available)}.`;
+          const body = (
+            <>
+              <Cabinet id={id} order={k + 1} state={state} recommended={id === rec && available} available={available} />
+              <span className="cab-name">{name}</span>
+              <span className={`cab-note ${id === rec && available ? 'is-rec' : ''}`}>{note(id, available)}</span>
+            </>
+          );
           return (
-            <li key={id}>
-              <button
-                className={`cabinet ${st} ${isSuggested ? 'suggested' : ''} ${playable ? '' : 'soon'}`}
-                onClick={() => open(id)} disabled={st === 'locked' || !c}
-                aria-label={`${c?.meta.name ?? id}: ${STATE_LABEL[st]}`}
-              >
-                <span className="cab-num mono">{String(k + 1).padStart(2, '0')}</span>
-                <span className="cab-screen"><CabinetIcon id={id} color={st === 'locked' ? '#8b8fc7' : isSuggested ? '#f0abfc' : '#22d3ee'} /></span>
-                <span className="cab-name">{c?.meta.name ?? id.replace(/-/g, ' ')}</span>
-                <span className="cab-state mono">{!c ? (GAMES[id] ? 'Unavailable' : 'Coming soon') : isSuggested ? '▶ Play' : STATE_LABEL[st]}</span>
-                {st === 'finished' && <span className="badge" aria-hidden="true" />}
-              </button>
-              {c && <p className="cab-notion">{c.meta.notion}</p>}
+            <li key={id} className="floor-slot">
+              {open
+                ? <a className="cab-link" href={href.course(id)} aria-label={label}>{body}</a>
+                : <button type="button" className="cab-link" aria-label={label} aria-disabled="true"
+                    onClick={() => setMessage(!available ? `${name} is not built yet.` : `${name} opens when you clear cabinet ${k} or pass the placement test.`)}>{body}</button>}
             </li>
           );
         })}
       </ol>
+      <p className="floor-msg" role="status">{message}</p>
+
+      {content.errors.length > 0 && (
+        <details className="problems">
+          <summary>{content.errors.length} content problem{content.errors.length > 1 ? 's' : ''} (affected cabinets are switched off)</summary>
+          <ul>{content.errors.map((e) => <li key={e} className="mono">{e}</li>)}</ul>
+        </details>
+      )}
 
       <footer className="hall-foot">
-        <div className="mode">
-          Mode: <strong>{progress.profile?.mode === 'fast' ? 'Fast' : 'Guided'}</strong>
-          <button className="btn btn-quiet" onClick={() => go('/profile')}>Change</button>
-        </div>
-        {content.errors.length > 0 && (
-          <details className="load-errors">
-            <summary>{content.errors.length} content problem(s) — affected cabinets are disabled</summary>
-            <ul>{content.errors.map((e) => <li key={e} className="mono small">{e}</li>)}</ul>
-          </details>
-        )}
-        <button className="btn btn-quiet danger-link" onClick={() => { if (confirm('Reset all progress? This cannot be undone.')) setProgress(resetProgressV2()); }}>Reset progress</button>
+        <a href={href.profile}>Change level or theme</a>
+        <a href={href.diagnostic}>Take the placement test</a>
+        {confirm
+          ? <span>Erase all progress? <button className="linklike" onClick={() => { reset(); setConfirm(false); }}>Yes, erase</button> · <button className="linklike" onClick={() => setConfirm(false)}>Cancel</button></span>
+          : <button className="linklike" onClick={() => setConfirm(true)}>Reset progress</button>}
       </footer>
     </main>
   );
