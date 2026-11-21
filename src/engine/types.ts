@@ -37,3 +37,9 @@ export interface Level {
   hints: string[];
   targetsError?: ErrorKind;
 }
+
+export interface Progress {
+  mastery: Record<SkillId, number>;
+  completed: string[];
+  lastError: ErrorKind | null;
+}
