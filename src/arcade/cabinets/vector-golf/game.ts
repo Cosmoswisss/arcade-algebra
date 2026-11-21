@@ -68,7 +68,7 @@ export function createVectorGolf(): CabinetGame & { setup(ctx: KitContext): void
     ctx.coords.draw(L.O, L.U, FIELD[0], FIELD[1]);
     // walls
     for (const [a, b] of p.walls) glow(g, [S(a), S(b)], NEON.accent, 4);
-    // the flag; hidden while the player must predict where the ball stops (it would give the answer away)
+    // the flag; hidden while the player aims or predicts (only its coordinates are given, in the mission)
     holeT.visible = false;
     if (showFlag) drawFlag(p.hole, clock);
     // start
@@ -219,7 +219,8 @@ export function createVectorGolf(): CabinetGame & { setup(ctx: KitContext): void
       const show = phase === 'brief' || phase === 'play' || phase === 'result';
       labels.visible = show;
       if (!show) { ctx.coords.hide(); return; }
-      drawField(clock, rule !== 'abstract' || phase === 'result');
+      // the flag only appears at the result: while aiming, the player gets its coordinates (mission), never its position
+      drawField(clock, phase === 'result');
       drawShots(phase);
       drawClub(clock);
       if (phase === 'result') {
