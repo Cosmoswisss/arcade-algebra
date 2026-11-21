@@ -11,15 +11,34 @@
       "physics": "The principal axes of a deformation are the directions that are stretched without being rotated.",
       "sport": "A ball kicked straight along the wind only goes faster or slower; kicked across it, it curves."
     },
-    "scene": [
-      { "matrix": [[1, 0], [0, 1]], "caption": "Start: î = (1, 0), ĵ = (0, 1)", "ms": 1800 },
-      { "matrix": [[2, 0], [0, 1]], "caption": "x is stretched ×2, y is unchanged: î stays on the x axis", "ms": 2800 }
-    ],
-    "check": {
-      "kind": "choice",
-      "prompt": "The matrix [[2, 0], [0, 1]] stretches x by 2 and keeps y. Which of these vectors stays on its own line?",
-      "options": ["(1, 1)", "(1, 0)", "(1, 2)"],
-      "answer": 1
+    "robot": "Most beams get bent by the lens. A few special directions come out straight.",
+    "demo": {
+      "wave": "axes-2",
+      "rule": "assist"
+    },
+    "play": {
+      "wave": {
+        "id": "lesson-laser-1",
+        "concept": "axes",
+        "params": {
+          "matrix": [
+            [
+              2,
+              0
+            ],
+            [
+              0,
+              1
+            ]
+          ]
+        }
+      },
+      "rule": "assist",
+      "mission": {
+        "games": "Aim the laser so the lens does not bend it.",
+        "physics": "Find a direction the lens only stretches, never turns.",
+        "sport": "Kick along the wind and the ball flies straight. Find that line."
+      }
     }
   },
   {
@@ -34,10 +53,26 @@
       "physics": "The eigenvalue along a principal axis is the stretch ratio in that direction.",
       "sport": "A pitch stretched 2× in length and 3× in width: along each line, the stretch factor is the eigenvalue."
     },
+    "robot": "Along a straight direction, the lens only stretches. The stretch factor is the eigenvalue.",
+    "demo": {
+      "wave": "axes-1",
+      "rule": "assist"
+    },
     "check": {
       "kind": "number",
       "prompt": "The matrix [[2, 0], [0, 3]] is read as î → (2, 0) and ĵ → (0, 3). By what factor is a vector along the x axis stretched?",
-      "given": { "matrix": [[2, 0], [0, 3]] },
+      "given": {
+        "matrix": [
+          [
+            2,
+            0
+          ],
+          [
+            0,
+            3
+          ]
+        ]
+      },
       "answer": 2,
       "tolerance": 0.25
     }
@@ -54,15 +89,34 @@
       "physics": "A pure rotation of the plane keeps no direction fixed.",
       "sport": "Spin the whole pitch around the centre spot: no player keeps facing the same direction."
     },
-    "scene": [
-      { "matrix": [[1, 0], [0, 1]], "caption": "Start", "ms": 1600 },
-      { "matrix": [[0, -1], [1, 0]], "caption": "Quarter turn: î → (0, 1), ĵ → (−1, 0). Every direction is turned", "ms": 2800 }
-    ],
-    "check": {
-      "kind": "choice",
-      "prompt": "A quarter turn sends î to (0, 1) and ĵ to (−1, 0). Does any vector keep its direction?",
-      "options": ["Yes: the x axis", "No: every vector is turned", "Yes: the diagonal"],
-      "answer": 1
+    "robot": "A pure rotation turns every beam. Sometimes the right answer is: no straight path.",
+    "demo": {
+      "wave": "none-1",
+      "rule": "assist"
+    },
+    "play": {
+      "wave": {
+        "id": "lesson-laser-2",
+        "concept": "none",
+        "params": {
+          "matrix": [
+            [
+              0,
+              -1
+            ],
+            [
+              1,
+              0
+            ]
+          ]
+        }
+      },
+      "rule": "assist",
+      "mission": {
+        "games": "This lens spins everything. Is there any straight path?",
+        "physics": "A quarter-turn lens. Does any beam keep its direction?",
+        "sport": "The whole pitch spins. Does any player keep facing the same way?"
+      }
     }
   }
 ]

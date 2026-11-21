@@ -2,6 +2,7 @@ import { describe, expect, test } from 'vitest';
 import { areaFactor, checklist, evaluateSquash, goalText, snapBet } from '../../src/arcade/cabinets/squash/logic';
 import { validateSquashParams } from '../../src/arcade/cabinets/squash/params';
 import { loadContent } from '../../src/content/load';
+import { allPlayableWaves } from '../../src/content/lessons';
 import type { Mat2 } from '../../src/engine/types';
 
 describe('squash logic', () => {
@@ -19,7 +20,7 @@ describe('squash logic', () => {
   test('params validator', () => { expect(validateSquashParams({ matrix: [[1, 0], [0, 1]] })).toBeNull(); expect(validateSquashParams({})).not.toBeNull(); });
   test('every bundled answer is reachable with the slider (step 0.5, within ±3)', () => {
     const c = loadContent().cabinets.squash!;
-    for (const w of [...c.waves, ...c.drills.flatMap((d) => d.waves)]) {
+    for (const w of allPlayableWaves(c)) {
       const d = areaFactor((w.params as { matrix: Mat2 }).matrix);
       expect(snapBet(d), w.id).toBeCloseTo(d, 9);
     }

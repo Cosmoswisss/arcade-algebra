@@ -35,5 +35,6 @@
   },
   "boss": {
     "waves": 2
-  }
+  },
+  "story": {"intro":"The drone bay lost its mixing rule. Two thrusters, one target: teach it to combine.","cleared":"Drones fly again. Every reachable point is a mix of u and v."}
 }

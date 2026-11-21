@@ -11,17 +11,34 @@
       "physics": "Think of a rubber sheet pinned at the origin: pull the tip of each unit arrow and every drawn shape deforms with it.",
       "sport": "Redraw the pitch: say where the touchline arrow and the goal-line arrow end up, and every spot on the pitch follows."
     },
-    "scene": [
-      { "matrix": [[1, 0], [0, 1]], "caption": "Start: î = (1, 0) and ĵ = (0, 1)", "ms": 1800 },
-      { "matrix": [[2, 0], [0, 1]], "caption": "î moves to (2, 0): the whole grid stretches to the right", "ms": 2200 },
-      { "matrix": [[1, 1], [0, 1]], "caption": "ĵ moves to (1, 1): the grid leans", "ms": 2200 }
-    ],
-    "check": {
-      "kind": "basis",
-      "prompt": "Make the plane twice as wide and keep its height: drag î and ĵ to the right spots.",
-      "given": { "matrix": [[1, 0], [0, 1]] },
-      "answer": [[2, 0], [0, 1]],
-      "tolerance": 0.11
+    "robot": "Move two arrows and the whole plane follows. That is all a matrix is.",
+    "demo": {
+      "wave": "stretch-1",
+      "rule": "assist"
+    },
+    "play": {
+      "wave": {
+        "id": "lesson-hole-1",
+        "concept": "stretch",
+        "params": {
+          "matrix": [
+            [
+              2,
+              0
+            ],
+            [
+              0,
+              1
+            ]
+          ]
+        }
+      },
+      "rule": "assist",
+      "mission": {
+        "games": "The wall has a wide hole. Stretch your shape twice as wide to slip through.",
+        "physics": "Pull the sheet to twice its width, same height, before the wall arrives.",
+        "sport": "Widen the pitch 2× and keep its length: set î and ĵ."
+      }
     }
   },
   {
@@ -36,16 +53,34 @@
       "physics": "A mark painted on the stretched sheet stays at the same grid coordinates, whatever the sheet does.",
       "sport": "A spot 3 along the touchline and 1 towards goal stays \"3 and 1\" on the redrawn pitch, just with the new arrows."
     },
-    "scene": [
-      { "matrix": [[1, 0], [0, 1]], "caption": "The point (2, 1) = 2 × î + 1 × ĵ", "ms": 2000 },
-      { "matrix": [[1, 1], [0, 1]], "caption": "New î = (1, 0), new ĵ = (1, 1): the point is now 2·(1, 0) + 1·(1, 1) = (3, 1)", "ms": 3000 }
-    ],
-    "check": {
-      "kind": "point",
-      "prompt": "A matrix sends î to (1, 0) and ĵ to (1, 1). Place the point where (2, 1) lands.",
-      "given": { "matrix": [[1, 1], [0, 1]] },
-      "answer": [3, 1],
-      "tolerance": 0.2
+    "robot": "Every point rides on î and ĵ. Find where the arrows go, and the corners follow.",
+    "demo": {
+      "wave": "shear-1",
+      "rule": "assist"
+    },
+    "play": {
+      "wave": {
+        "id": "lesson-hole-2",
+        "concept": "shear",
+        "params": {
+          "matrix": [
+            [
+              1,
+              1
+            ],
+            [
+              0,
+              1
+            ]
+          ]
+        }
+      },
+      "rule": "assist",
+      "mission": {
+        "games": "This hole leans right. Tilt your shape to match it.",
+        "physics": "Shear the block: the top slides 1 to the right, the bottom stays put.",
+        "sport": "Lean the formation: the back line stays, the front line slides 1 to the right."
+      }
     }
   },
   {
@@ -60,10 +95,19 @@
       "physics": "Exchanging the x and y axes of a lab frame mirrors every measurement across the diagonal.",
       "sport": "Swap the touchline and goal-line arrows and every tactic board play goes to the wrong spot."
     },
+    "robot": "Column 1 is where î lands, column 2 is where ĵ lands. Swap them and everything goes sideways.",
+    "demo": {
+      "wave": "swap-1",
+      "rule": "assist"
+    },
     "check": {
       "kind": "choice",
       "prompt": "Which matrix swaps î and ĵ (î lands on (0, 1) and ĵ lands on (1, 0))?",
-      "options": ["[[0, 1], [1, 0]]", "[[1, 0], [0, 1]]", "[[0, 1], [0, 1]]"],
+      "options": [
+        "[[0, 1], [1, 0]]",
+        "[[1, 0], [0, 1]]",
+        "[[0, 1], [0, 1]]"
+      ],
       "answer": 0
     }
   }

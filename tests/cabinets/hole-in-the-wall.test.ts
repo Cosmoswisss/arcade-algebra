@@ -2,6 +2,7 @@ import { describe, expect, test } from 'vitest';
 import { checklist, evaluate, goalText } from '../../src/arcade/cabinets/hole-in-the-wall/logic';
 import { validateHoleParams } from '../../src/arcade/cabinets/hole-in-the-wall/params';
 import { loadContent } from '../../src/content/load';
+import { allPlayableWaves } from '../../src/content/lessons';
 import type { Mat2 } from '../../src/engine/types';
 
 const T: Mat2 = [[2, 0], [1, 1]];
@@ -25,7 +26,7 @@ describe('hole in the wall logic', () => {
   });
   test('every bundled wave and drill is reachable with 0.5 snapping inside the handle limits', () => {
     const c = loadContent().cabinets['hole-in-the-wall']!;
-    for (const w of [...c.waves, ...c.drills.flatMap((d) => d.waves)]) {
+    for (const w of allPlayableWaves(c)) {
       const m = (w.params as { matrix: Mat2 }).matrix;
       for (const v of m.flat()) { expect(Math.abs(v * 2 - Math.round(v * 2)), w.id).toBeLessThan(1e-9); expect(Math.abs(v), w.id).toBeLessThanOrEqual(3); }
       expect(m[1][0] >= -2 && m[1][1] >= -2, w.id).toBe(true);

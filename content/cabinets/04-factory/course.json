@@ -11,15 +11,30 @@
       "physics": "A lens or a mirror in a beam path is one transformation of the beam.",
       "sport": "A coach turns the formation a quarter turn: every player goes in at one spot and comes out at another."
     },
-    "scene": [
-      { "matrix": [[1, 0], [0, 1]], "caption": "A part enters the belt", "ms": 1800 },
-      { "matrix": [[0, -1], [1, 0]], "caption": "TURN: î → (0, 1), ĵ → (−1, 0)", "ms": 2600 }
-    ],
+    "robot": "One machine, one matrix. Feed it a point and see where it comes out.",
+    "demo": {
+      "wave": "pair-1",
+      "rule": "assist"
+    },
     "check": {
       "kind": "point",
       "prompt": "The TURN machine sends î to (0, 1) and ĵ to (−1, 0). Where does the point (2, 1) come out?",
-      "given": { "matrix": [[0, -1], [1, 0]] },
-      "answer": [-1, 2],
+      "given": {
+        "matrix": [
+          [
+            0,
+            -1
+          ],
+          [
+            1,
+            0
+          ]
+        ]
+      },
+      "answer": [
+        -1,
+        2
+      ],
       "tolerance": 0.26
     }
   },
@@ -35,17 +50,62 @@
       "physics": "Two rotations about different axes do not commute: the final orientation depends on the order.",
       "sport": "Turn the formation then stretch it, or stretch it then turn it: the players end up in different places."
     },
-    "scene": [
-      { "matrix": [[2, 0], [0, 1]], "caption": "STRETCH ×2 first: î → (2, 0)", "ms": 2200 },
-      { "matrix": [[0, -1], [2, 0]], "caption": "…then TURN: î → (0, 2), ĵ → (−1, 0)", "ms": 2600 },
-      { "matrix": [[0, -1], [1, 0]], "caption": "Now TURN first: î → (0, 1)", "ms": 2200 },
-      { "matrix": [[0, -2], [1, 0]], "caption": "…then STRETCH: î → (0, 1), ĵ → (−2, 0). Different part!", "ms": 3000 }
-    ],
-    "check": {
-      "kind": "choice",
-      "prompt": "STRETCH then TURN gives the matrix [[0, −1], [2, 0]]. TURN then STRETCH gives [[0, −2], [1, 0]]. Are the two parts the same?",
-      "options": ["Yes, the same part", "No: the order changes the part", "Only if the numbers are small"],
-      "answer": 1
+    "robot": "Two machines, two orders, two different parts. The belt order matters.",
+    "demo": {
+      "wave": "order-1",
+      "rule": "assist"
+    },
+    "play": {
+      "wave": {
+        "id": "lesson-factory-1",
+        "concept": "pair",
+        "params": {
+          "machines": [
+            {
+              "name": "stretch x2",
+              "matrix": [
+                [
+                  2,
+                  0
+                ],
+                [
+                  0,
+                  1
+                ]
+              ]
+            },
+            {
+              "name": "rotate 90°",
+              "matrix": [
+                [
+                  0,
+                  -1
+                ],
+                [
+                  1,
+                  0
+                ]
+              ]
+            }
+          ],
+          "target": [
+            [
+              0,
+              -1
+            ],
+            [
+              2,
+              0
+            ]
+          ]
+        }
+      },
+      "rule": "assist",
+      "mission": {
+        "games": "Craft the item: put the two machines on the belt in the right order.",
+        "physics": "Stretch, then rotate, or the reverse? Only one order gives the target.",
+        "sport": "Two drills for the squad. In which order do you run them to get this formation?"
+      }
     }
   },
   {
@@ -60,12 +120,62 @@
       "physics": "A sequence of operators acts on a state from the right: the one next to the state acts first.",
       "sport": "Warm-up first, then the match: in B·A, the A next to the player acts first."
     },
-    "check": {
-      "kind": "basis",
-      "prompt": "A = STRETCH ×2 along x. B = TURN (a quarter turn left). Place the arrows of AB, the matrix of \"B first, then A\".",
-      "given": { "matrix": [[1, 0], [0, 1]] },
-      "answer": [[0, -2], [1, 0]],
-      "tolerance": 0.11
+    "robot": "In B·A, the A sits next to the part, so it works first. Read right to left.",
+    "demo": {
+      "wave": "order-3",
+      "rule": "assist"
+    },
+    "play": {
+      "wave": {
+        "id": "lesson-factory-2",
+        "concept": "order",
+        "params": {
+          "machines": [
+            {
+              "name": "rotate 90°",
+              "matrix": [
+                [
+                  0,
+                  -1
+                ],
+                [
+                  1,
+                  0
+                ]
+              ]
+            },
+            {
+              "name": "stretch x2",
+              "matrix": [
+                [
+                  2,
+                  0
+                ],
+                [
+                  0,
+                  1
+                ]
+              ]
+            }
+          ],
+          "target": [
+            [
+              0,
+              -2
+            ],
+            [
+              1,
+              0
+            ]
+          ]
+        }
+      },
+      "rule": "assist",
+      "mission": {
+        "games": "The recipe says \"stretch · rotate\". The rotation acts first. Build it.",
+        "physics": "Build A·B with A = stretch ×2 and B = rotate: B goes first.",
+        "sport": "Warm-up first, then the match: the right-hand drill runs first. Order the belt."
+      }
     }
   }
 ]

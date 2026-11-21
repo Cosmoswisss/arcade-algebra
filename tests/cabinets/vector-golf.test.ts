@@ -3,6 +3,7 @@ import { endPoint, evaluateGolf, goalText, hitsWall, pathPoints } from '../../sr
 import { validateGolfParams } from '../../src/arcade/cabinets/vector-golf/params';
 import type { GolfParams } from '../../src/arcade/cabinets/vector-golf/params';
 import { loadContent } from '../../src/content/load';
+import { allPlayableWaves } from '../../src/content/lessons';
 
 const P: GolfParams = { start: [-2, -1], shots: [[0, 3], [3, 0]], hole: [1, 2], walls: [[[-1, -2], [-1, 1.5]]] };
 
@@ -32,7 +33,7 @@ describe('vector golf logic', () => {
   });
   test('every bundled wave is solvable as written and stays on the field', () => {
     const c = loadContent().cabinets['vector-golf']!;
-    for (const w of [...c.waves, ...c.drills.flatMap((d) => d.waves)]) {
+    for (const w of allPlayableWaves(c)) {
       const p = w.params as GolfParams;
       expect(evaluateGolf(p, 'assist', p.shots, null).correct, w.id).toBe(true);
       for (const q of pathPoints(p.start, p.shots)) { expect(q[0] >= -3 && q[0] <= 3 && q[1] >= -2 && q[1] <= 3, `${w.id} ${q}`).toBe(true); }

@@ -11,12 +11,39 @@
       "physics": "Two forces on a ball add up: the resulting force is the sum of the two vectors.",
       "sport": "A one-two pass: (3, 1) then (1, 2) puts the ball at (4, 3) from where it started."
     },
-    "check": {
-      "kind": "point",
-      "prompt": "The ball starts at the marked point (-1, 0). Shot 1 = (2, 1), then shot 2 = (1, 2). Click where it lands.",
-      "given": { "vectors": [[-1, 0]] },
-      "answer": [2, 3],
-      "tolerance": 0.26
+    "robot": "Rule one of the Grid: a vector is a move, not a place. Watch the ball chain its shots.",
+    "demo": {
+      "wave": "vector-1",
+      "rule": "assist"
+    },
+    "play": {
+      "wave": {
+        "id": "lesson-golf-1",
+        "concept": "vector",
+        "params": {
+          "start": [
+            -1,
+            -1
+          ],
+          "shots": [
+            [
+              3,
+              2
+            ]
+          ],
+          "hole": [
+            2,
+            1
+          ],
+          "walls": []
+        }
+      },
+      "rule": "assist",
+      "mission": {
+        "games": "Your hero sits on (-1, -1) and the treasure is on (2, 1). Build the one move that gets there.",
+        "physics": "A puck rests at (-1, -1). Give it the one push that slides it onto (2, 1).",
+        "sport": "The ball is at (-1, -1) and your teammate waits at (2, 1). Pick the pass."
+      }
     }
   },
   {
@@ -31,17 +58,43 @@
       "physics": "Doubling a force doubles every component of it; reversing a force flips both signs.",
       "sport": "Kick twice as hard: both the forward and the sideways part of the shot double. A back pass is a negative vector."
     },
-    "scene": [
-      { "matrix": [[1, 0], [0, 1]], "caption": "Start: î = (1, 0), ĵ = (0, 1)", "ms": 1800 },
-      { "matrix": [[2, 0], [0, 2]], "caption": "Times 2: every vector doubles, (1, 1) → (2, 2)", "ms": 2400 },
-      { "matrix": [[-1, 0], [0, -1]], "caption": "Times −1: every vector flips, (1, 1) → (−1, −1)", "ms": 2400 }
-    ],
-    "check": {
-      "kind": "point",
-      "prompt": "The ball starts at the marked point (2, 0). It takes the shot 2 × (−1, 1). Click where it lands.",
-      "given": { "vectors": [[2, 0]] },
-      "answer": [0, 2],
-      "tolerance": 0.26
+    "robot": "Minus signs just mean the other way. Left and down are moves too.",
+    "demo": {
+      "wave": "negative-1",
+      "rule": "assist"
+    },
+    "play": {
+      "wave": {
+        "id": "lesson-golf-2",
+        "concept": "negative",
+        "params": {
+          "start": [
+            2,
+            1
+          ],
+          "shots": [
+            [
+              -3,
+              0
+            ],
+            [
+              -1,
+              1
+            ]
+          ],
+          "hole": [
+            -2,
+            2
+          ],
+          "walls": []
+        }
+      },
+      "rule": "assist",
+      "mission": {
+        "games": "Retreat! Two moves take your hero from (2, 1) back to the safe spot (-2, 2).",
+        "physics": "Two pushes bring the puck from (2, 1) back to (-2, 2). Mind the signs.",
+        "sport": "Build the attack backwards: two passes from (2, 1) to the striker on (-2, 2)."
+      }
     }
   },
   {
@@ -56,10 +109,19 @@
       "physics": "The net displacement does not depend on the order of the legs of the trip.",
       "sport": "Dribble 3 right then 4 up, or 4 up then 3 right: same spot, but one path may run into a defender."
     },
+    "robot": "Order never changes where you land. It can change what you crash into, though.",
+    "demo": {
+      "wave": "detour-1",
+      "rule": "assist"
+    },
     "check": {
       "kind": "choice",
       "prompt": "Shots (2, 1) then (1, 2), compared with (1, 2) then (2, 1) from the same start. Where do the two balls end?",
-      "options": ["On the same point", "On different points", "On the same point only if there is no wall"],
+      "options": [
+        "On the same point",
+        "On different points",
+        "On the same point only if there is no wall"
+      ],
       "answer": 0
     }
   }

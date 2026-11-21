@@ -35,5 +35,6 @@
   },
   "boss": {
     "waves": 2
-  }
+  },
+  "story": {"intro":"Welcome to the Grid. The golf course forgot that a vector is a move, so let us remind it.","cleared":"The golf course is back on. Moves add up again, tip to tail."}
 }

@@ -35,5 +35,6 @@
   },
   "boss": {
     "waves": 2
-  }
+  },
+  "story": {"intro":"The press zone lost track of areas. Bet on the squash before it lands.","cleared":"The press is calibrated. Determinants measure areas again."}
 }

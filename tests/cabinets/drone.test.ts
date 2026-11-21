@@ -3,6 +3,7 @@ import { checklist, evaluateDrone, goalText, isReachable, position, solveCoeffs 
 import { validateDroneParams } from '../../src/arcade/cabinets/drone/params';
 import type { DroneParams } from '../../src/arcade/cabinets/drone/params';
 import { loadContent } from '../../src/content/load';
+import { allPlayableWaves } from '../../src/content/lessons';
 
 const P: DroneParams = { u: [1, 0], v: [1, 1], target: [2, 1], reachable: true };
 const FLAT: DroneParams = { u: [1, 1], v: [2, 2], target: [1, 0], reachable: false };
@@ -31,7 +32,7 @@ describe('drone logic', () => {
   test('params validator', () => { expect(validateDroneParams(P)).toBeNull(); expect(validateDroneParams({ ...P, reachable: 'yes' })).not.toBeNull(); });
   test('content: reachable flag is right and the coefficients fit the sliders', () => {
     const c = loadContent().cabinets.drone!;
-    for (const w of [...c.waves, ...c.drills.flatMap((d) => d.waves)]) {
+    for (const w of allPlayableWaves(c)) {
       const p = w.params as DroneParams;
       expect(isReachable(p), w.id).toBe(p.reachable);
       const s = solveCoeffs(p.u, p.v, p.target);

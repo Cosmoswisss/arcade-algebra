@@ -35,5 +35,6 @@
   },
   "boss": {
     "waves": 2
-  }
+  },
+  "story": {"intro":"Every picture in this zone got warped. Rewind them, if you can.","cleared":"Pictures repaired. You know when a move can be undone, and when it cannot."}
 }

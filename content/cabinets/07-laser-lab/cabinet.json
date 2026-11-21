@@ -35,5 +35,6 @@
   },
   "boss": {
     "waves": 2
-  }
+  },
+  "story": {"intro":"The lab lenses bend every beam. Find the beams that come out straight.","cleared":"Lab online. Eigenvectors found, the Grid is whole again."}
 }

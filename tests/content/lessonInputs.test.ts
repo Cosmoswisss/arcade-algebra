@@ -8,7 +8,7 @@ const raw: Record<string, string> = {};
 for (const dir of readdirSync('content/cabinets')) for (const f of readdirSync(`content/cabinets/${dir}`)) raw[`/content/cabinets/${dir}/${f}`] = readFileSync(`content/cabinets/${dir}/${f}`, 'utf8');
 const { cabinets } = parseContentFiles(raw);
 const onGrid = (v: number) => Math.abs(v / ARROW_STEP - Math.round(v / ARROW_STEP)) < 1e-9;
-const questions = Object.values(cabinets).flatMap((c) => c!.course.map((s) => ({ where: `${c!.meta.id}/${s.id}`, q: s.check })));
+const questions = Object.values(cabinets).flatMap((c) => c!.course.flatMap((s) => (s.check ? [{ where: `${c!.meta.id}/${s.id}`, q: s.check }] : [])));
 
 describe('lesson answers can be entered', () => {
   test('there are lessons to check', () => expect(questions.length).toBeGreaterThan(0));

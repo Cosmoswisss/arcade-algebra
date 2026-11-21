@@ -2,6 +2,7 @@ import { describe, expect, test } from 'vitest';
 import { angleToDir, checklist, evaluateLaser, goalText, isEigen, realEigenvectors } from '../../src/arcade/cabinets/laser-lab/logic';
 import { validateLaserParams } from '../../src/arcade/cabinets/laser-lab/params';
 import { loadContent } from '../../src/content/load';
+import { allPlayableWaves } from '../../src/content/lessons';
 import type { Mat2 } from '../../src/engine/types';
 
 const A: Mat2 = [[2, 1], [0, 3]];
@@ -27,7 +28,7 @@ describe('laser lab logic', () => {
   test('params validator', () => { expect(validateLaserParams({ matrix: A })).toBeNull(); expect(validateLaserParams({ matrix: 3 })).not.toBeNull(); });
   test('content: every straight path is at a multiple of 15°', () => {
     const c = loadContent().cabinets['laser-lab']!;
-    for (const w of [...c.waves, ...c.drills.flatMap((d) => d.waves)]) {
+    for (const w of allPlayableWaves(c)) {
       const m = (w.params as { matrix: Mat2 }).matrix;
       for (const v of realEigenvectors(m)) {
         const ang = ((Math.atan2(v[1], v[0]) * 180) / Math.PI + 360) % 15;

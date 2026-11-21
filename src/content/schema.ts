@@ -1,11 +1,20 @@
 import { CABINETS, MODES, RULES, THEMES } from '../engine/types';
-import type { CabinetId } from '../engine/types';
+import type { CabinetId, Rule } from '../engine/types';
 import { isMat2, isNum, isObj, isStr, isVec2 } from './check';
-import type { CabinetContent, ParamsValidator, Question, Remedial } from './types';
+import type { CabinetContent, ParamsValidator, Question, Remedial, RobotEvent, RobotLines } from './types';
 
 export const CABINET_FILES = ['cabinet.json', 'course.json', 'waves.json', 'drills.json', 'dex.json'] as const;
 
 type Out<T> = { ok: true; content: T } | { ok: false; errors: string[] };
+
+const hasThemes = (x: unknown) => isObj(x) && THEMES.every((t) => isStr(x[t]));
+
+/** A robot line: one or two sentences. */
+export function checkRobotLine(x: unknown): string | null {
+  if (!isStr(x) || !x.trim()) return 'robot line is required';
+  const sentences = x.trim().split(/(?<=[.!?…])\s+/).filter(Boolean).length;
+  return sentences > 2 ? 'robot line: 2 sentences max' : null;
+}
 
 const hasModes = (x: unknown, check: (v: unknown) => boolean) => isObj(x) && MODES.every((m) => check(x[m]));
 
@@ -66,19 +75,8 @@ export function validateCabinet(folder: string, files: Record<string, unknown>, 
       errors.push(`${at('cabinet.json')}: tiers must be exactly 3 items with rule assist, partial, abstract (in this order), a banner and waves { guided, fast } >= 1`);
     if (!hasModes(meta.waveSeconds, (n) => isNum(n) && (n as number) > 0)) errors.push(`${at('cabinet.json')}: waveSeconds must be { guided, fast } in seconds`);
     if (!isObj(meta.boss) || !Number.isInteger(meta.boss.waves) || (meta.boss.waves as number) < 1) errors.push(`${at('cabinet.json')}: boss.waves must be >= 1`);
-  }
-
-  const course = files['course.json'];
-  if (!Array.isArray(course) || course.length === 0) errors.push(`${at('course.json')}: must be a non-empty list of steps`);
-  else for (const s of course) {
-    const id = isObj(s) && isStr(s.id) ? s.id : '(no id)';
-    const w = `${at('course.json')}#${id}`;
-    if (!isObj(s) || !isStr(s.id) || !isStr(s.title)) { errors.push(`${w}: id and title are required`); continue; }
-    if (!hasModes(s.text, isStr)) errors.push(`${w}: text must have guided and fast versions`);
-    if (!isObj(s.examples) || !THEMES.every((t) => isStr((s.examples as Record<string, unknown>)[t]))) errors.push(`${w}: examples must have games, physics and sport`);
-    checkScene(s.scene, w, errors);
-    const q = checkQuestion(s.check);
-    if (q) errors.push(`${w}: ${q}`);
+    if (!isObj(meta.story) || !isStr(meta.story.intro) || !isStr(meta.story.cleared)) errors.push(`${at('cabinet.json')}: story needs intro and cleared (said by the robot)`);
+    else for (const k of ['intro', 'cleared'] as const) { const why = checkRobotLine(meta.story[k]); if (why) errors.push(`${at('cabinet.json')}: story.${k}: ${why}`); }
   }
 
   const ids = new Set<string>();
@@ -91,6 +89,37 @@ export function validateCabinet(folder: string, files: Record<string, unknown>, 
     checkWaves(d.waves, `${at('drills.json')}[${d.errorKind}]`, params, errors, ids);
   }
 
+  const course = files['course.json'];
+  const playWaves: unknown[] = [];
+  if (!Array.isArray(course) || course.length === 0) errors.push(`${at('course.json')}: must be a non-empty list of steps`);
+  else {
+    let plays = 0;
+    for (const s of course) {
+      const id = isObj(s) && isStr(s.id) ? s.id : '(no id)';
+      const w = `${at('course.json')}#${id}`;
+      if (!isObj(s) || !isStr(s.id) || !isStr(s.title)) { errors.push(`${w}: id and title are required`); continue; }
+      if (!hasModes(s.text, isStr)) errors.push(`${w}: text must have guided and fast versions`);
+      if (!hasThemes(s.examples)) errors.push(`${w}: examples must have games, physics and sport`);
+      const robot = checkRobotLine(s.robot);
+      if (robot) errors.push(`${w}: ${robot}`);
+      if (!isObj(s.demo)) errors.push(`${w}: demo is required ({ wave, rule })`);
+      else {
+        if (!isStr(s.demo.wave) || !ids.has(s.demo.wave)) errors.push(`${w}: demo wave "${String(s.demo.wave)}" not found in waves.json or drills.json`);
+        if (!RULES.includes(s.demo.rule as Rule)) errors.push(`${w}: demo.rule must be assist, partial or abstract`);
+      }
+      if ((s.play === undefined) === (s.check === undefined)) { errors.push(`${w}: a lesson needs exactly one of play or check`); continue; }
+      if (s.check !== undefined) { const q = checkQuestion(s.check); if (q) errors.push(`${w}: ${q}`); continue; }
+      plays += 1;
+      const p = s.play;
+      if (!isObj(p) || !isObj(p.wave)) { errors.push(`${w}: play needs { wave, rule, mission }`); continue; }
+      checkWaves([p.wave], `${w} play`, params, errors, ids);
+      playWaves.push(p.wave);
+      if (!RULES.includes(p.rule as Rule)) errors.push(`${w}: play.rule must be assist, partial or abstract`);
+      if (!hasThemes(p.mission)) errors.push(`${w}: play.mission must have games, physics and sport`);
+    }
+    if (plays < 2) errors.push(`${at('course.json')}: at least 2 lessons must be play (a wave of the game), found ${plays}`);
+  }
+
   const dex = files['dex.json'];
   const concepts = new Set<string>();
   if (!Array.isArray(dex)) errors.push(`${at('dex.json')}: must be a list`);
@@ -98,7 +127,7 @@ export function validateCabinet(folder: string, files: Record<string, unknown>, 
     if (!isObj(c) || !isStr(c.concept) || !isStr(c.name) || !isStr(c.body) || !isMat2(c.demo)) errors.push(`${at('dex.json')}: each card needs concept, name, body and demo (2x2)`);
     else concepts.add(c.concept);
   }
-  const used = [...(Array.isArray(files['waves.json']) ? files['waves.json'] : []), ...(Array.isArray(drills) ? drills.flatMap((d) => (isObj(d) && Array.isArray(d.waves) ? d.waves : [])) : [])];
+  const used = [...playWaves, ...(Array.isArray(files['waves.json']) ? files['waves.json'] : []), ...(Array.isArray(drills) ? drills.flatMap((d) => (isObj(d) && Array.isArray(d.waves) ? d.waves : [])) : [])];
   for (const w of used) if (isObj(w) && isStr(w.concept) && !concepts.has(w.concept)) errors.push(`${at('dex.json')}: no card for concept "${w.concept}" (used by ${String(w.id)})`);
 
   if (errors.length) return { ok: false, errors: [...new Set(errors)] };
@@ -110,6 +139,22 @@ export function validateRemedial(file: string, r: unknown): Out<Remedial> {
   const errors: string[] = [];
   checkScene(r.scene, file, errors);
   return errors.length ? { ok: false, errors } : { ok: true, content: r as unknown as Remedial };
+}
+
+export const ROBOT_EVENTS: RobotEvent[] = ['right', 'wrong', 'hint', 'retry', 'warmup', 'reminder', 'placementSkip', 'attract'];
+export const emptyRobot = (): RobotLines => ({ name: 'Robot', events: Object.fromEntries(ROBOT_EVENTS.map((e) => [e, []])) as unknown as Record<RobotEvent, string[]>, errors: {} });
+
+/** content/robot.json: { name, events: { <event>: [lines] }, errors: { <errorKind>: [lines] } }. Every line is 2 sentences max. */
+export function validateRobot(file: string, r: unknown): Out<RobotLines> {
+  const errors: string[] = [];
+  if (!isObj(r) || !isStr(r.name) || !isObj(r.events) || !isObj(r.errors)) return { ok: false, errors: [`${file}: needs name, events and errors`] };
+  const lines = (list: unknown, where: string) => {
+    if (!Array.isArray(list) || list.length === 0) { errors.push(`${where}: needs a non-empty list of lines`); return; }
+    for (const l of list) { const why = checkRobotLine(l); if (why) errors.push(`${where}: ${why} ("${String(l)}")`); }
+  };
+  for (const e of ROBOT_EVENTS) lines(r.events[e], `${file} events.${e}`);
+  for (const [k, list] of Object.entries(r.errors)) lines(list, `${file} errors.${k}`);
+  return errors.length ? { ok: false, errors } : { ok: true, content: r as unknown as RobotLines };
 }
 
 export type { Question };

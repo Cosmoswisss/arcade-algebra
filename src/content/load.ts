@@ -1,17 +1,20 @@
 import type { CabinetId } from '../engine/types';
 import { PARAMS_VALIDATORS } from './paramsRegistry';
-import { validateCabinet, validateRemedial } from './schema';
-import type { CabinetContent, Remedial } from './types';
+import { emptyRobot, validateCabinet, validateRemedial, validateRobot } from './schema';
+import type { CabinetContent, Remedial, RobotLines } from './types';
 
 export interface LoadedContent {
   cabinets: Partial<Record<CabinetId, CabinetContent>>;
   remedial: Record<string, Remedial>;
+  /** The guide robot's lines; empty lists when content/robot.json is missing or broken. */
+  robot: RobotLines;
   errors: string[];
 }
 
 /** Parses raw JSON text keyed by path (/content/...). Never throws: problems end up in `errors`. */
 export function parseContentFiles(raw: Record<string, string>): LoadedContent {
-  const out: LoadedContent = { cabinets: {}, remedial: {}, errors: [] };
+  const out: LoadedContent = { cabinets: {}, remedial: {}, robot: emptyRobot(), errors: [] };
+  let robotSeen = false;
   const folders: Record<string, Record<string, unknown>> = {};
   const broken = new Set<string>();
   for (const [path, text] of Object.entries(raw)) {
@@ -24,11 +27,18 @@ export function parseContentFiles(raw: Record<string, string>): LoadedContent {
     }
     const cab = rel.match(/^cabinets\/([^/]+)\/([^/]+\.json)$/);
     if (cab) { (folders[cab[1]] ??= {})[cab[2]] = data; continue; }
+    if (rel === 'robot.json') {
+      robotSeen = true;
+      const r = validateRobot(rel, data);
+      if (r.ok) out.robot = r.content; else out.errors.push(...r.errors);
+      continue;
+    }
     if (rel.startsWith('remedial/')) {
       const r = validateRemedial(rel, data);
       if (r.ok) out.remedial[r.content.errorKind] = r.content; else out.errors.push(...r.errors);
     }
   }
+  if (!robotSeen && Object.keys(folders).length) out.errors.push('robot.json: missing file (the guide robot stays silent)');
   for (const [folder, files] of Object.entries(folders)) {
     if (broken.has(folder)) continue;
     const id = folder.replace(/^\d+-/, '') as CabinetId;

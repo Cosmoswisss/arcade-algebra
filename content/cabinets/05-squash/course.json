@@ -11,16 +11,34 @@
       "physics": "Stretch a rubber sheet by 2 in one direction and 1.5 in the other: every patch grows by 3 times.",
       "sport": "Widen the pitch 2× and lengthen it 3×: every zone of the pitch covers 6 times more grass."
     },
-    "scene": [
-      { "matrix": [[1, 0], [0, 1]], "caption": "The unit square has area 1", "ms": 1800 },
-      { "matrix": [[2, 0], [0, 1.5]], "caption": "î → (2, 0), ĵ → (0, 1.5): the area is 2 × 1.5 = 3", "ms": 2800 }
-    ],
-    "check": {
-      "kind": "number",
-      "prompt": "The matrix stretches î to (2, 0) and ĵ to (0, 1.5). By what factor is every area multiplied?",
-      "given": { "matrix": [[2, 0], [0, 1.5]] },
-      "answer": 3,
-      "tolerance": 0.25
+    "robot": "The press changes every area by the same factor. That factor is the determinant.",
+    "demo": {
+      "wave": "scale-1",
+      "rule": "assist"
+    },
+    "play": {
+      "wave": {
+        "id": "lesson-squash-1",
+        "concept": "scale",
+        "params": {
+          "matrix": [
+            [
+              2,
+              0
+            ],
+            [
+              0,
+              1.5
+            ]
+          ]
+        }
+      },
+      "rule": "assist",
+      "mission": {
+        "games": "The power-up makes sprites 2× wider and 1.5× taller. Bet on the new area.",
+        "physics": "The fluid is stretched 2× and 1.5×. How much more space does it fill?",
+        "sport": "The pitch gets 2× longer and 1.5× wider. How many times more grass?"
+      }
     }
   },
   {
@@ -35,16 +53,34 @@
       "physics": "A reflection in a mirror keeps lengths and areas but reverses handedness.",
       "sport": "Play the second half on the other side: same pitch size, but left and right wings are swapped."
     },
-    "scene": [
-      { "matrix": [[1, 0], [0, 1]], "caption": "Start: the L points right", "ms": 1800 },
-      { "matrix": [[-1, 0], [0, 1]], "caption": "î → (−1, 0): the L is mirrored, determinant −1", "ms": 2800 }
-    ],
-    "check": {
-      "kind": "number",
-      "prompt": "This matrix swaps î and ĵ: î → (0, 1) and ĵ → (1, 0). What is its determinant?",
-      "given": { "matrix": [[0, 1], [1, 0]] },
-      "answer": -1,
-      "tolerance": 0.25
+    "robot": "A negative determinant means the press flipped the shape over. Same size, mirror image.",
+    "demo": {
+      "wave": "flip-1",
+      "rule": "assist"
+    },
+    "play": {
+      "wave": {
+        "id": "lesson-squash-2",
+        "concept": "flip",
+        "params": {
+          "matrix": [
+            [
+              0,
+              1
+            ],
+            [
+              1,
+              0
+            ]
+          ]
+        }
+      },
+      "rule": "assist",
+      "mission": {
+        "games": "This press mirrors the level. Bet on the area, sign included.",
+        "physics": "Swap the two axes: same area, but which sign?",
+        "sport": "Switch wings at half-time. Same pitch size, but what sign?"
+      }
     }
   },
   {
@@ -59,14 +95,19 @@
       "physics": "Projecting a 3D object onto a flat screen loses depth: the lost dimension cannot be recovered.",
       "sport": "Squash the whole pitch onto the halfway line: you can no longer tell how far up the field a player was."
     },
-    "scene": [
-      { "matrix": [[1, 0], [0, 1]], "caption": "Start: î = (1, 0), ĵ = (0, 1)", "ms": 1800 },
-      { "matrix": [[1, 0], [0, 0]], "caption": "ĵ → (0, 0): the plane is crushed onto the x axis, area 0", "ms": 2800 }
-    ],
+    "robot": "Determinant zero: the press flattens everything onto a line. Nothing has area any more.",
+    "demo": {
+      "wave": "squash-3",
+      "rule": "assist"
+    },
     "check": {
       "kind": "choice",
       "prompt": "The matrix [[1, 2], [2, 4]] sends î to (1, 2) and ĵ to (2, 4). What happens to the plane?",
-      "options": ["It is flipped over", "It is crushed onto a line", "Every area doubles"],
+      "options": [
+        "It is flipped over",
+        "It is crushed onto a line",
+        "Every area doubles"
+      ],
       "answer": 1
     }
   }

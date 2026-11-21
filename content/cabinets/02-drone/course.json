@@ -11,16 +11,37 @@
       "physics": "Two forces along different directions combine into one resultant force.",
       "sport": "Your position on the pitch = a steps along the touchline + b steps towards goal."
     },
-    "scene": [
-      { "matrix": [[1, 0], [0, 1]], "caption": "u = (1, 0) and v = (0, 1)", "ms": 1800 },
-      { "matrix": [[1, 1], [1, -1]], "caption": "u = (1, 1) and v = (1, −1): the grid of combinations follows them", "ms": 2800 }
-    ],
-    "check": {
-      "kind": "point",
-      "prompt": "u = (1, 0) and v = (0, 1). Click the point you reach with 2u + 3v.",
-      "given": { "matrix": [[1, 0], [0, 1]] },
-      "answer": [2, 3],
-      "tolerance": 0.26
+    "robot": "This drone has only two thrusters. Mix them and it goes anywhere, or almost.",
+    "demo": {
+      "wave": "mix-1",
+      "rule": "assist"
+    },
+    "play": {
+      "wave": {
+        "id": "lesson-drone-1",
+        "concept": "mix",
+        "params": {
+          "u": [
+            1,
+            0
+          ],
+          "v": [
+            0,
+            1
+          ],
+          "target": [
+            2,
+            2
+          ],
+          "reachable": true
+        }
+      },
+      "rule": "assist",
+      "mission": {
+        "games": "Dial the two thrusters so the drone grabs the power-up on (2, 2).",
+        "physics": "Two engines, u = (1, 0) and v = (0, 1). Reach the beacon on (2, 2).",
+        "sport": "Run a steps along the touchline and b steps up the pitch to reach the ball on (2, 2)."
+      }
     }
   },
   {
@@ -35,12 +56,37 @@
       "physics": "Any two non-parallel directions are enough to express a force.",
       "sport": "Two diagonal runs, forward-left and forward-right, still cover the whole pitch if you may also run them backwards."
     },
-    "check": {
-      "kind": "point",
-      "prompt": "Here î stands for u = (1, 1) and ĵ for v = (1, −1). Click the point you reach with 2u + 1v.",
-      "given": { "matrix": [[1, 1], [1, -1]] },
-      "answer": [3, 1],
-      "tolerance": 0.26
+    "robot": "Tilted thrusters still cover the plane. You may need to fire one backwards.",
+    "demo": {
+      "wave": "tilted-2",
+      "rule": "assist"
+    },
+    "play": {
+      "wave": {
+        "id": "lesson-drone-2",
+        "concept": "tilted",
+        "params": {
+          "u": [
+            1,
+            1
+          ],
+          "v": [
+            1,
+            -1
+          ],
+          "target": [
+            3,
+            1
+          ],
+          "reachable": true
+        }
+      },
+      "rule": "assist",
+      "mission": {
+        "games": "Diagonal thrusters only. Reach the checkpoint on (3, 1).",
+        "physics": "Thrust along (1, 1) and (1, -1) to dock on (3, 1).",
+        "sport": "Two diagonal runs, (1, 1) and (1, -1). Meet the cross on (3, 1)."
+      }
     }
   },
   {
@@ -55,14 +101,19 @@
       "physics": "Two forces on the same line can never produce a sideways force.",
       "sport": "Two players who can only run along the same diagonal can never reach a ball straight to the side."
     },
-    "scene": [
-      { "matrix": [[1, 0], [0, 1]], "caption": "Two independent arrows span the whole plane", "ms": 2000 },
-      { "matrix": [[1, 2], [2, 4]], "caption": "u = (1, 2) and v = (2, 4): both on one line, so the plane collapses onto it", "ms": 3000 }
-    ],
+    "robot": "Two thrusters on the same line give one line, no more. Some targets are just out of reach.",
+    "demo": {
+      "wave": "span-line-1",
+      "rule": "assist"
+    },
     "check": {
       "kind": "choice",
       "prompt": "u = (1, 2) and v = (2, 4). Can the drone reach the point (1, 0)?",
-      "options": ["Yes, with enough of both thrusters", "No: both thrusters only move along the same line", "Only with negative coefficients"],
+      "options": [
+        "Yes, with enough of both thrusters",
+        "No: both thrusters only move along the same line",
+        "Only with negative coefficients"
+      ],
       "answer": 1
     }
   }

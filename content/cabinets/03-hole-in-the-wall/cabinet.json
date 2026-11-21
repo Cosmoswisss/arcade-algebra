@@ -35,5 +35,6 @@
   },
   "boss": {
     "waves": 2
-  }
+  },
+  "story": {"intro":"The walls are coming and nobody knows how to bend the plane. That is your job now.","cleared":"Wall zone fixed. A matrix is where î and ĵ land, and you proved it."}
 }

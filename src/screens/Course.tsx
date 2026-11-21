@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
 import { checkAnswer, type Answer, type Mistake } from '../ui/answers';
-import type { CourseStep } from '../content/types';
+import type { CourseStep, SceneStep } from '../content/types';
 import { effectiveMode } from '../engine/progression';
 import type { CabinetId, Mat2, Mode } from '../engine/types';
 import { PLAYABLE } from '../arcade/playable';
@@ -27,7 +27,8 @@ export function Course({ id }: { id: CabinetId }) {
   const theme = progress.profile?.theme ?? 'games';
   const steps = cabinet?.course ?? [];
   const step: CourseStep | undefined = steps[stepIndex];
-  const frames = useMemo(() => step?.scene, [step]);
+  // lesson scenes are now replays of the game (ArcadeStage, coming next): no matrix frames here
+  const frames = useMemo(() => undefined as SceneStep[] | undefined, []);
   const hasScene = !!frames && frames.length > 0;
   /** Bumped to restart the lesson scene from its first frame. */
   const [replay, setReplay] = useState(0);
@@ -47,6 +48,7 @@ export function Course({ id }: { id: CabinetId }) {
   const playable = PLAYABLE.has(id);
   const nextStep = () => { setStepIndex((i) => i + 1); setView('learn'); setDiagnosis(null); window.scrollTo(0, 0); };
   const submit = (a: Answer) => {
+    if (!step.check) return;
     const res = checkAnswer(step.check, a);
     setDiagnosis(res.diagnosis);
     setView(res.correct ? 'right' : 'wrong');
@@ -93,10 +95,10 @@ export function Course({ id }: { id: CabinetId }) {
           {view === 'ask' && (
             <>
               <h2 id="q-title">Your turn</h2>
-              <QuestionPanel q={step.check} resetKey={`${step.id}-${attempt}`} onSubmit={submit}>
+              {step.check ? <QuestionPanel q={step.check} resetKey={`${step.id}-${attempt}`} onSubmit={submit}>
                 {hasScene ? <button className="linklike" onClick={watchAgain}>Watch the scene again</button>
                   : <button className="linklike" onClick={() => setView('learn')}>Back to the lesson</button>}
-              </QuestionPanel>
+              </QuestionPanel> : <p className="lead">Coming next: this turn is played in the game.</p>}
             </>
           )}
 

@@ -3,6 +3,7 @@ import { checklist, compose, evaluateFactory, goalText, orderMatters } from '../
 import { validateFactoryParams } from '../../src/arcade/cabinets/factory/params';
 import type { FactoryParams } from '../../src/arcade/cabinets/factory/params';
 import { loadContent } from '../../src/content/load';
+import { allPlayableWaves } from '../../src/content/lessons';
 import type { Mat2 } from '../../src/engine/types';
 
 const rot: Mat2 = [[0, -1], [1, 0]], stretch: Mat2 = [[2, 0], [0, 1]];
@@ -20,7 +21,7 @@ describe('factory logic', () => {
   test('params validator', () => { expect(validateFactoryParams(P)).toBeNull(); expect(validateFactoryParams({ ...P, machines: [] })).not.toBeNull(); });
   test('content: the listed order builds the target and a different order does not', () => {
     const c = loadContent().cabinets.factory!;
-    for (const w of [...c.waves, ...c.drills.flatMap((d) => d.waves)]) {
+    for (const w of allPlayableWaves(c)) {
       const p = w.params as FactoryParams;
       expect(evaluateFactory(p, p.machines.map((_, k) => k)).correct, w.id).toBe(true);
       expect(evaluateFactory(p, p.machines.map((_, k) => k).reverse()).correct, `${w.id} reversed`).toBe(false);

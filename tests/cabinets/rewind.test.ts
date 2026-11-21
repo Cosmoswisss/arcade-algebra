@@ -2,6 +2,7 @@ import { describe, expect, test } from 'vitest';
 import { checklist, evaluateRewind, goalText, solution } from '../../src/arcade/cabinets/rewind/logic';
 import { validateRewindParams } from '../../src/arcade/cabinets/rewind/params';
 import { loadContent } from '../../src/content/load';
+import { allPlayableWaves } from '../../src/content/lessons';
 import type { Mat2 } from '../../src/engine/types';
 
 describe('rewind logic', () => {
@@ -20,7 +21,7 @@ describe('rewind logic', () => {
   });
   test('every bundled repair is reachable with 0.5 steps inside ±3', () => {
     const c = loadContent().cabinets.rewind!;
-    for (const w of [...c.waves, ...c.drills.flatMap((d) => d.waves)]) {
+    for (const w of allPlayableWaves(c)) {
       const s = solution((w.params as { matrix: Mat2 }).matrix);
       if (s === 'cant-repair') continue;
       for (const v of s.flat()) { expect(Math.abs(v * 2 - Math.round(v * 2)), w.id).toBeLessThan(1e-9); expect(Math.abs(v), w.id).toBeLessThanOrEqual(3); }

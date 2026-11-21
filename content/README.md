@@ -41,7 +41,8 @@ Chaque borne contient **5 fichiers** : `cabinet.json`, `course.json`, `waves.jso
     { "rule": "abstract", "banner": "NEW RULE · ONLY THE MATRIX IS SHOWN",  "waves": { "guided": 4, "fast": 3 } }
   ],
   "waveSeconds": { "guided": 16, "fast": 12 },
-  "boss": { "waves": 2 }
+  "boss": { "waves": 2 },
+  "story": { "intro": "The press zone lost track of areas. Bet on the squash before it lands.", "cleared": "The press is calibrated. Determinants measure areas again." }
 }
 ```
 
@@ -68,19 +69,32 @@ Chaque borne contient **5 fichiers** : `cabinet.json`, `course.json`, `waves.jso
       "physics": "Like a fluid being compressed: the same stuff in less space.",
       "sport": "Like widening the pitch: every zone covers more grass."
     },
-    "scene": [
-      { "matrix": [[1, 0], [0, 1]], "caption": "Unit square: area 1.", "ms": 1200 },
-      { "matrix": [[2, 0], [0, 1]], "caption": "î doubled: area 2.", "ms": 1800 }
-    ],
-    "check": { "kind": "number", "prompt": "What is the new area?", "given": { "matrix": [[3, 0], [0, 1]] }, "answer": 3, "tolerance": 0.1 }
+    "robot": "The press changes every area by the same factor. That factor is the determinant.",
+    "demo": { "wave": "scale-1", "rule": "assist" },
+    "play": {
+      "wave": { "id": "lesson-squash-1", "concept": "scale", "params": { "matrix": [[2, 0], [0, 1.5]] } },
+      "rule": "assist",
+      "mission": {
+        "games": "The power-up makes sprites 2× wider and 1.5× taller. Bet on the new area.",
+        "physics": "The fluid is stretched 2× and 1.5×. How much more space does it fill?",
+        "sport": "The pitch gets 2× longer and 1.5× wider. How many times more grass?"
+      }
+    }
   }
 ]
 ```
 
 - **`text`** existe en deux versions : `guided` (lycée, plus détaillé) et `fast` (université, droit au but).
-- **`examples`** donne une phrase par thème de joueur : `games`, `physics` et `ai`.
-- **`scene`** est facultatif. C'est une animation : chaque étape déforme la grille vers `matrix`, en `ms` millisecondes.
-- **`check`** est **une question de prédiction**, jamais une simple définition. Il y a 4 types :
+- **`examples`** donne une phrase par thème de joueur : `games`, `physics` et `sport`.
+- **`robot`** est la réplique d'ouverture de VEX, le robot-guide : **2 phrases au maximum**, drôle et bienveillant.
+- **`demo`** est la scène de la leçon : le **replay d'une vague de la borne** (son `id` dans `waves.json` ou `drills.json`), affiché avec la règle `rule`.
+- Ensuite, **exactement un** des deux :
+  - **`play`** : le « Your turn » est **une vraie vague du jeu**, sans chrono. `wave` suit le format de `waves.json` (son `id` doit être unique dans la borne, son `concept` doit avoir sa carte du Dex). `mission` raconte la vague dans chaque thème ;
+  - **`check`** : une **question de prédiction**, pour les idées qu'aucune vague ne pose (voir le tableau ci-dessous).
+- **Au moins 2 leçons sur 3 sont en `play`.**
+- **`cabinet.json` a un champ `story`** : `intro` (dit à l'entrée de la zone) et `cleared` (dit après le boss), 2 phrases au maximum chacun.
+
+Les 4 types de `check` (jamais une simple définition) :
 
 | `kind` | Le joueur… | Champs |
 |---|---|---|
@@ -145,6 +159,20 @@ La carte se débloque la première fois qu'on réussit une vague de ce concept. 
 ```
 
 Il faut une leçon pour **chaque** type d'erreur listé plus haut. Celles des matrices existent déjà.
+
+## `robot.json` : les répliques du robot-guide
+
+```json
+{
+  "name": "VEX",
+  "events": { "right": ["Clean! The Grid approves."], "wrong": ["…"], "hint": ["…"], "retry": ["…"], "warmup": ["…"], "reminder": ["…"], "placementSkip": ["…"], "attract": ["…"] },
+  "errors": { "swapped-xy": ["You swapped x and y. Always x first, then y."] }
+}
+```
+
+- **Tous les événements** ont au moins une réplique ; une est tirée au hasard.
+- **`errors`** : une réplique par type d'erreur (les mêmes noms que `remedial/`). Sans réplique pour une erreur, le robot dit une ligne de `wrong`.
+- **2 phrases au maximum** par réplique. Le robot ne répond jamais à du texte libre.
 
 ## Vérifier
 

@@ -1,0 +1,36 @@
+{
+  "name": "VEX",
+  "events": {
+    "right": ["Clean! The Grid approves.", "Nailed it. You saw it before it happened.", "Yes! That is exactly where it lands."],
+    "wrong": ["Ooh, close. Let us look at what happened.", "Not this time. My circuits say we can fix that.", "Miss! Do not worry, I miss things all the time."],
+    "hint": ["Here is a clue, no spoilers. Read it, then try again.", "Let me zoom in on the tricky part.", "Small hint coming up. You have got this."],
+    "retry": ["Same wave, fresh start. Go!", "Again! Third time is the charm, they say.", "Reset, breathe, lock it in."],
+    "warmup": ["Warm-up first: a quick one from an earlier zone.", "Stretch those neurons with a rerun from before.", "Quick recap round. Ready?"],
+    "reminder": ["Heads up: this is a mistake you made before. Watch for it here.", "My memory banks say you tripped on this before. Not today.", "Old trap, new zone. Eyes open."],
+    "placementSkip": ["You already know this zone, so I skipped ahead.", "Your placement test unlocked a shortcut here.", "You aced this one in the test. Straight to the last lesson."],
+    "attract": ["Insert coin. The Grid needs fixing.", "Seven zones, one idea each. Who is next?", "Free play mode is on. Come and break nothing."]
+  },
+  "errors": {
+    "coef-swap": ["You swapped the two coefficients. a goes with u, b goes with v."],
+    "composition-order": ["Right machines, wrong order. In B·A, A works first."],
+    "hit-wall": ["Bonk! Right total, but the path went through the wall."],
+    "missed-none": ["That lens turns every beam. The answer was: no straight path."],
+    "missed-reachable": ["That target was reachable. Try mixing the thrusters."],
+    "missed-repairable": ["That picture could be repaired. Its determinant is not zero."],
+    "missed-zero": ["That one was squashed flat: zero area, no way back."],
+    "one-column": ["One arrow is right, the other is not. Check each column."],
+    "other": ["Not quite. Read the coordinates once more."],
+    "repaired-flat": ["Careful: a flattened picture cannot be repaired. Its determinant is zero."],
+    "same-length-not-direction": ["Same length is not the point. The beam must keep its direction."],
+    "scale": ["Right direction, wrong size. Check the stretch factor."],
+    "sign-flip": ["Right size, wrong sign. The shape was flipped over."],
+    "sign-x": ["The x sign is off. Left and right got swapped."],
+    "sign-y": ["The y sign is off. Up and down got swapped."],
+    "swapped-columns": ["You swapped î and ĵ. Column 1 is where î lands."],
+    "swapped-xy": ["You swapped x and y. Always x first, then y."],
+    "wall": ["The path hit the wall. Same total, different route."],
+    "wrong-none": ["There was a straight path there. Look for the axis the lens only stretches."],
+    "wrong-sign": ["The sign is off. Did the shape flip over?"],
+    "wrong-span": ["Those thrusters sit on one line. That target is out of reach."]
+  }
+}

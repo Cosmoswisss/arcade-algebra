@@ -14,6 +14,19 @@ describe('parseContentFiles', () => {
   });
 });
 
+describe('robot.json', () => {
+  test('a broken robot file is reported and the robot stays silent', () => {
+    const out = parseContentFiles({ '/content/robot.json': JSON.stringify({ name: 'Bit', events: {}, errors: {} }) });
+    expect(out.errors.join('\n')).toContain('robot.json');
+    expect(out.robot.events.right).toEqual([]);
+  });
+  test('a robot line of 3 sentences is refused', () => {
+    const events = Object.fromEntries(['right', 'wrong', 'hint', 'retry', 'warmup', 'reminder', 'placementSkip', 'attract'].map((e) => [e, ['Nice.']]));
+    const out = parseContentFiles({ '/content/robot.json': JSON.stringify({ name: 'Bit', events: { ...events, right: ['One. Two. Three.'] }, errors: {} }) });
+    expect(out.errors.join('\n')).toContain('2 sentences max');
+  });
+});
+
 describe('bundled content', () => {
   test('loads with no errors', () => expect(loadContent().errors).toEqual([]));
   test('has the hole-in-the-wall cabinet and the shared remedial lessons', () => {

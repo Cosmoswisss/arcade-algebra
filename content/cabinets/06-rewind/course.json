@@ -11,17 +11,35 @@
       "physics": "To recover the original measurement you apply the inverse of the instrument's distortion.",
       "sport": "Rewind the replay: undo each move in reverse order and the players are back at kick-off."
     },
-    "scene": [
-      { "matrix": [[1, 0], [0, 1]], "caption": "The original picture", "ms": 1800 },
-      { "matrix": [[2, 0], [0, 1]], "caption": "A stretch by 2 along x bends it", "ms": 2200 },
-      { "matrix": [[1, 0], [0, 1]], "caption": "Its inverse shrinks by 1/2 and everything is back", "ms": 2400 }
-    ],
-    "check": {
-      "kind": "basis",
-      "prompt": "A matrix stretches the plane by 2 along x. Drag the arrows to build the inverse that undoes it.",
-      "given": { "matrix": [[1, 0], [0, 1]] },
-      "answer": [[0.5, 0], [0, 1]],
-      "tolerance": 0.11
+    "robot": "To rewind a move, build the move that undoes it. That is the inverse.",
+    "demo": {
+      "wave": "undo-scale-2",
+      "rule": "assist"
+    },
+    "play": {
+      "wave": {
+        "id": "lesson-rewind-1",
+        "concept": "undo-scale",
+        "params": {
+          "matrix": [
+            [
+              2,
+              0
+            ],
+            [
+              0,
+              1
+            ]
+          ],
+          "image": "city"
+        }
+      },
+      "rule": "assist",
+      "mission": {
+        "games": "Someone stretched the map 2× wide. Build the move that puts it back.",
+        "physics": "The sheet was pulled to twice its width. Find the move that relaxes it.",
+        "sport": "The replay is stretched 2× sideways. Fix it before the referee sees it."
+      }
     }
   },
   {
@@ -36,17 +54,35 @@
       "physics": "A rotation of the frame is undone by the opposite rotation.",
       "sport": "Turn the formation 90° left, then 90° right: everyone is back in place."
     },
-    "scene": [
-      { "matrix": [[1, 0], [0, 1]], "caption": "Start", "ms": 1600 },
-      { "matrix": [[0, -1], [1, 0]], "caption": "Quarter turn left: î → (0, 1), ĵ → (−1, 0)", "ms": 2600 },
-      { "matrix": [[1, 0], [0, 1]], "caption": "A quarter turn right brings every point back", "ms": 2400 }
-    ],
-    "check": {
-      "kind": "basis",
-      "prompt": "A matrix turns the plane a quarter turn to the left (î → (0, 1), ĵ → (−1, 0)). Place the arrows of its inverse.",
-      "given": { "matrix": [[1, 0], [0, 1]] },
-      "answer": [[0, 1], [-1, 0]],
-      "tolerance": 0.11
+    "robot": "To undo a quarter turn left, turn a quarter right. Easy when you see it.",
+    "demo": {
+      "wave": "undo-rotation-1",
+      "rule": "assist"
+    },
+    "play": {
+      "wave": {
+        "id": "lesson-rewind-2",
+        "concept": "undo-rotation",
+        "params": {
+          "matrix": [
+            [
+              0,
+              -1
+            ],
+            [
+              1,
+              0
+            ]
+          ],
+          "image": "mountains"
+        }
+      },
+      "rule": "assist",
+      "mission": {
+        "games": "The camera spun a quarter turn left. Spin it back.",
+        "physics": "The plate turned 90° left. Build the turn that undoes it.",
+        "sport": "The broadcast turned the pitch 90° left. Put it back the right way."
+      }
     }
   },
   {
@@ -61,14 +97,19 @@
       "physics": "A photo flattens 3D into 2D: depth is lost for good.",
       "sport": "Two players squashed onto the same spot of the halfway line: you cannot tell who was where."
     },
-    "scene": [
-      { "matrix": [[1, 0], [0, 1]], "caption": "Different points, different places", "ms": 1800 },
-      { "matrix": [[1, 1], [1, 1]], "caption": "Both arrows end on (1, 1): the plane is crushed onto a line", "ms": 2800 }
-    ],
+    "robot": "Squashed flat means information lost. Some pictures cannot be repaired.",
+    "demo": {
+      "wave": "impossible-1",
+      "rule": "assist"
+    },
     "check": {
       "kind": "choice",
       "prompt": "A matrix has determinant 0 and crushed a picture onto a line. Can you rewind it?",
-      "options": ["Yes, with the right inverse matrix", "No: points that were different now share the same spot", "Only if you know the original matrix"],
+      "options": [
+        "Yes, with the right inverse matrix",
+        "No: points that were different now share the same spot",
+        "Only if you know the original matrix"
+      ],
       "answer": 1
     }
   }
