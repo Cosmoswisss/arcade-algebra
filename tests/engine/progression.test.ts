@@ -66,3 +66,11 @@ describe('progression', () => {
     expect(cabinetState(p, 'drone')).toBe('open');
   });
 });
+
+describe('unavailable cabinets', () => {
+  test('a cabinet that is not built yet does not block the next ones', () => {
+    const available = (id: string) => id === 'hole-in-the-wall';
+    expect(cabinetState(defaultProgress(), 'hole-in-the-wall', available)).toBe('open');
+    expect(cabinetState(defaultProgress(), 'factory', available)).toBe('locked');
+  });
+});

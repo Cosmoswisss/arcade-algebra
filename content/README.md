@@ -134,6 +134,8 @@ Après une erreur de ce type, le jeu enchaîne sur ces vagues (« TRAINING · SW
 
 La carte se débloque la première fois qu'on réussit une vague de ce concept. `demo` est la matrice animée sur la carte.
 
+**L'ordre des cartes compte** : le jeu introduit les concepts dans cet ordre, un nouveau concept toutes les 2 vagues. Mettez donc les concepts du plus simple au plus difficile.
+
 ## `remedial/<errorKind>.json` : leçons de rattrapage (Ami 2)
 
 ```json

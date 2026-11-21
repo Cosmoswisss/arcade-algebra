@@ -32,10 +32,11 @@ export const modeFor = (p: ProgressV2, id: CabinetId): Mode => p.modeOverride[id
 
 const isMastered = (p: ProgressV2, id: CabinetId) => p.mastery[id] >= MASTERED - 1e-9;
 
-export function cabinetState(p: ProgressV2, id: CabinetId): 'locked' | 'open' | 'mastered' | 'finished' {
+/** `available` tells which cabinets are playable; earlier cabinets that are not built yet never block the next ones. */
+export function cabinetState(p: ProgressV2, id: CabinetId, available: (c: CabinetId) => boolean = () => true): 'locked' | 'open' | 'mastered' | 'finished' {
   if (p.finished.includes(id)) return 'finished';
   if (isMastered(p, id)) return 'mastered';
-  const earlier = CABINETS.slice(0, CABINETS.indexOf(id));
+  const earlier = CABINETS.slice(0, CABINETS.indexOf(id)).filter(available);
   return earlier.every((c) => p.finished.includes(c) || isMastered(p, c)) ? 'open' : 'locked';
 }
 

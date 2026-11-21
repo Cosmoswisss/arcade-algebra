@@ -2,6 +2,7 @@ import React from 'react';
 import { createRoot } from 'react-dom/client';
 import 'mafs/core.css';
 import 'katex/dist/katex.min.css';
+import './styles/tokens.css';
 import './styles.css';
 import App from './App';
 

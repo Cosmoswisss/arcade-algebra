@@ -44,5 +44,9 @@ function pick(pool: Wave[], lastId: string | null, rand: () => number): Wave {
 export function nextWave(content: CabinetContent, run: RunState, rand: () => number): { wave: Wave; isDrill: boolean; drillLabel?: string } {
   const drill = run.focus ? content.drills.find((d) => d.errorKind === run.focus && d.waves.length > 0) : undefined;
   if (drill) return { wave: pick(drill.waves, run.lastWaveId, rand), isDrill: true, drillLabel: drill.label };
-  return { wave: pick(content.waves, run.lastWaveId, rand), isDrill: false };
+  // Concepts are introduced in dex.json order: one new concept every 2 waves.
+  const order = content.dex.map((d) => d.concept);
+  const allowed = new Set(order.slice(0, 1 + Math.floor(Math.max(0, run.waveIndex) / 2)));
+  const pool = content.waves.filter((w) => allowed.has(w.concept));
+  return { wave: pick(pool.length ? pool : content.waves, run.lastWaveId, rand), isDrill: false };
 }

@@ -44,3 +44,16 @@ describe('nextWave', () => {
     }
   });
 });
+
+describe('concept progression', () => {
+  test('early waves only use the first concepts of dex.json; a new concept every 2 waves', () => {
+    const order = content.dex.map((d) => d.concept);
+    for (let w = 0; w < 12; w++) {
+      const allowed = order.slice(0, 1 + Math.floor(w / 2));
+      for (let k = 0; k < 30; k++) {
+        const r = nextWave(content, run({ waveIndex: w }), Math.random);
+        expect(allowed, `wave ${w}`).toContain(r.wave.concept);
+      }
+    }
+  });
+});

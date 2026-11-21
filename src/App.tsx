@@ -1,120 +1,41 @@
-import { useMemo, useState } from 'react';
-import ErrorReplay from './components/ErrorReplay';
-import HintBox from './components/HintBox';
-import LevelMap from './components/LevelMap';
-import MatrixPanel from './components/MatrixPanel';
-import WarpGrid from './components/WarpGrid';
-import { diagnose } from './engine/diagnose';
-import { updateMastery } from './engine/mastery';
-import { loadProgress, resetProgress, saveProgress } from './engine/progress';
-import { recommend } from './engine/recommend';
-import type { ErrorKind, Level, Mat2, Progress, Vec2 } from './engine/types';
-import { loadLevels } from './levels/loader';
+import { AnimatePresence, motion } from 'motion/react';
+import { useEffect, useMemo, useState } from 'react';
+import { loadContent } from './content/load';
+import { loadProgressV2, saveProgressV2 } from './engine/progression';
+import type { ProgressV2 } from './engine/progression';
+import { useRoute } from './router';
+import Hall from './screens/Hall';
+import Play from './screens/Play';
+import { CourseSoon, DiagnosticSoon } from './screens/Placeholder';
+import Profile from './screens/Profile';
+import Title from './screens/Title';
+import { AppCtx } from './state';
 
-const { levels, errors } = loadLevels();
-const START_V: Vec2 = [-1, 2];
-
-type Result = null | { ok: true } | { ok: false; kind: ErrorKind };
-
-import PlayPreview from './screens/PlayPreview';
-import type { CabinetId } from './engine/types';
+const content = loadContent();
 
 export default function App() {
-  const route = location.hash.match(/^#\/play\/([\w-]+)/);
-  if (route) return <PlayPreview id={route[1] as CabinetId} />;
-  return <AppV1 />;
-}
+  const route = useRoute();
+  const [progress, setProgressState] = useState<ProgressV2>(() => loadProgressV2());
+  useEffect(() => { saveProgressV2(progress); }, [progress]);
+  const state = useMemo(() => ({ content, progress, setProgress: setProgressState }), [progress]);
 
-function AppV1() {
-  const [progress, setProgress] = useState<Progress>(() => loadProgress());
-  const [levelId, setLevelId] = useState<string | undefined>(() => recommend(levels, loadProgress())?.id ?? levels[0]?.id);
-  const level = useMemo(() => levels.find((l) => l.id === levelId), [levelId]);
-  const [m, setM] = useState<Mat2>(level?.start ?? [[1, 0], [0, 1]]);
-  const [v, setV] = useState<Vec2>(START_V);
-  const [hintsUsed, setHintsUsed] = useState(0);
-  const [result, setResult] = useState<Result>(null);
-  const [screen, setScreen] = useState<'map' | 'play'>('map');
-
-  const open = (l: Level | undefined) => {
-    if (!l) return;
-    setLevelId(l.id);
-    setM(l.start);
-    setV(START_V);
-    setHintsUsed(0);
-    setResult(null);
-    setScreen('play');
-  };
-
-  const commit = (p: Progress) => { setProgress(p); saveProgress(p); };
-
-  const check = () => {
-    if (!level) return;
-    const kind = diagnose(level, m, v);
-    const mastery = { ...progress.mastery, [level.skill]: updateMastery(progress.mastery[level.skill], kind === null, hintsUsed) };
-    if (kind === null) {
-      commit({ mastery, completed: progress.completed.includes(level.id) ? progress.completed : [...progress.completed, level.id], lastError: null });
-      setResult({ ok: true });
-    } else {
-      commit({ ...progress, mastery, lastError: kind });
-      setResult({ ok: false, kind });
-    }
-  };
-
-  if (screen === 'map' || !level) {
-    const rec = recommend(levels, progress);
-    return (
-      <main className="app">
-        <header className="hero">
-          <h1>Linear Arcade</h1>
-          <p className="muted">Grab the arrows. Bend the plane. Discover what a matrix really is.</p>
-          <button className="primary play-btn" disabled={!rec} onClick={() => open(rec)}>{rec ? 'Play' : 'All levels done!'}</button>
-        </header>
-        <LevelMap
-          levels={levels} progress={progress} recommendedId={rec?.id} errors={errors}
-          onPick={(id) => open(levels.find((l) => l.id === id))}
-          onReset={() => setProgress(resetProgress())}
-        />
-      </main>
-    );
+  let screen: JSX.Element;
+  switch (route.name) {
+    case 'profile': screen = <Profile />; break;
+    case 'diagnostic': screen = <DiagnosticSoon />; break;
+    case 'hall': screen = <Hall />; break;
+    case 'course': screen = <CourseSoon id={route.id} />; break;
+    case 'play': screen = <Play id={route.id} />; break;
+    default: screen = <Title />;
   }
-
-  const targeted = result && !result.ok
-    ? levels.find((l) => l.targetsError === result.kind && l.id !== level.id)
-    : undefined;
-
+  const key = route.name + ('id' in route ? route.id : '');
   return (
-    <main className="app">
-      <button className="back" onClick={() => setScreen('map')}>← Map</button>
-      <h1>{level.title}</h1>
-      <p>{level.prompt}</p>
-      <div className="play">
-        {result && !result.ok ? (
-          <ErrorReplay
-            level={level} m={m} v={v} kind={result.kind}
-            onTargeted={targeted ? () => open(targeted) : undefined}
-            onRetry={() => setResult(null)}
-          />
-        ) : (
-          <WarpGrid level={level} m={m} onChange={result ? undefined : setM} v={v} onVChange={result ? undefined : setV} />
-        )}
-        <aside className="side">
-          <MatrixPanel m={m} />
-          {result?.ok ? (
-            <div className="feedback good">
-              <strong>Nice!</strong>
-              <div className="actions">
-                <button className="primary" onClick={() => { const next = recommend(levels, progress); if (next) open(next); else setScreen('map'); }}>Next</button>
-              </div>
-            </div>
-          ) : !result && (
-            <>
-              <button className="primary check" onClick={check}>Check</button>
-              <HintBox hints={level.hints} shown={hintsUsed} onReveal={setHintsUsed} />
-            </>
-          )}
-          <p className="muted mastery-line">Mastery · {level.skill}: {Math.round(progress.mastery[level.skill] * 100)}%</p>
-        </aside>
-      </div>
-    </main>
+    <AppCtx.Provider value={state}>
+      <AnimatePresence mode="wait">
+        <motion.div key={key} className="route" initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -12 }} transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}>
+          {screen}
+        </motion.div>
+      </AnimatePresence>
+    </AppCtx.Provider>
   );
 }

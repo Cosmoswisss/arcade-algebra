@@ -66,11 +66,20 @@ export class Hud {
   layout(L: Layout) {
     this.L = L;
     const { w, h } = L;
-    this.score.position.set(24, 16); this.combo.position.set(24, 46); this.info.position.set(24, 78);
-    this.lives.position.set(w - 24, 14); this.dex.position.set(w / 2, 14);
-    this.exitBtn.position.set(w - 110, 72);
-    this.mission.position.set(w / 2, 104); this.mission.style.wordWrapWidth = Math.min(760, w - 48);
-    this.check.position.set(w / 2, 138);
+    const narrow = w < 640;
+    this.score.position.set(24, 16);
+    this.lives.position.set(w - 24, 14);
+    if (narrow) {
+      this.dex.anchor.set(0, 0); this.dex.position.set(24, 46);
+      this.info.position.set(24, 72); this.info.style.wordWrap = true; this.info.style.wordWrapWidth = w - 48; this.info.style.align = 'left';
+      this.combo.position.set(24, 112); this.exitBtn.position.set(w - 96, 58); this.exitBtn.scale.set(0.8);
+    } else {
+      this.dex.anchor.set(0.5, 0); this.dex.position.set(w / 2, 14);
+      this.combo.position.set(24, 46); this.info.position.set(24, 78); this.info.style.wordWrap = false;
+      this.exitBtn.position.set(w - 110, 72); this.exitBtn.scale.set(1);
+    }
+    this.mission.position.set(w / 2, narrow ? 150 : 104); this.mission.style.wordWrapWidth = Math.min(760, w - 48);
+    this.check.position.set(w / 2, narrow ? 196 : 138);
     this.lockBtn.position.set(120, h - 50);
     this.pop.position.set(w / 2, h * 0.42); this.sub.position.set(w / 2, h * 0.42 + 52); this.sub.style.wordWrapWidth = Math.min(700, w - 48);
     this.caption.position.set(w / 2, h - 52); this.caption.style.wordWrap = true; this.caption.style.wordWrapWidth = Math.min(900, w - 32); this.hint.position.set(w / 2, h - 20);
@@ -105,7 +114,8 @@ export class Hud {
     }
     this.banner.visible = inPlay && !!r.banner && r.phaseClock < 6;
     this.banner.text = r.banner; this.banner.alpha = Math.min(1, 6 - r.phaseClock);
-    this.banner.position.set(L.w / 2, this.check.text ? 172 : 150);
+    this.banner.style.wordWrap = true; this.banner.style.wordWrapWidth = L.w - 32;
+    this.banner.position.set(L.w / 2, L.w < 640 ? 238 : this.check.text ? 172 : 150);
     this.lockBtn.visible = inPlay && r.lockBonus === 0 && r.t < 0.97;
     this.lockBtn.alpha = 0.85 + 0.15 * Math.sin(clock * 6);
     // result pop
