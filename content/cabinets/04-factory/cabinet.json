@@ -1,0 +1,39 @@
+{
+  "id": "factory",
+  "order": 4,
+  "name": "Machine Factory",
+  "notion": "Doing one transformation after another is multiplying matrices — and the order matters.",
+  "tiers": [
+    {
+      "rule": "assist",
+      "banner": "You see the part after every machine",
+      "waves": {
+        "guided": 3,
+        "fast": 2
+      }
+    },
+    {
+      "rule": "partial",
+      "banner": "NEW RULE · ONLY THE FINAL PART IS SHOWN",
+      "waves": {
+        "guided": 3,
+        "fast": 2
+      }
+    },
+    {
+      "rule": "abstract",
+      "banner": "NEW RULE · ONLY THE MATRICES — think before you run",
+      "waves": {
+        "guided": 3,
+        "fast": 2
+      }
+    }
+  ],
+  "waveSeconds": {
+    "guided": 20,
+    "fast": 15
+  },
+  "boss": {
+    "waves": 2
+  }
+}

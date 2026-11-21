@@ -1,0 +1,47 @@
+[
+  {
+    "concept": "pair",
+    "name": "COMPOSITION",
+    "body": "Two machines in a row make one combined move: A then B is the matrix B·A.",
+    "demo": [
+      [
+        0,
+        -1
+      ],
+      [
+        2,
+        0
+      ]
+    ]
+  },
+  {
+    "concept": "order",
+    "name": "ORDER MATTERS",
+    "body": "Rotate-then-stretch is not stretch-then-rotate: in general A·B ≠ B·A.",
+    "demo": [
+      [
+        0,
+        -2
+      ],
+      [
+        1,
+        0
+      ]
+    ]
+  },
+  {
+    "concept": "triple",
+    "name": "CHAINS",
+    "body": "Any number of moves in a row still makes a single matrix: the product of all of them.",
+    "demo": [
+      [
+        0,
+        1
+      ],
+      [
+        2,
+        0
+      ]
+    ]
+  }
+]

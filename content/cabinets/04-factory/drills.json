@@ -1,0 +1,234 @@
+[
+  {
+    "errorKind": "composition-order",
+    "label": "which machine goes first",
+    "waves": [
+      {
+        "id": "drill-order-1",
+        "concept": "order",
+        "params": {
+          "machines": [
+            {
+              "name": "rotate 90°",
+              "matrix": [
+                [
+                  0,
+                  -1
+                ],
+                [
+                  1,
+                  0
+                ]
+              ]
+            },
+            {
+              "name": "stretch x2",
+              "matrix": [
+                [
+                  2,
+                  0
+                ],
+                [
+                  0,
+                  1
+                ]
+              ]
+            }
+          ],
+          "target": [
+            [
+              0,
+              -2
+            ],
+            [
+              1,
+              0
+            ]
+          ]
+        }
+      },
+      {
+        "id": "drill-order-2",
+        "concept": "order",
+        "params": {
+          "machines": [
+            {
+              "name": "shear",
+              "matrix": [
+                [
+                  1,
+                  1
+                ],
+                [
+                  0,
+                  1
+                ]
+              ]
+            },
+            {
+              "name": "rotate 90°",
+              "matrix": [
+                [
+                  0,
+                  -1
+                ],
+                [
+                  1,
+                  0
+                ]
+              ]
+            }
+          ],
+          "target": [
+            [
+              0,
+              -1
+            ],
+            [
+              1,
+              1
+            ]
+          ]
+        }
+      },
+      {
+        "id": "drill-order-3",
+        "concept": "order",
+        "params": {
+          "machines": [
+            {
+              "name": "stretch x2",
+              "matrix": [
+                [
+                  2,
+                  0
+                ],
+                [
+                  0,
+                  1
+                ]
+              ]
+            },
+            {
+              "name": "shear up",
+              "matrix": [
+                [
+                  1,
+                  0
+                ],
+                [
+                  1,
+                  1
+                ]
+              ]
+            }
+          ],
+          "target": [
+            [
+              2,
+              0
+            ],
+            [
+              2,
+              1
+            ]
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "errorKind": "other",
+    "label": "one machine at a time",
+    "waves": [
+      {
+        "id": "drill-other-1",
+        "concept": "pair",
+        "params": {
+          "machines": [
+            {
+              "name": "stretch x2",
+              "matrix": [
+                [
+                  2,
+                  0
+                ],
+                [
+                  0,
+                  1
+                ]
+              ]
+            },
+            {
+              "name": "rotate 90°",
+              "matrix": [
+                [
+                  0,
+                  -1
+                ],
+                [
+                  1,
+                  0
+                ]
+              ]
+            }
+          ],
+          "target": [
+            [
+              0,
+              -1
+            ],
+            [
+              2,
+              0
+            ]
+          ]
+        }
+      },
+      {
+        "id": "drill-other-2",
+        "concept": "pair",
+        "params": {
+          "machines": [
+            {
+              "name": "shear",
+              "matrix": [
+                [
+                  1,
+                  1
+                ],
+                [
+                  0,
+                  1
+                ]
+              ]
+            },
+            {
+              "name": "flip",
+              "matrix": [
+                [
+                  -1,
+                  0
+                ],
+                [
+                  0,
+                  1
+                ]
+              ]
+            }
+          ],
+          "target": [
+            [
+              -1,
+              -1
+            ],
+            [
+              0,
+              1
+            ]
+          ]
+        }
+      }
+    ]
+  }
+]

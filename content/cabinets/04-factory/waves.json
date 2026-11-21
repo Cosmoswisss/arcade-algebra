@@ -1,0 +1,380 @@
+[
+  {
+    "id": "pair-1",
+    "concept": "pair",
+    "params": {
+      "machines": [
+        {
+          "name": "stretch x2",
+          "matrix": [
+            [
+              2,
+              0
+            ],
+            [
+              0,
+              1
+            ]
+          ]
+        },
+        {
+          "name": "rotate 90°",
+          "matrix": [
+            [
+              0,
+              -1
+            ],
+            [
+              1,
+              0
+            ]
+          ]
+        }
+      ],
+      "target": [
+        [
+          0,
+          -1
+        ],
+        [
+          2,
+          0
+        ]
+      ]
+    }
+  },
+  {
+    "id": "pair-2",
+    "concept": "pair",
+    "params": {
+      "machines": [
+        {
+          "name": "rotate 90°",
+          "matrix": [
+            [
+              0,
+              -1
+            ],
+            [
+              1,
+              0
+            ]
+          ]
+        },
+        {
+          "name": "stretch x2",
+          "matrix": [
+            [
+              2,
+              0
+            ],
+            [
+              0,
+              1
+            ]
+          ]
+        }
+      ],
+      "target": [
+        [
+          0,
+          -2
+        ],
+        [
+          1,
+          0
+        ]
+      ]
+    }
+  },
+  {
+    "id": "pair-3",
+    "concept": "pair",
+    "params": {
+      "machines": [
+        {
+          "name": "shear",
+          "matrix": [
+            [
+              1,
+              1
+            ],
+            [
+              0,
+              1
+            ]
+          ]
+        },
+        {
+          "name": "flip",
+          "matrix": [
+            [
+              -1,
+              0
+            ],
+            [
+              0,
+              1
+            ]
+          ]
+        }
+      ],
+      "target": [
+        [
+          -1,
+          -1
+        ],
+        [
+          0,
+          1
+        ]
+      ]
+    }
+  },
+  {
+    "id": "order-1",
+    "concept": "order",
+    "params": {
+      "machines": [
+        {
+          "name": "flip",
+          "matrix": [
+            [
+              -1,
+              0
+            ],
+            [
+              0,
+              1
+            ]
+          ]
+        },
+        {
+          "name": "shear",
+          "matrix": [
+            [
+              1,
+              1
+            ],
+            [
+              0,
+              1
+            ]
+          ]
+        }
+      ],
+      "target": [
+        [
+          -1,
+          1
+        ],
+        [
+          0,
+          1
+        ]
+      ]
+    }
+  },
+  {
+    "id": "order-2",
+    "concept": "order",
+    "params": {
+      "machines": [
+        {
+          "name": "rotate 90°",
+          "matrix": [
+            [
+              0,
+              -1
+            ],
+            [
+              1,
+              0
+            ]
+          ]
+        },
+        {
+          "name": "shear",
+          "matrix": [
+            [
+              1,
+              1
+            ],
+            [
+              0,
+              1
+            ]
+          ]
+        }
+      ],
+      "target": [
+        [
+          1,
+          -1
+        ],
+        [
+          1,
+          0
+        ]
+      ]
+    }
+  },
+  {
+    "id": "order-3",
+    "concept": "order",
+    "params": {
+      "machines": [
+        {
+          "name": "stretch y2",
+          "matrix": [
+            [
+              1,
+              0
+            ],
+            [
+              0,
+              2
+            ]
+          ]
+        },
+        {
+          "name": "rotate 90°",
+          "matrix": [
+            [
+              0,
+              -1
+            ],
+            [
+              1,
+              0
+            ]
+          ]
+        }
+      ],
+      "target": [
+        [
+          0,
+          -2
+        ],
+        [
+          1,
+          0
+        ]
+      ]
+    }
+  },
+  {
+    "id": "triple-1",
+    "concept": "triple",
+    "params": {
+      "machines": [
+        {
+          "name": "stretch x2",
+          "matrix": [
+            [
+              2,
+              0
+            ],
+            [
+              0,
+              1
+            ]
+          ]
+        },
+        {
+          "name": "rotate 90°",
+          "matrix": [
+            [
+              0,
+              -1
+            ],
+            [
+              1,
+              0
+            ]
+          ]
+        },
+        {
+          "name": "flip",
+          "matrix": [
+            [
+              -1,
+              0
+            ],
+            [
+              0,
+              1
+            ]
+          ]
+        }
+      ],
+      "target": [
+        [
+          0,
+          1
+        ],
+        [
+          2,
+          0
+        ]
+      ]
+    }
+  },
+  {
+    "id": "triple-2",
+    "concept": "triple",
+    "params": {
+      "machines": [
+        {
+          "name": "shear",
+          "matrix": [
+            [
+              1,
+              1
+            ],
+            [
+              0,
+              1
+            ]
+          ]
+        },
+        {
+          "name": "rotate 90°",
+          "matrix": [
+            [
+              0,
+              -1
+            ],
+            [
+              1,
+              0
+            ]
+          ]
+        },
+        {
+          "name": "stretch y2",
+          "matrix": [
+            [
+              1,
+              0
+            ],
+            [
+              0,
+              2
+            ]
+          ]
+        }
+      ],
+      "target": [
+        [
+          0,
+          -1
+        ],
+        [
+          2,
+          2
+        ]
+      ]
+    }
+  }
+]

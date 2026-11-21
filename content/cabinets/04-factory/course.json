@@ -1,0 +1,193 @@
+[
+  {
+    "id": "one-then-other",
+    "title": "One move, then another",
+    "text": {
+      "guided": "Two machines in a row: the second one works on **what the first one produced**.\nStretch then rotate: the part is first made wider, then turned.",
+      "fast": "Composition: the second transformation acts on the output of the first."
+    },
+    "examples": {
+      "games": "Like scaling a sprite, then rotating it.",
+      "physics": "Like changing reference frames twice in a row.",
+      "ai": "Like two layers of a network applied one after the other."
+    },
+    "scene": [
+      {
+        "matrix": [
+          [
+            1,
+            0
+          ],
+          [
+            0,
+            1
+          ]
+        ],
+        "caption": "The part.",
+        "ms": 800
+      },
+      {
+        "matrix": [
+          [
+            2,
+            0
+          ],
+          [
+            0,
+            1
+          ]
+        ],
+        "caption": "Machine 1: stretch x2.",
+        "ms": 1300
+      },
+      {
+        "matrix": [
+          [
+            0,
+            -1
+          ],
+          [
+            2,
+            0
+          ]
+        ],
+        "caption": "Machine 2: rotate 90°.",
+        "ms": 1500
+      }
+    ],
+    "check": {
+      "kind": "basis",
+      "prompt": "Stretch x2, then rotate 90°. Place where î and ĵ end up (the matrix below is the rotation).",
+      "given": {
+        "matrix": [
+          [
+            0,
+            -1
+          ],
+          [
+            1,
+            0
+          ]
+        ]
+      },
+      "answer": [
+        [
+          0,
+          -1
+        ],
+        [
+          2,
+          0
+        ]
+      ],
+      "tolerance": 0.1
+    }
+  },
+  {
+    "id": "order-matters",
+    "title": "Order matters",
+    "text": {
+      "guided": "Rotate **then** stretch gives a different part than stretch **then** rotate.\nRotate first: the part turns, then the stretch pulls it sideways — along what used to be its height.",
+      "fast": "A·B ≠ B·A in general: rotate-then-stretch ≠ stretch-then-rotate."
+    },
+    "examples": {
+      "games": "Like turning then moving forward vs moving forward then turning.",
+      "physics": "Like rotating a book about two axes: the order changes the final pose.",
+      "ai": "Like normalising then clipping vs clipping then normalising."
+    },
+    "scene": [
+      {
+        "matrix": [
+          [
+            1,
+            0
+          ],
+          [
+            0,
+            1
+          ]
+        ],
+        "caption": "The part.",
+        "ms": 800
+      },
+      {
+        "matrix": [
+          [
+            0,
+            -1
+          ],
+          [
+            1,
+            0
+          ]
+        ],
+        "caption": "Rotate first…",
+        "ms": 1300
+      },
+      {
+        "matrix": [
+          [
+            0,
+            -2
+          ],
+          [
+            1,
+            0
+          ]
+        ],
+        "caption": "…then stretch x2: a different part.",
+        "ms": 1500
+      }
+    ],
+    "check": {
+      "kind": "choice",
+      "prompt": "Does 'rotate then stretch' give the same part as 'stretch then rotate'?",
+      "options": [
+        "No, the order changes the result",
+        "Yes, always",
+        "Only if the stretch is big"
+      ],
+      "answer": 0
+    }
+  },
+  {
+    "id": "product",
+    "title": "It's a product",
+    "text": {
+      "guided": "Doing A then B is the matrix **B·A** (the first move is written on the right).\nThat product is just another matrix: where î and ĵ end up after both moves.",
+      "fast": "A then B = B·A, itself a matrix."
+    },
+    "examples": {
+      "games": "Like baking a whole animation into one transform.",
+      "physics": "Like combining two rotations into one.",
+      "ai": "Like folding two linear layers into one."
+    },
+    "check": {
+      "kind": "basis",
+      "prompt": "Shear (matrix below), then flip left-right. Place where î and ĵ end up.",
+      "given": {
+        "matrix": [
+          [
+            1,
+            1
+          ],
+          [
+            0,
+            1
+          ]
+        ]
+      },
+      "answer": [
+        [
+          -1,
+          -1
+        ],
+        [
+          0,
+          1
+        ]
+      ],
+      "tolerance": 0.1
+    }
+  }
+]
