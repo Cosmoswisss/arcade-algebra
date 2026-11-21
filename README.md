@@ -1,4 +1,4 @@
-# Linear Algebra Warp
+# Linear Arcade
 
 An interactive game for learning linear algebra from scratch, built for LauzHack 2026 (Scholé challenge).
 

@@ -56,7 +56,7 @@ export default function App() {
     return (
       <main className="app">
         <header className="hero">
-          <h1>Linear Algebra Warp</h1>
+          <h1>Linear Arcade</h1>
           <p className="muted">Grab the arrows. Bend the plane. Discover what a matrix really is.</p>
           <button className="primary play-btn" disabled={!rec} onClick={() => open(rec)}>{rec ? 'Play' : 'All levels done!'}</button>
         </header>

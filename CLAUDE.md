@@ -1,11 +1,11 @@
-# CLAUDE.md : règles communes pour les sessions Claude de l'équipe
+# CLAUDE.md : règles communes pour les sessions Claude de l'équipe (Linear Arcade)
 
 Claude Code lit ce fichier automatiquement au début de chaque session ouverte dans ce repo.
 **Plusieurs personnes travaillent en parallèle, chacune avec son propre Claude.** Le but de ces règles : que personne n'écrase le travail d'un autre.
 
 ## Le projet en bref
 
-Un jeu web pour apprendre l'algèbre linéaire à partir de zéro. On le fait pour le challenge Scholé de LauzHack 2026 : pas de chatbot, et le jeu doit s'adapter à l'élève.
+**Linear Arcade** : un jeu web pour apprendre l'algèbre linéaire à partir de zéro. On le fait pour le challenge Scholé de LauzHack 2026 : pas de chatbot, et le jeu doit s'adapter à l'élève.
 
 - **Pile technique :** Vite, React, TypeScript, Mafs et Vitest. Tout tourne dans le navigateur, il n'y a pas de serveur.
 - **Langue :** l'interface, le contenu des niveaux et le code sont **en anglais**. Les documents internes peuvent rester en français.
@@ -38,6 +38,7 @@ Remplacez « Ami 1 » et « Ami 2 » par vos prénoms.
 5. **Interdit :** `git push --force` et `git rebase` sur une branche déjà poussée.
 6. **Seul Camson fusionne dans `main`.** Les autres poussent leur branche et le préviennent.
 7. **Rien n'est poussé sur GitHub sans l'accord explicite de la personne responsable de la session.**
+8. **Aucune mention de Claude en co-auteur** dans les commits ni dans les PR (pas de ligne `Co-Authored-By`).
 
 ## Réservations
 
