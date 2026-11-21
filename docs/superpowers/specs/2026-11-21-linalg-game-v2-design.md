@@ -1,42 +1,51 @@
-# Linear Algebra Game, v2 : document de conception
+# Linear Arcade (v2) : document de conception
 
-*LauzHack 2026, challenge Scholé. Rédigé le 21/11/2026. Ce document remplace la v1 (`2026-11-21-linalg-game-design.md`) pour la structure, l'interface et le rendu. Le moteur décrit en v1 reste valable.*
+*LauzHack 2026, challenge Scholé. Rédigé le 21/11/2026, révisé après le prototype jouable. Ce document remplace la v1 (`2026-11-21-linalg-game-design.md`) pour la structure, l'interface et le rendu. Le moteur de la v1 (maths 2×2, diagnostic d'erreurs, maîtrise, sauvegarde) reste la base, avec ses tests.*
+
+**Prototype validé par l'équipe :** `docs/prototypes/hole-in-the-wall.html`. On l'ouvre dans un navigateur, c'est la référence de la sensation de jeu et de l'apprentissage en jeu.
 
 ## 1. Intention
 
-**Le but :** faire **comprendre en profondeur et concrètement** l'algèbre linéaire à quelqu'un qui part de zéro, lycéen ou étudiant. **Ce n'est pas** une préparation aux examens. L'université entraîne déjà à réussir des exercices ; nous, on vise l'intuition géométrique.
+**Le but :** faire **comprendre en profondeur et concrètement** l'algèbre linéaire à quelqu'un qui part de zéro, lycéen ou étudiant. **Ce n'est pas** une préparation aux examens. L'université entraîne déjà à réussir des exercices ; nous, on vise l'intuition.
 
-**Pourquoi une v2 :** l'équipe a jugé la v1 « pas ludique ». On y enchaînait des exercices sans cours avant, et le site manquait de structure.
+**La forme (décidée) :**
+- **Une salle d'arcade** : 7 bornes, une par notion, et un **vrai mini-jeu différent sur chaque borne**.
+- **La structure de Codédex** autour : un cours avant chaque borne, de l'XP, des badges, une carte de progression.
+- **La direction artistique Neon Grid** : fond sombre, lignes lumineuses, synthwave et arcade.
 
-**La forme (décidée) :** la **structure de Codédex** (un cours découpé en chapitres, chaque exercice précédé d'une courte leçon, de l'XP, des badges, une carte de progression), mais avec **notre propre direction artistique**.
+**Ce que l'équipe a rejeté, à ne pas reproduire :**
+- une suite d'exercices déguisés ;
+- tout ramener à une seule grille ;
+- des maquettes « pas jeu ».
 
-**Le moment « clic » (inchangé) :** on tire î, et toute la grille suit. Une matrice, c'est l'endroit où atterrissent î et ĵ.
+**Ce qu'elle a validé dans le prototype :**
+- la jouabilité arcade : un mur qui fonce sur toi, des vies, du score, des combos, du son, du « juice » ;
+- **l'apprentissage dans le jeu lui-même**, décrit dans le schéma pédagogique de la section 4.3.
 
-**Comment on sait que l'élève a compris (décidé) :** on lui demande de **prédire où va la forme avant de voir**. En tirant les flèches, on peut réussir à tâtons ; une prédiction ne se devine pas sans avoir compris.
+**Comment on sait que l'élève a compris :** il doit **prédire avant de voir**. Dans le jeu, ça prend la forme de règles de plus en plus exigeantes : à la fin, le mur ne montre plus que sa matrice, et il faut savoir la lire pour survivre.
 
 ## 2. Objectifs, non-objectifs, anti-objectifs
 
 **Objectifs**
-- **Un parcours structuré** : profil de départ, puis diagnostic, puis carte des 7 chapitres. Dans chaque chapitre, une suite d'exercices (leçon puis pratique) et un boss à la fin.
-- **L'adaptation dès la première minute**, puis tout au long du jeu (section 5).
-- **Des leçons de rattrapage** qui se déclenchent selon l'erreur commise.
-- **Direction artistique Neon Grid** (décidée) : fond sombre, lignes lumineuses, ambiance arcade, et des **animations fluides partout**.
-- **Le contenu** (leçons et exercices) est décrit dans des fichiers que l'équipe peut écrire sans coder.
+- La salle d'arcade, avec **7 bornes** qui ont chacune leur mini-jeu.
+- **Un cours court avant chaque borne**, dans l'esprit de Codédex.
+- **L'adaptation dès la première minute** (profil, diagnostic), puis en continu dans le jeu (section 5).
+- **Les coordonnées visibles partout**, et un **rythme lisible** : les textes ne disparaissent jamais avant qu'on ait pu les lire.
+- **Des animations fluides** et un rendu néon qui ne fait pas « IA ».
+- **Le contenu** (cours, vagues, cartes) est décrit dans des fichiers que l'équipe peut écrire sans coder.
 
-**Non-objectifs**
-- Pas de comptes, pas de serveur, pas de streak, pas de communauté, pas de certificat.
-- Pas d'IA générative (option 1, décidée) : tout le contenu est écrit par l'équipe.
-- Pas de 3D.
+**Non-objectifs :** pas de comptes, pas de serveur, pas de streak, pas de certificat, pas d'IA générative, pas de 3D.
 
 **Anti-objectifs (ce serait un échec même si ça marche)**
-- **Un rendu « généré par IA »** : dégradés violets par défaut, cartes toutes identiques, emojis en guise d'icônes, textes creux.
-- **Tout ce qui ressemble à un chat avec une IA** (c'est interdit par le règlement).
-- **Des exercices qu'on réussit en appliquant une recette sans comprendre.**
-- **Une copie de Codédex** : leurs personnages, leurs dessins, leurs textes. On reprend la structure, pas l'apparence.
+- Un rendu « généré par IA » : dégradés violets par défaut, cartes toutes identiques, emojis en guise d'icônes, textes creux.
+- Tout ce qui ressemble à un chat avec une IA (c'est interdit par le règlement).
+- Une borne qu'on réussit en tâtonnant sans comprendre.
+- Des textes qui défilent trop vite pour être lus.
+- Une copie de Codédex ou d'un jeu existant (personnages, dessins, textes).
 
 ## 3. Contraintes
-- **Environ 23 h avant la démo** (au 21/11 en fin de matinée), donc de la marge : on vise tout le périmètre décrit ici. **C'est Claude qui code.**
-- **Le format du contenu est figé en tout premier**, pour que les deux amis puissent écrire en parallèle pendant que la zone de jeu se construit.
+- **Environ 23 h avant la démo** (au 21/11 en fin de matinée). **C'est Claude qui code.**
+- **Le format du contenu est figé en tout premier**, pour que les deux amis puissent écrire en parallèle.
 - Tout dans le navigateur, interface et contenu **en anglais**.
 - **Commits :** jamais de mention de Claude en co-auteur. On ne pousse sur GitHub qu'avec l'accord explicite de Camson.
 - **Plusieurs Claude travaillent en parallèle** : il faut respecter `CLAUDE.md` (zones et réservations).
@@ -44,216 +53,142 @@
 ## 4. Le parcours du joueur
 
 ```
-Écran titre ─► Profil (3 clics) ─► Diagnostic (~2 min) ─► CARTE DU COURS
-                                                            │
-     Chapitre N : Ex 1 ─► Ex 2 ─► … ─► BOSS ─► badge + chapitre suivant débloqué
-                    │
-                    └─ Écran d'exercice : LEÇON (gauche) │ PRATIQUE (droite)
-                                                         └─ en cas d'erreur : LEÇON DE RATTRAPAGE
+Titre ─► Profil (2 clics) ─► Diagnostic (~2 min, passable) ─► SALLE D'ARCADE (carte)
+                                                                   │
+            Borne N : COURS (3–5 écrans courts) ─► MINI-JEU (vagues) ─► VAGUE BOSS ─► badge + borne suivante
 ```
 
-### 4.1 Profil de départ (décidé)
+### 4.1 Profil et diagnostic
+- **Le profil**, en deux clics :
+  - **le niveau** : `highschool`, qui donne le mode `guided`, ou `university`, qui donne le mode `fast` ;
+  - **le thème des exemples** : `games`, `physics` ou `ai`.
+- **Le diagnostic** : 5 prédictions rapides, sur les bornes 1 à 5. Une réussite met la maîtrise de la borne à 0,7, ce qui l'ouvre et la marque « mastered ». Il est passable (« Skip »).
+- **L'ouverture des bornes** : une borne s'ouvre si elle est maîtrisée, ou si toutes les précédentes sont terminées ou maîtrisées.
+- **« Maîtrisé » n'est pas « terminé »** : il faut battre le boss pour avoir le badge.
 
-Deux questions, en cliquant, sans rien écrire :
-- **Niveau** : `highschool` ou `university`. Ça règle le **mode** par défaut :
-  - lycée → `guided` (plus d'animations, des prédictions plus guidées) ;
-  - université → `fast` (on va plus vite, on passe plus tôt aux prédictions complètes).
-- **Thème** : `games`, `physics` ou `ai`. Ça change les exemples des leçons.
+### 4.2 La salle d'arcade, qui sert de carte
+- **7 bornes alignées**, dans l'un de 4 états :
+  - éteinte et verrouillée ;
+  - allumée ;
+  - en cours, en rose avec « ▶ PLAY » ;
+  - terminée, avec son badge.
+- **En haut** : le niveau du joueur, l'XP, les badges (x / 7) et le Transform Dex (x / n).
+- **La borne conseillée est mise en avant** selon la maîtrise. Toutes les bornes ouvertes restent jouables.
 
-Il n'y a **pas** de question sur l'objectif : on ne fait pas de révision d'examen.
+### 4.3 Le schéma pédagogique commun à toutes les bornes (validé dans le prototype)
 
-### 4.2 Diagnostic
+Chaque mini-jeu applique **les mêmes 8 règles**. C'est ce qui relie le jeu à la notion.
 
-- **Ce que c'est :** 5 prédictions rapides, une par grande notion :
-  - vecteurs ;
-  - combinaisons ;
-  - matrice ;
-  - composition ;
-  - déterminant.
-- **Ce que ça change :**
-  - une réussite met la maîtrise du chapitre à 0,7, et le chapitre s'affiche « mastered » sur la carte ;
-  - un échec laisse la maîtrise à 0,2.
-- **Les chapitres maîtrisés restent jouables**, et le diagnostic peut être ignoré (« Skip »).
-- **Les chapitres 6 (inverse) et 7 (vecteurs propres)** ne sont pas testés : on suppose qu'un débutant ne les connaît pas.
+1. **Un briefing avant chaque vague**, que le joueur ferme lui-même. Il contient :
+   - la notion du jour (« STRETCH · NEW CONCEPT ») ;
+   - deux phrases d'explication ;
+   - **la mission en coordonnées**, par exemple « send î to (1.5, 0) and ĵ to (0, 1.5) ».
+2. **Les coordonnées partout** : axes gradués, coordonnées en direct au bout de chaque flèche ou objet manipulé, et sur les cibles.
+3. **La mission et une checklist en direct** pendant la vague : « ○ î on (1.5, 0) » devient « ✓ ».
+4. **Des règles de plus en plus exigeantes**, pour prédire avant de voir :
+   - d'abord avec les aides visuelles ;
+   - puis sans les points d'aide ;
+   - enfin, seulement la représentation abstraite (la matrice, les nombres), et la cible n'apparaît qu'à l'impact.
 
-### 4.3 La carte du cours
+   Un bandeau « NEW RULE » annonce chaque changement.
+5. **Un replay après chaque vague**, qui attend le clic du joueur à la fin. La bonne réponse se reconstruit étape par étape, avec une légende : « î carries the corner (1, 0) → it lands on (2, 1) », puis « Column 1 = where î lands · Column 2 = where ĵ lands ».
+6. **Une erreur nommée, puis un entraînement ciblé** :
+   - le jeu nomme l'erreur (« You swapped î and ĵ — column 1 is where î lands »), et la partie fausse clignote dans la matrice ;
+   - **la vague suivante est un entraînement sur cette erreur** (« TRAINING · SWAPPED ARROWS »), jusqu'à ce qu'elle soit réussie.
+7. **Le Transform Dex** : une carte à collectionner par concept rencontré pour la première fois, avec une animation en boucle, deux phrases et les coordonnées clés. La collection s'affiche sur la carte et en fin de partie.
+8. **La boucle arcade** :
+   - 3 vies, un score et des combos ;
+   - un bonus « LOCK IN » quand on verrouille tôt ;
+   - du son, avec des particules, un flash et un tremblement d'écran ;
+   - **un rythme lent au début** (par exemple 16 s par mur dans le prototype) qui accélère ensuite.
 
-**Les 7 chapitres** (les compétences de la v1) :
-1. Arrows
-2. Combining
-3. Matrices
-4. Composition
-5. Area & Squash
-6. Undo (inverse)
-7. Arrows that don't turn (vecteurs propres)
+### 4.4 Les 7 bornes
 
-**Sur la carte :**
-- **Chaque chapitre est un nœud lumineux**, dans l'un de 4 états : verrouillé, ouvert, en cours ou terminé.
-- **Au-dessus** : le niveau du joueur, une barre d'XP et les badges (x / 7).
-- **Le chapitre conseillé est mis en avant**, sur la base de la maîtrise. Tous les chapitres ouverts restent jouables.
-- **Un chapitre s'ouvre** dans deux cas (choix de Claude) :
-  - **s'il est lui-même maîtrisé** (≥ 0,6, par exemple grâce au diagnostic) : le diagnostic prouve qu'on peut le faire, alors on peut sauter en avant ;
-  - **ou si tous les chapitres précédents** sont terminés ou maîtrisés.
-- **« Maîtrisé » n'est pas « terminé ».** Le badge et l'état « terminé » ne s'obtiennent qu'en battant le boss. Sur la carte, un chapitre maîtrisé non terminé a son propre état visuel.
+| Borne | Notion | Mini-jeu | Progression des règles (point 4) | Erreurs entraînées |
+|---|---|---|---|---|
+| 1 · **Vector Golf** | vecteurs, addition | Une balle à envoyer au trou en enchaînant des coups-vecteurs, autour d'obstacles. | trajectoire montrée → seulement les coordonnées des coups → prédire le point d'arrivée avant de tirer | coordonnées inversées (x, y), signe |
+| 2 · **Two-Thruster Drone** | combinaisons, span | Un drone n'a que deux propulseurs u et v. Il faut doser a·u + b·v pour atteindre des cibles. Certaines cibles sont inatteignables quand u et v sont alignés : il faut répondre « unreachable ». | guide de la combinaison → coefficients seuls → atteignable ou pas, sans essayer | mauvais coefficient, span mal jugé |
+| 3 · **Hole in the Wall** ✅ prototype | matrice = transformation | Déformer sa forme avec î et ĵ pour qu'elle passe dans le trou du mur. | points d'aide → trou seul → matrice seule | colonnes inversées, signe, une seule colonne |
+| 4 · **Machine Factory** | composition | Un tapis roulant avec des machines (tourner, étirer, cisailler). On les place dans l'ordre pour fabriquer la pièce demandée. | aperçu de chaque étape → résultat final seul → matrices seules | ordre de composition |
+| 5 · **Squash!** | déterminant | Des formes passent sous une presse-matrice. Il faut parier sur le facteur d'aire et son signe avant l'impact. | aire affichée en direct → aire cachée → matrice seule | signe (retournement), écrasement (det = 0) |
+| 6 · **Rewind** | inverse | Des images déformées sont à remettre droites. Certaines sont écrasées à plat : il faut répondre « can't be repaired » et dire pourquoi. | image d'origine en fantôme → sans fantôme → matrice seule | inverser au lieu d'annuler, det = 0 |
+| 7 · **Laser Lab** | vecteurs propres | Des lasers traversent une lentille-matrice. Il faut trouver les directions où ils ressortent sans dévier. | rayon de sortie montré → caché jusqu'au tir → matrice seule | confondre « même direction » et « même longueur » |
 
-### 4.4 Écran d'exercice : leçon puis pratique
+**Chaque borne finit par une vague BOSS** : la règle la plus exigeante, sur des cas jamais vus. La réussir donne le badge et 50 XP.
 
-**À gauche, la leçon :**
-- un titre amusant ;
-- un court texte adapté au **mode** et au **thème** ;
-- une **scène animée** optionnelle, jouée dans la zone de jeu. Par exemple : « regarde î s'étirer, et toute la grille suit ». Elle est rejouable ;
-- en dessous, une **checklist d'instructions**.
+**Ordre de construction et périmètre de démo :**
+- **La borne 3 en premier**, en portant le prototype dans l'architecture, puis les bornes **1, 5, 6, 2, 4, 7**.
+- **Pour la démo :** au moins 3 bornes complètes et soignées (3, 1, 5). Les autres doivent être au moins jouables, avec leur cours.
 
-**À droite, la pratique :** la zone de jeu PixiJS, la matrice en direct et les boutons. En bas de l'écran : `Prev` · `Check` · `Next`, ainsi que l'XP que rapporte l'exercice.
-
-**Les trois types d'exercices :**
-
-| Type | Le joueur… | Validation |
-|---|---|---|
-| **Predict** | voit une matrice et la forme d'origine, puis place sa prédiction : d'abord les coins de î et ĵ (mode guided, premiers chapitres), puis toute la forme (deux points déplaçables, l'image de î et celle de ĵ, qui donnent la forme). Il clique sur **Reveal** : la grille se déforme en animation. | la prédiction est juste, à la tolérance près |
-| **Build** | tire î et ĵ pour que la forme tombe dans le trou. C'est l'exercice de la v1, plus le « juice ». | `checkLevel` de la v1 |
-| **Read** | voit une grille déformée, puis tape les 4 nombres de la matrice. | les nombres sont justes, à la tolérance près |
-
-**Ce qu'on prédit dans chaque chapitre** (choix de Claude). La prédiction prend 4 formes : un **point**, une **base** (l'image de î et celle de ĵ), un **nombre** ou une **direction**.
-
-| Chapitre | Ce qu'on montre | Ce que le joueur prédit | Forme |
-|---|---|---|---|
-| 1 · Arrows | Les nombres d'une flèche, par exemple (3, 2) | Où arrive sa pointe | point |
-| 2 · Combining | î et ĵ dessinés, plus des coefficients a et b | Où arrive a·î + b·ĵ | point |
-| 3 · Matrices | Une matrice et la forme d'origine | Où vont î et ĵ, donc toute la forme | base |
-| 4 · Composition | Deux matrices appliquées l'une après l'autre | Où vont î et ĵ à la fin | base |
-| 5 · Area & Squash | Une matrice | L'aire du carré unité après transformation, avec un curseur. Le signe compte : négatif veut dire « retourné ». | nombre |
-| 6 · Undo | La forme déjà transformée et sa matrice | Où était la forme d'origine | base |
-| 7 · Don't turn | Une matrice | Une direction qui ne tournera pas | direction |
-
-**Mode guided ou full, pour une prédiction de type base** (choix de Claude) :
-- **En `guided`**, on prédit **une flèche à la fois**. On place l'image de î, on clique sur Reveal, et seule î s'anime. Puis on fait pareil pour ĵ, et enfin toute la forme suit.
-- **En `fast`**, on place les deux images d'un coup, et la forme prédite se dessine en direct à partir des deux points.
-
-Les prédictions de type point, nombre et direction n'ont qu'une seule étape.
-
-**La boucle Predict :**
-1. le joueur prédit ;
-2. il clique sur **Reveal**, et la vraie transformation s'anime ;
-3. on compare : en cas de réussite, l'XP monte avec un effet visuel ;
-4. en cas d'échec, on superpose sa prédiction (couleur) et la réalité, le diagnostic nomme l'erreur, puis la **leçon de rattrapage** s'affiche.
-
-**Les types d'erreurs :** ce sont ceux de la v1 (colonnes inversées, signe, échelle, une seule colonne, ordre de composition, autre). Pour Predict et Read, la « matrice du joueur » est celle qui correspond à sa prédiction (image de î, image de ĵ) ou aux nombres tapés. On réutilise donc `diagnose`.
-
-### 4.5 Boss de fin de chapitre
-
-- **Ce que c'est :** une prédiction **sans grille d'aide** (la grille d'origine est cachée), sur une situation jamais vue.
-- **Si le joueur réussit :** badge du chapitre, 50 XP, et le chapitre suivant s'ouvre.
-- **S'il échoue :** leçon de rattrapage, puis un nouvel essai avec une autre matrice. Le boss a 2 ou 3 variantes.
-
-### 4.6 Gamification
-- **XP :** 10 pour un exercice, 15 pour un Predict réussi du premier coup, 50 pour un boss. Pas d'XP pour un exercice déjà réussi.
-- **Niveau du joueur :** `floor(XP / 100) + 1`.
-- **Badges :** 1 par chapitre, au boss. Ils sont dessinés en SVG néon, pas en emojis.
-- **Le « juice »** est au cœur du ressenti :
-  - particules et flash quand une forme tombe dans le trou ou qu'une prédiction est juste ;
-  - petit tremblement et clignotement rouge sur une erreur ;
-  - traînée lumineuse derrière les flèches qu'on tire ;
-  - animation de déblocage sur la carte.
+### 4.5 Le cours avant chaque borne
+- **3 à 5 écrans courts**, dans l'esprit de Codédex. Chaque écran contient :
+  - un texte de 2 à 4 phrases, adapté au mode et au thème ;
+  - une **petite scène animée et manipulable** dans le style néon, par exemple « tire î et regarde la grille suivre » ;
+  - une **mini-question de prédiction**, pas un QCM de définition, qui valide l'écran.
+- **Une erreur à la mini-question** affiche la leçon de rattrapage liée à cette erreur.
 
 ## 5. Adaptation (le critère n° 1 du jury)
 
 | Quand | Ce qui s'adapte |
 |---|---|
-| **Au départ** | Le profil choisit le mode (`guided` ou `fast`) et le thème. Le diagnostic place le joueur sur la carte. |
-| **Dans chaque exercice** | Le texte de leçon dépend du mode et du thème. En mode `guided`, les scènes animées se lancent toutes seules, et les prédictions commencent par un seul coin. En mode `fast`, la scène est proposée mais pas imposée. |
-| **Dans un chapitre** | En mode `guided`, le joueur fait tous les exercices du chapitre. En mode `fast`, il saute les exercices marqués `guidedOnly`. |
-| **Après une erreur** | Une leçon de rattrapage correspondant au type d'erreur, avec l'animation de **sa** prédiction comparée à la réalité. Ensuite, le même exercice, ou une variante si elle existe. |
-| **En continu** | **Mode dynamique.** Deux échecs de suite en `fast` → on propose « Want more step-by-step help? » pour passer en `guided` sur ce chapitre. Trois réussites du premier coup de suite en `guided` → on propose de passer en `fast`. C'est toujours proposé, jamais imposé. |
-| **Maîtrise** | BKT de la v1. Un **Predict** compte comme une preuve forte. Un **Build** compte moins, parce qu'on peut le réussir à tâtons : il est traité comme une réussite avec un indice de plus. La maîtrise choisit le chapitre conseillé. |
-| **Indices** | Progressifs, jamais la réponse (comme en v1). Chaque indice utilisé réduit le gain de maîtrise. |
+| **Au départ** | Le profil choisit le mode et le thème. Le diagnostic ouvre les bornes déjà maîtrisées. |
+| **Le mode `guided`** (lycée) | Plus d'animations dans le cours, replays longs, murs plus lents, et plus de vagues avant chaque nouvelle règle. |
+| **Le mode `fast`** (université) | Cours plus courts, replays courts (passables), progression des règles plus rapide. |
+| **Après une erreur** | L'erreur est nommée, la partie fausse clignote, et la vague suivante est un **entraînement sur cette erreur**. |
+| **En continu** | **Mode dynamique.** Deux erreurs de suite en `fast` → on propose de passer en `guided` sur cette borne. Trois réussites du premier coup de suite en `guided` → on propose de passer en `fast`. C'est toujours proposé, jamais imposé. |
+| **Maîtrise** | BKT de la v1, par borne. Une réussite sous la règle la plus exigeante (cible cachée) compte comme une preuve forte. Une réussite avec les aides compte moins. Une erreur la fait baisser. |
 
 ## 6. Contenu (écrit par l'équipe, sans coder)
 
 ```
 content/
-  chapters/
-    03-matrices/
-      chapter.json          ← titre, description, ordre des exercices, boss
-      01-fit-the-shape.json ← un exercice = leçon + pratique
-      02-which-arrow.json
-      boss.json
-  remedial/
-    swapped-columns.json    ← une leçon de rattrapage par type d'erreur
-    sign-flip.json …
+  cabinets/
+    03-hole-in-the-wall/
+      cabinet.json   ← nom, notion, règles par palier, vitesse, boss
+      course.json    ← les écrans du cours (texte guided/fast, exemples par thème, scène, mini-question)
+      waves.json     ← le pool de cibles, chacune taguée avec son concept (stretch, shear…)
+      drills.json    ← les cibles d'entraînement par type d'erreur, et leur libellé
+      dex.json       ← les cartes du Transform Dex (nom, deux phrases, matrice de démo)
+  remedial/          ← une leçon de rattrapage par type d'erreur, partagée entre les bornes
 ```
 
-**Un exercice** (format exact laissé au développeur, mais il doit contenir) :
-- **Identité :** `id`, `title` (amusant), `type` (`predict` | `build` | `read`), `xp`.
-- **La leçon :**
-  - `lesson.guided` et `lesson.fast` : chacun un court texte en Markdown simple (gras, italique, maths en `$…$` via KaTeX) ;
-  - `lesson.examples.games` / `physics` / `ai` : une phrase d'exemple par thème, insérée dans le texte ;
-  - `lesson.scene` (optionnel) : une suite d'étapes `{ matrix, caption, durationMs }` que la zone de jeu anime.
-- **Les instructions :** `instructions`, une liste de lignes de checklist.
-- **La pratique :** ce sont les champs de niveau de la v1 (`shape`, `target`, `movable`, `start`, `pre`, `snap`, `tolerance`, `hints`, `targetsError`), plus :
-  - `matrix`, la matrice à prédire ou à lire, pour Predict et Read ;
-  - `guidedOnly`.
+- **Le schéma exact est laissé au développeur**, mais il doit couvrir ces fichiers et les points 1 à 8 de la section 4.3.
+- **Un fichier invalide est signalé**, sans faire planter le jeu.
+- **Un test vérifie** que chaque cible et chaque mini-question a une solution.
+- **Les 18 niveaux de la v1** servent de cibles pour la borne 3 et de mini-questions pour les cours des bornes 1 à 3.
 
-**Une leçon de rattrapage :** `errorKind`, `title`, `text` (avec une variante par mode) et une `scene`.
-
-Comme en v1, **un fichier invalide est signalé sur l'écran d'accueil** sans faire planter le jeu, et **un test vérifie que chaque exercice a une solution**.
-
-**Les 18 niveaux de la v1** (choix de Claude) : Claude les **convertit en exercices Build** au début du plan, et les répartit dans les chapitres. Ils passent de `src/levels/` à `content/chapters/`. Le chargeur de la v1 est étendu, pas jeté, et ses tests de solvabilité restent valables.
-
-**Volume visé pour la démo :**
-- **Chapitres 1 à 3 complets**, avec 4 à 5 exercices chacun, dont au moins 2 Predict, et un boss.
-- **Chapitres 4 à 7** avec au moins 2 exercices et un boss.
-
-## 7. Approche technique
-
-**Options envisagées** : faire évoluer React + Mafs (option 1), un moteur de jeu complet comme Phaser (option 2), une grille SVG faite maison (option 3), et **React + PixiJS pour la zone de jeu (option 4, choisie par l'équipe)**.
-
-**Pourquoi l'option 4 :**
-- un vrai néon (bloom), des animations à 60 images par seconde et des particules, pour un rendu qui ne fait pas « IA » ;
-- React garde tout ce qui est texte et interface ;
-- le moteur de la v1 (maths, diagnostic, maîtrise, recommandation, sauvegarde) **est conservé tel quel, avec ses tests**.
-
-**Pile technique :**
-- **On garde :** Vite, React 18, TypeScript et KaTeX.
-- **On ajoute :**
-  - `pixi.js` v8 et `pixi-filters` v6 (bloom / glow), pour la zone de jeu ;
-  - `motion` (Framer Motion) pour les transitions de l'interface ;
-  - un petit routeur pour les écrans.
-- **On retire :** `mafs`.
-
-**La zone de jeu :** un composant React qui crée une application PixiJS et lui envoie l'état (matrice, éléments déplaçables, mode Predict ou Build, scène à jouer). On y trouve :
-- la grille d'origine en fantôme, et la grille déformée qui brille ;
-- les flèches î et ĵ qu'on peut déplacer (souris et tactile), avec magnétisme et blocage au bord, comme en v1 ;
-- la forme, le trou et la prédiction ;
-- les animations par interpolation entre deux matrices, et les particules.
-
-**Le front :** avant de coder les écrans, on utilise le skill **website-design:web-design-system**. Il produit un `DESIGN.md` (couleurs, typographie, espacements, composants, ambiance néon) inspiré de vrais sites. À la fin, **website-design:web-review** relit les écrans pour éliminer ce qui fait générique.
-
-**Les tests :**
-- Vitest sur le moteur, sur le chargeur de contenu et sur la solvabilité de chaque exercice ;
-- les nouveaux calculs (XP, niveau, mode dynamique, déblocage des chapitres, validation Predict et Read) sont dans le moteur, et testés eux aussi ;
-- le rendu est vérifié dans le navigateur.
+## 7. Approche technique (option 4, choisie par l'équipe)
+- **React + Vite + TypeScript** pour la carte, le cours, les menus et le HUD hors jeu. **Motion** pour les transitions, **KaTeX** pour les matrices.
+- **PixiJS v8** pour chaque mini-jeu : un composant React qui monte une application Pixi par borne.
+  - Le prototype montre les techniques à reprendre : le glow en traits superposés, le trou découpé avec `cut()`, les particules, le tremblement, le flash et le son WebAudio.
+  - On peut ajouter `pixi-filters` (bloom) si le rendu le justifie.
+- **Le moteur de la v1 reste en TypeScript pur, testé avec Vitest** (maths 2×2, `diagnose`, maîtrise, sauvegarde). On y ajoute, toujours testés :
+  - le choix de la prochaine cible (paliers, entraînement après erreur) ;
+  - l'XP, les niveaux, le Dex ;
+  - l'ouverture des bornes ;
+  - le mode dynamique.
+- **On retire Mafs.**
+- **Le front** : avant de coder les écrans, on passe par **website-design:web-design-system**, qui produit un `DESIGN.md`. À la fin, **website-design:web-review** relit les écrans pour éliminer ce qui fait générique.
 
 ## 8. Répartition (à reporter dans CLAUDE.md)
 
 | Qui | Zone |
 |---|---|
-| **Camson + son Claude** | le moteur, la zone de jeu PixiJS, les écrans React, le design |
-| **Ami 1 + son Claude** | le contenu des chapitres 1 à 4 (leçons, exercices, boss) |
-| **Ami 2 + son Claude** | le contenu des chapitres 5 à 7, et les leçons de rattrapage |
+| **Camson + son Claude** | le moteur, le cadre commun des bornes, les mini-jeux PixiJS, la carte, le cours, le design |
+| **Ami 1 + son Claude** | le contenu des bornes 1 à 4 : cours, vagues, entraînements, cartes du Dex |
+| **Ami 2 + son Claude** | le contenu des bornes 5 à 7, et les leçons de rattrapage |
 
-**Le format de contenu est figé au début du plan**, pour que les deux amis puissent commencer tout de suite. Le jeu actuel est sur la branche `main`, et la v2 se fait sur de nouvelles branches.
+Tout le monde part de `main`, avec une branche `<prénom>/<sujet>` par personne.
 
 ## 9. Démo (≈ 3 min)
-1. **Le profil en 2 clics.**
-2. **Un exercice du chapitre 3** : la leçon avec sa scène animée, puis le « clic » quand on tire î.
-3. **Un Predict raté exprès** : la superposition, l'erreur nommée, puis la leçon de rattrapage animée.
-4. **Le même Predict réussi** : l'effet visuel, l'XP, la maîtrise.
-5. **La carte** : le badge et le déblocage, et le mode qui s'adapte.
+1. **Le profil en 2 clics**, puis la salle d'arcade.
+2. **Le cours de la borne 3** : un écran avec la scène « tire î, la grille suit ». C'est le « clic ».
+3. **Hole in the Wall** : une vague réussie, puis une ratée exprès. On montre l'erreur nommée, le replay colonne par colonne et la vague d'entraînement.
+4. **La règle « matrix only »** : on survit en lisant la matrice. C'est la preuve qu'on a compris.
+5. **Retour à la carte** : le badge, une carte du Dex débloquée, puis un aperçu de Vector Golf et de Squash!.
 
 ## 10. Laissé au développeur
-- Le format JSON exact, tant qu'il contient les champs de la section 6.
-- Le détail visuel : il sera défini par le DESIGN.md, avec la contrainte des couleurs î vert et ĵ rouge.
-- Le choix du routeur.
-- Le nombre d'images et la durée des animations.
-- Les noms des chapitres et des exercices, sauf ceux déjà donnés ici.
+- Le schéma JSON exact.
+- Le détail visuel des bornes 1, 2 et 4 à 7, dans le cadre du DESIGN.md et du prototype.
+- Le choix du routeur, la durée des animations, les noms des vagues.
+- Le partage de code entre les mini-jeux.

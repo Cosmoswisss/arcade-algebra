@@ -1,0 +1,542 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Linear Arcade · Hole in the Wall (prototype)</title>
+<style>
+  html, body { margin: 0; height: 100%; background: #05030f; overflow: hidden; touch-action: none; }
+  canvas { display: block; }
+</style>
+<script src="https://cdn.jsdelivr.net/npm/pixi.js@8.6.6/dist/pixi.min.js"></script>
+</head>
+<body>
+<script>
+(async () => {
+  const app = new PIXI.Application();
+  await app.init({ resizeTo: window, background: '#05030f', antialias: true, autoDensity: true, resolution: window.devicePixelRatio || 1 });
+  document.body.appendChild(app.canvas);
+
+  const C = { cyan: 0x22d3ee, pink: 0xf0abfc, violet: 0x6366f1, green: 0x4ade80, red: 0xf87171, yellow: 0xfde047, white: 0xffffff, wall: 0x1a0b2e, ink: 0x05030f };
+  const HEX = { cyan: '#22d3ee', pink: '#f0abfc', green: '#4ade80', red: '#f87171', yellow: '#fde047', text: '#e0e7ff', dim: '#a5b4fc' };
+  const FONT = 'Courier New, monospace';
+
+  // ---------- layers ----------
+  const world = new PIXI.Container();
+  const bg = new PIXI.Graphics(), wallG = new PIXI.Graphics(), wallText = new PIXI.Container(), playG = new PIXI.Graphics();
+  const fxG = new PIXI.Graphics(); fxG.blendMode = 'add';
+  world.addChild(bg, wallG, wallText, playG, fxG);
+  app.stage.addChild(world);
+  const hud = new PIXI.Container(); app.stage.addChild(hud);
+  const flashG = new PIXI.Graphics(); app.stage.addChild(flashG);
+  const cardLayer = new PIXI.Container(); app.stage.addChild(cardLayer);
+  const overlay = new PIXI.Container(); app.stage.addChild(overlay);
+
+  const txt = (s, size, fill, weight = 'bold', glow = true) => new PIXI.Text({ text: s, style: { fontFamily: FONT, fontSize: size, fill, fontWeight: weight, align: 'center', dropShadow: glow ? { color: fill, blur: 12, distance: 0, alpha: 0.9 } : false } });
+
+  // HUD
+  const scoreT = txt('SCORE 0', 22, HEX.cyan); const comboT = txt('', 22, HEX.pink); const waveT = txt('', 15, HEX.dim, 'normal', false);
+  const livesT = txt('', 24, HEX.red); livesT.anchor.set(1, 0);
+  const dexT = txt('', 16, HEX.yellow); dexT.anchor.set(0.5, 0);
+  const matL = txt('⎡\n⎣', 40, HEX.text, 'normal', false), matR = txt('⎤\n⎦', 40, HEX.text, 'normal', false);
+  const matI = txt('', 26, HEX.green), matJ = txt('', 26, HEX.red);
+  const matCap = txt('î     ĵ', 14, HEX.dim, 'normal', false);
+  const lockBtn = new PIXI.Container(), lockBg = new PIXI.Graphics(), lockT = txt('LOCK IN  [SPACE]', 18, '#05030f', 'bold', false);
+  lockBtn.addChild(lockBg, lockT); lockBtn.eventMode = 'static'; lockBtn.cursor = 'pointer';
+  const popT = txt('', 46, HEX.yellow); popT.anchor.set(0.5);
+  const subT = txt('', 18, HEX.text, 'normal', false); subT.anchor.set(0.5);
+  const bannerT = txt('', 20, HEX.pink); bannerT.anchor.set(0.5);
+  const captionT = txt('', 20, HEX.text, 'bold', false); captionT.anchor.set(0.5);
+  const skipT = txt('click / SPACE to skip', 13, HEX.dim, 'normal', false); skipT.anchor.set(0.5);
+  // coordinates layer (in world, follows shake)
+  const coordLayer = new PIXI.Container();
+  const tickTexts = [];
+  for (let x = -3; x <= 3; x++) if (x) tickTexts.push({ axis: 'x', v: x, t: txt(String(x), 13, HEX.dim, 'normal', false) });
+  for (let y = -2; y <= 3; y++) if (y) tickTexts.push({ axis: 'y', v: y, t: txt(String(y), 13, HEX.dim, 'normal', false) });
+  tickTexts.forEach((o) => { o.t.anchor.set(0.5); coordLayer.addChild(o.t); });
+  const tipI = txt('', 17, HEX.green), tipJ = txt('', 17, HEX.red); coordLayer.addChild(tipI, tipJ);
+  const holeI = txt('', 15, HEX.green), holeJ = txt('', 15, HEX.red); holeI.anchor.set(0.5, 1.4); holeJ.anchor.set(0.5, 1.4);
+  const objT = txt('', 18, HEX.text, 'bold', false); objT.anchor.set(0.5, 0);
+  const checkT = txt('', 17, HEX.text, 'bold', false); checkT.anchor.set(0.5, 0);
+  hud.addChild(objT, checkT);
+  hud.addChild(scoreT, comboT, waveT, livesT, dexT, matL, matR, matI, matJ, matCap, lockBtn, popT, subT, bannerT, captionT, skipT);
+
+  // wall numbers (numbers-only waves)
+  const wallMat = txt('', 40, HEX.text, 'bold', false); wallMat.anchor.set(0.5);
+  const wallNumI = txt('', 40, HEX.green), wallNumJ = txt('', 40, HEX.red); wallNumI.anchor.set(0.5); wallNumJ.anchor.set(0.5);
+  wallText.addChild(wallMat, wallNumI, wallNumJ);
+  const wallLabels = new PIXI.Container(); world.addChild(wallLabels);
+
+  // Dex card
+  const cardBg = new PIXI.Graphics(), cardAnim = new PIXI.Graphics();
+  const cardKicker = txt('NEW TRANSFORM UNLOCKED', 16, HEX.yellow); cardKicker.anchor.set(0.5);
+  const cardTitle = txt('', 40, HEX.pink); cardTitle.anchor.set(0.5);
+  const cardBody = txt('', 17, HEX.text, 'normal', false); cardBody.anchor.set(0.5); cardBody.style.wordWrap = true;
+  const cardMat = txt('', 18, HEX.dim, 'normal', false); cardMat.anchor.set(0.5);
+  const cardCta = txt('CLICK TO CONTINUE', 18, HEX.yellow); cardCta.anchor.set(0.5);
+  cardLayer.addChild(cardBg, cardAnim, cardKicker, cardTitle, cardBody, cardMat, cardCta);
+
+  // wave brief
+  const briefLayer = new PIXI.Container(); const briefBg = new PIXI.Graphics();
+  const briefKick = txt('', 16, HEX.yellow); briefKick.anchor.set(0.5);
+  const briefTitle = txt('', 44, HEX.pink); briefTitle.anchor.set(0.5);
+  const briefBody = txt('', 18, HEX.text, 'normal', false); briefBody.anchor.set(0.5); briefBody.style.wordWrap = true;
+  const briefGoal = txt('', 21, HEX.cyan); briefGoal.anchor.set(0.5); briefGoal.style.wordWrap = true;
+  const briefCta = txt('CLICK / SPACE — GO!', 20, HEX.yellow); briefCta.anchor.set(0.5);
+  briefLayer.addChild(briefBg, briefKick, briefTitle, briefBody, briefGoal, briefCta);
+  app.stage.addChild(briefLayer); briefLayer.visible = false;
+  // overlay
+  const ovBg = new PIXI.Graphics();
+  const ovTitle = txt('LINEAR ARCADE', 64, HEX.pink); ovTitle.anchor.set(0.5);
+  const ovSub = txt('', 26, HEX.cyan); ovSub.anchor.set(0.5);
+  const ovBody = txt('', 16, HEX.text, 'normal', false); ovBody.anchor.set(0.5);
+  const ovCta = txt('', 26, HEX.yellow); ovCta.anchor.set(0.5);
+  overlay.addChild(ovBg, ovTitle, ovSub, ovBody, ovCta);
+
+  // ---------- audio ----------
+  let ac = null;
+  const beep = (f, d = 0.08, type = 'square', v = 0.04, when = 0) => {
+    if (!ac) return;
+    const o = ac.createOscillator(), g = ac.createGain(); o.type = type; o.frequency.value = f;
+    const t0 = ac.currentTime + when; g.gain.setValueAtTime(v, t0); g.gain.exponentialRampToValueAtTime(0.0001, t0 + d);
+    o.connect(g).connect(ac.destination); o.start(t0); o.stop(t0 + d + 0.03);
+  };
+  const sfx = {
+    snap: () => beep(1200, 0.03, 'triangle', 0.03),
+    lock: () => { beep(440, 0.06); beep(880, 0.08, 'square', 0.04, 0.06); },
+    win: (c) => [523, 659, 784, 1046].forEach((f, k) => beep(f * (1 + 0.06 * Math.min(c, 6)), 0.12, 'square', 0.045, k * 0.07)),
+    fail: () => { beep(140, 0.35, 'sawtooth', 0.07); beep(90, 0.45, 'sawtooth', 0.06, 0.05); },
+    tick: () => beep(660, 0.025, 'square', 0.02),
+    unlock: () => [392, 523, 659, 784, 1046, 1318].forEach((f, k) => beep(f, 0.16, 'triangle', 0.05, k * 0.08)),
+    whoosh: () => beep(300, 0.18, 'triangle', 0.03),
+    rule: () => { beep(220, 0.1, 'square', 0.04); beep(330, 0.14, 'square', 0.04, 0.1); },
+  };
+
+  // ---------- content ----------
+  const SHAPE = [[0, 0], [0.3, 0], [0.3, 0.55], [1, 0.55], [1, 1], [0, 1]];
+  const DEX = {
+    stretch:  { name: 'STRETCH',  body: 'Make î or ĵ longer and the whole plane stretches that way.\nThe arrow length IS the stretch factor.', demo: [[2, 0], [0, 1]] },
+    shear:    { name: 'SHEAR',    body: 'Keep î where it is, slide ĵ sideways:\nthe shape leans like a pushed deck of cards.', demo: [[1, 1], [0, 1]] },
+    flip:     { name: 'FLIP',     body: 'Point one arrow backwards and the plane is mirrored.\nIts area becomes negative: it was turned over.', demo: [[-1, 0], [0, 1]] },
+    rotation: { name: 'ROTATION', body: 'Turn î and ĵ together, keeping the square corner:\nthe shape spins. 90°: î→(0,1), ĵ→(−1,0).', demo: [[0, -1], [1, 0]] },
+    swap:     { name: 'SWAP',     body: 'Trade î and ĵ: the plane is mirrored across the diagonal.\nThat is why the column order matters.', demo: [[0, 1], [1, 0]] },
+    combo:    { name: 'COMBO',    body: 'Any two arrows make a transformation.\nEvery matrix is just: where î goes, where ĵ goes.', demo: [[2, 1], [1, 2]] },
+  };
+  const DEX_ORDER = ['stretch', 'shear', 'flip', 'rotation', 'swap', 'combo'];
+  const POOL = [
+    { m: [[2, 0], [0, 1]], k: 'stretch' }, { m: [[1, 0], [0, 2]], k: 'stretch' }, { m: [[1.5, 0], [0, 1.5]], k: 'stretch' },
+    { m: [[1, 1], [0, 1]], k: 'shear' }, { m: [[1, 0], [1, 1]], k: 'shear' }, { m: [[1, -1], [0, 1]], k: 'shear' },
+    { m: [[-1, 0], [0, 1]], k: 'flip' }, { m: [[1, 0], [0, -1]], k: 'flip' }, { m: [[-2, 0], [0, 1]], k: 'flip' },
+    { m: [[0, -1], [1, 0]], k: 'rotation' }, { m: [[-1, 0], [0, -1]], k: 'rotation' }, { m: [[0, 1], [-1, 0]], k: 'rotation' },
+    { m: [[0, 1], [1, 0]], k: 'swap' }, { m: [[0, 2], [1, 0]], k: 'swap' },
+    { m: [[2, 0], [1, 1]], k: 'combo' }, { m: [[2, 1], [1, 2]], k: 'combo' }, { m: [[-1, 1], [0, 2]], k: 'combo' }, { m: [[1, -1], [1, 1]], k: 'combo' },
+  ];
+  const TIER_KINDS = [['stretch'], ['stretch', 'shear', 'flip'], ['shear', 'flip', 'rotation', 'swap'], ['rotation', 'swap', 'combo', 'flip', 'shear']];
+  // drills chosen after a mistake (adaptive)
+  const DRILL = {
+    'swapped-columns': { label: 'swapped arrows', pool: [[[2, 0], [1, 1]], [[0, 2], [1, 0]], [[2, 1], [0, 1]], [[1, 0], [2, 1]]] },
+    'sign-flip':       { label: 'arrows pointing backwards', pool: [[[-1, 0], [0, 1]], [[1, 0], [0, -1]], [[-2, 0], [0, 1]], [[1, 0], [0, -2]]] },
+    'one-column':      { label: 'one arrow at a time', pool: [[[1, 1], [0, 1]], [[1, 0], [1, 1]], [[1, 0], [0, 2]], [[2, 0], [0, 1]]] },
+    'other':           { label: 'reading the corners', pool: [[[2, 0], [0, 1]], [[1, 1], [0, 1]], [[0, -1], [1, 0]]] },
+  };
+  const kindOf = (m) => (POOL.find((p) => same(p.m, m)) || { k: 'combo' }).k;
+
+  const TOL = 0.11, SNAP = 0.5, LIM = 3;
+  const S = {
+    phase: 'title', i: [1, 0], j: [0, 1], target: POOL[0].m, t: 0, duration: 9, locked: false, lockBonus: 0,
+    lives: 3, score: 0, combo: 0, best: 0, wave: 0, resultT: 0, fit: false, ghost: null, shake: 0, flash: 0, flashColor: C.cyan,
+    popLife: 0, bannerLife: 0, particles: [], clock: 0, lastBeat: -1, trailI: [], trailJ: [],
+    rule: 'full', focus: null, diag: null, replayT: 0, replayLen: 2.6, dex: new Set(), pendingCard: null, cardT: 0,
+  };
+  window.__S = S; // debug handle used for automated checks
+
+  // ---------- math ----------
+  const M = () => [[S.i[0], S.j[0]], [S.i[1], S.j[1]]];
+  const apply = (m, p) => [m[0][0] * p[0] + m[0][1] * p[1], m[1][0] * p[0] + m[1][1] * p[1]];
+  const maxDiff = (a, b) => Math.max(...[0, 1].flatMap((r) => [0, 1].map((c) => Math.abs(a[r][c] - b[r][c]))));
+  const same = (a, b) => maxDiff(a, b) <= TOL;
+  const swapCols = (m) => [[m[0][1], m[0][0]], [m[1][1], m[1][0]]];
+  const col = (m, c) => [m[0][c], m[1][c]];
+  const lerp = (a, b, k) => a + (b - a) * k;
+  const lerpM = (a, b, k) => [[lerp(a[0][0], b[0][0], k), lerp(a[0][1], b[0][1], k)], [lerp(a[1][0], b[1][0], k), lerp(a[1][1], b[1][1], k)]];
+  const ease = (x) => (x <= 0 ? 0 : x >= 1 ? 1 : 1 - Math.pow(1 - x, 3));
+  const fmt = (x) => (Math.abs(x) < 1e-9 ? '0' : (Math.round(x * 10) / 10).toString());
+  const vstr = (v) => `(${fmt(v[0])}, ${fmt(v[1])})`;
+
+  function diagnose(m, t) {
+    const ci = col(m, 0), cj = col(m, 1), ti = col(t, 0), tj = col(t, 1);
+    const eq = (a, b) => Math.abs(a[0] - b[0]) <= TOL && Math.abs(a[1] - b[1]) <= TOL;
+    const neg = (a) => [-a[0], -a[1]];
+    const wrong = [!eq(ci, ti), !eq(cj, tj)];
+    if (same(swapCols(m), t)) return { kind: 'swapped-columns', wrong, text: 'You swapped î and ĵ — column 1 is where î lands.' };
+    if ((eq(ci, neg(ti)) && eq(cj, tj)) || (eq(cj, neg(tj)) && eq(ci, ti))) return { kind: 'sign-flip', wrong, text: `One arrow points backwards: ${wrong[0] ? 'î' : 'ĵ'} should go to ${vstr(wrong[0] ? ti : tj)}.` };
+    if (wrong[0] !== wrong[1]) return { kind: 'one-column', wrong, text: `${wrong[0] ? 'ĵ was right — î' : 'î was right — ĵ'} should land on ${vstr(wrong[0] ? ti : tj)}.` };
+    return { kind: 'other', wrong, text: `î should land on ${vstr(ti)} and ĵ on ${vstr(tj)}.` };
+  }
+
+  // ---------- layout ----------
+  const L = {};
+  function layout() {
+    const w = app.screen.width, h = app.screen.height;
+    Object.assign(L, { w, h, U: Math.min(w, h) / 10.5 });
+    L.O = [w / 2 - L.U * 0.5, h * 0.74]; L.horizon = h * 0.30; L.V = [w / 2, L.horizon];
+    scoreT.position.set(24, 18); comboT.position.set(24, 48); waveT.position.set(24, 82);
+    livesT.position.set(w - 24, 18); dexT.position.set(w / 2, 18);
+    const mx = w - 190, my = h - 150;
+    matL.position.set(mx, my); matI.position.set(mx + 26, my + 2); matJ.position.set(mx + 86, my + 2); matR.position.set(mx + 140, my); matCap.position.set(mx + 30, my + 64);
+    lockBg.clear().roundRect(0, 0, 230, 46, 10).fill({ color: C.yellow }); lockT.position.set(20, 12); lockBtn.position.set(24, h - 70);
+    popT.position.set(w / 2, h * 0.42); subT.position.set(w / 2, h * 0.42 + 44);
+    bannerT.position.set(w / 2, 64);
+    objT.position.set(w / 2, 96); checkT.position.set(w / 2, 122);
+    const bw = Math.min(640, w - 40), bh = 330; L.brief = { bw, bh };
+    briefBg.clear().roundRect(w / 2 - bw / 2, h / 2 - bh / 2, bw, bh, 18).fill({ color: 0x0e0a24, alpha: 0.95 }).roundRect(w / 2 - bw / 2, h / 2 - bh / 2, bw, bh, 18).stroke({ width: 3, color: C.pink });
+    briefKick.position.set(w / 2, h / 2 - bh / 2 + 32); briefTitle.position.set(w / 2, h / 2 - bh / 2 + 78);
+    briefBody.position.set(w / 2, h / 2 - 10); briefBody.style.wordWrapWidth = bw - 50;
+    briefGoal.position.set(w / 2, h / 2 + 70); briefGoal.style.wordWrapWidth = bw - 50; briefCta.position.set(w / 2, h / 2 + bh / 2 - 28);
+    for (const o of tickTexts) { const p = o.axis === 'x' ? [o.v, 0] : [0, o.v]; const sp = [L.O[0] + p[0] * L.U, L.O[1] - p[1] * L.U]; o.t.position.set(sp[0] + (o.axis === 'y' ? -14 : 0), sp[1] + (o.axis === 'x' ? 14 : 0)); }
+    captionT.position.set(w / 2, h - 40); skipT.position.set(w / 2, h - 14);
+    ovBg.clear().rect(0, 0, w, h).fill({ color: C.ink, alpha: 0.85 });
+    ovTitle.position.set(w / 2, h * 0.22); ovSub.position.set(w / 2, h * 0.22 + 56); ovBody.position.set(w / 2, h * 0.55); ovCta.position.set(w / 2, h * 0.84);
+    const cw = Math.min(560, w - 40), ch = 440, cx = w / 2, cy = h / 2;
+    L.card = { cw, ch, cx, cy };
+    cardBg.clear().roundRect(cx - cw / 2, cy - ch / 2, cw, ch, 18).fill({ color: 0x0e0a24, alpha: 0.97 }).roundRect(cx - cw / 2, cy - ch / 2, cw, ch, 18).stroke({ width: 3, color: C.yellow });
+    cardKicker.position.set(cx, cy - ch / 2 + 30); cardTitle.position.set(cx, cy - ch / 2 + 72);
+    cardBody.position.set(cx, cy + 112); cardBody.style.wordWrapWidth = cw - 40; cardMat.position.set(cx, cy + 158); cardCta.position.set(cx, cy + ch / 2 - 26);
+  }
+  layout(); window.addEventListener('resize', () => setTimeout(layout, 0));
+  const toScreen = (p, origin = L.O, s = 1) => [origin[0] + p[0] * L.U * s, origin[1] - p[1] * L.U * s];
+  const toPlane = (x, y) => [(x - L.O[0]) / L.U, (L.O[1] - y) / L.U];
+
+  // ---------- draw helpers ----------
+  function glow(g, pts, color, w, closed = false, alpha = 1) {
+    for (const [ww, a] of [[w * 5, 0.06], [w * 2.4, 0.16], [w, 1]]) {
+      g.moveTo(pts[0][0], pts[0][1]); for (let k = 1; k < pts.length; k++) g.lineTo(pts[k][0], pts[k][1]);
+      if (closed) g.closePath(); g.stroke({ width: ww, color, alpha: a * alpha, cap: 'round', join: 'round' });
+    }
+  }
+  function arrowAt(g, o, e, color, w = 4) {
+    glow(g, [o, e], color, w);
+    const ang = Math.atan2(e[1] - o[1], e[0] - o[0]), len = 13;
+    if (Math.hypot(e[0] - o[0], e[1] - o[1]) > 8) g.poly([e[0], e[1], e[0] - len * Math.cos(ang - 0.45), e[1] - len * Math.sin(ang - 0.45), e[0] - len * Math.cos(ang + 0.45), e[1] - len * Math.sin(ang + 0.45)]).fill({ color });
+  }
+
+  // ---------- input ----------
+  function makeHandle(color, key) {
+    const h = new PIXI.Graphics();
+    h.circle(0, 0, 13).fill({ color, alpha: 0.25 }).circle(0, 0, 8).fill({ color }).circle(0, 0, 22).fill({ color, alpha: 0.001 });
+    h.eventMode = 'static'; h.cursor = 'grab';
+    h.on('pointerdown', (e) => { if (S.phase === 'play' && !S.locked) { drag = key; e.stopPropagation(); } });
+    world.addChild(h); return h;
+  }
+  let drag = null;
+  const hI = makeHandle(C.green, 'i'), hJ = makeHandle(C.red, 'j');
+  world.addChild(coordLayer); wallLabels.addChild(holeI, holeJ);
+  app.stage.eventMode = 'static'; app.stage.hitArea = app.screen;
+  app.stage.on('globalpointermove', (e) => {
+    if (!drag) return;
+    let [x, y] = toPlane(e.global.x, e.global.y);
+    x = Math.max(-LIM, Math.min(LIM, Math.round(x / SNAP) * SNAP)); y = Math.max(-LIM, Math.min(LIM, Math.round(y / SNAP) * SNAP));
+    const cur = S[drag]; if (cur[0] !== x || cur[1] !== y) { S[drag] = [x, y]; sfx.snap(); }
+  });
+  const endDrag = () => { drag = null; };
+  app.stage.on('pointerup', endDrag); app.stage.on('pointerupoutside', endDrag);
+  app.stage.on('pointerdown', () => advance());
+  lockBtn.on('pointerdown', (e) => { e.stopPropagation(); lockIn(); });
+  window.addEventListener('keydown', (e) => { if (e.code === 'Space') { e.preventDefault(); if (S.phase === 'play' && S.clock > 0.3) lockIn(); else advance(); } });
+
+  function advance() {
+    if (S.phase === 'title' || (S.phase === 'over' && S.clock > 0.8)) start();
+    else if (S.phase === 'replay' && S.replayT > 0.3) afterReplay();
+    else if (S.phase === 'brief' && S.clock > 0.4) { S.phase = 'play'; S.clock = 0; briefLayer.visible = false; }
+    else if (S.phase === 'card' && S.cardT > 0.5) { cardLayer.visible = false; nextWave(); }
+  }
+
+  // ---------- flow ----------
+  function start() {
+    if (!ac) { try { ac = new (window.AudioContext || window.webkitAudioContext)(); } catch {} }
+    Object.assign(S, { lives: 3, score: 0, combo: 0, wave: 0, focus: null, dex: new Set(), best: 0 });
+    nextWave();
+  }
+  function ruleFor(w) { return w <= 3 ? 'full' : w <= 6 ? 'hole' : 'numbers'; }
+  function pickTarget() {
+    if (S.focus) {
+      const pool = DRILL[S.focus].pool; let m; do { m = pool[Math.floor(Math.random() * pool.length)]; } while (same(m, S.target) && pool.length > 1);
+      return m;
+    }
+    const kinds = TIER_KINDS[Math.min(TIER_KINDS.length - 1, Math.floor((S.wave - 1) / 3))];
+    const pool = POOL.filter((p) => kinds.includes(p.k));
+    let p; do { p = pool[Math.floor(Math.random() * pool.length)]; } while (same(p.m, S.target) && pool.length > 1);
+    return p.m;
+  }
+  function nextWave() {
+    S.wave++;
+    const newRule = ruleFor(S.wave);
+    const ruleChanged = newRule !== S.rule || S.wave === 1;
+    S.rule = newRule;
+    Object.assign(S, { target: pickTarget(), t: 0, duration: S.wave <= 3 ? 16 : S.wave <= 6 ? 13 : Math.max(8, 14 - S.wave * 0.5), locked: false, lockBonus: 0, i: [1, 0], j: [0, 1], phase: 'brief', ghost: null, clock: 0, lastBeat: -1, trailI: [], trailJ: [], diag: null });
+    const ruleMsg = newRule === 'hole' ? 'NEW RULE · NO MORE HINT DOTS — find the corners yourself' : 'NEW RULE · THE WALL ONLY SHOWS ITS MATRIX';
+    if (S.focus) { banner(`TRAINING · ${DRILL[S.focus].label.toUpperCase()}${ruleChanged && S.wave > 1 ? '\n' + ruleMsg : ''}`, HEX.yellow); if (ruleChanged && S.wave > 1) sfx.rule(); }
+    else if (ruleChanged && S.wave > 1) { banner(newRule === 'hole' ? 'NEW RULE · NO MORE HINT DOTS — find the corners yourself' : 'NEW RULE · THE WALL ONLY SHOWS ITS MATRIX', HEX.pink); sfx.rule(); }
+    else if (S.wave === 1) banner('Green dot = where î lands · Red dot = where ĵ lands', HEX.text);
+    showBrief();
+  }
+  function goalText() {
+    const ti = col(S.target, 0), tj = col(S.target, 1);
+    if (S.rule === 'full') return `Your mission: send î to ${vstr(ti)} and ĵ to ${vstr(tj)}.`;
+    if (S.rule === 'hole') return 'Your mission: find where the corners (1, 0) and (0, 1) sit in the hole — î and ĵ must land there.';
+    return 'Your mission: read the matrix on the wall. Column 1 is where î lands, column 2 is where ĵ lands.';
+  }
+  function showBrief() {
+    const k = kindOf(S.target), d = DEX[k], isNew = !S.dex.has(k);
+    briefKick.text = `WAVE ${S.wave}${S.focus ? '  ·  TRAINING' : ''}${isNew ? '  ·  NEW CONCEPT' : ''}`;
+    briefTitle.text = d.name; briefBody.text = d.body; briefGoal.text = goalText();
+    briefLayer.visible = true;
+  }
+  function banner(s, color) { bannerT.text = s; bannerT.style.fill = color; bannerT.style.dropShadow.color = color; S.bannerLife = 6; }
+  function lockIn() { if (S.phase !== 'play' || S.locked) return; S.locked = true; S.lockBonus = Math.round((1 - S.t) * 100); sfx.lock(); }
+  function resolve() {
+    S.fit = same(M(), S.target); S.phase = 'result'; S.resultT = 0;
+    if (S.fit) {
+      S.combo++; S.best = Math.max(S.best, S.combo);
+      const gain = (100 + S.lockBonus + (S.rule === 'numbers' ? 50 : 0)) * S.combo; S.score += gain;
+      pop(S.lockBonus > 40 ? 'PERFECT!' : 'NICE!', `+${gain}${S.combo > 1 ? `  (combo ×${S.combo})` : ''}`, HEX.yellow);
+      burst(L.O[0] + L.U * 0.5, L.O[1] - L.U * 0.5, 90, [C.cyan, C.pink, C.yellow, C.green]);
+      S.flash = 0.55; S.flashColor = C.cyan; sfx.win(S.combo);
+      if (S.focus) S.focus = null; // drill passed
+      const k = kindOf(S.target); if (!S.dex.has(k)) S.pendingCard = k;
+    } else {
+      S.combo = 0; S.lives--; S.diag = diagnose(M(), S.target); S.focus = S.diag.kind;
+      pop('SMASH!', S.diag.text, HEX.red);
+      S.ghost = S.target; S.shake = 0.45; S.flash = 0.7; S.flashColor = C.red; sfx.fail();
+      burst(L.O[0], L.O[1] - L.U * 0.5, 40, [C.red, C.pink]);
+    }
+  }
+  function startReplay() {
+    S.phase = 'replay'; S.replayT = 0;
+    S.replayLen = (!S.fit || S.wave <= 3 || S.rule === 'numbers') ? 5.0 : 3.2;
+    sfx.whoosh();
+  }
+  function afterReplay() {
+    if (S.lives <= 0) { S.phase = 'over'; S.clock = 0; return; }
+    if (S.pendingCard) { showCard(S.pendingCard); return; }
+    nextWave();
+  }
+  function showCard(k) {
+    S.dex.add(k); S.pendingCard = null; S.phase = 'card'; S.cardT = 0; sfx.unlock();
+    const d = DEX[k]; cardTitle.text = d.name; cardBody.text = d.body;
+    cardMat.text = `î → ${vstr(col(d.demo, 0))}    ĵ → ${vstr(col(d.demo, 1))}`;
+    cardLayer.visible = true;
+  }
+  function pop(big, small, color) { popT.text = big; popT.style.fill = color; popT.style.dropShadow.color = color; subT.text = small; S.popLife = 3; }
+  function burst(x, y, n, colors) {
+    for (let k = 0; k < n; k++) { const a = Math.random() * Math.PI * 2, sp = 120 + Math.random() * 520; S.particles.push({ x, y, vx: Math.cos(a) * sp, vy: Math.sin(a) * sp - 120, life: 0.6 + Math.random() * 0.7, max: 1.3, color: colors[k % colors.length], r: 1.5 + Math.random() * 3 }); }
+  }
+
+  // ---------- frame ----------
+  let floorPhase = 0;
+  app.ticker.add((tk) => {
+    const dt = Math.min(0.05, tk.deltaMS / 1000);
+    S.clock += dt;
+    floorPhase = (floorPhase + dt * (S.phase === 'play' ? (S.locked ? 3.5 : 0.6 + S.wave * 0.05) : 0.2)) % 1;
+    if (S.phase === 'play') {
+      S.t += (dt / S.duration) * (S.locked ? 6 : 1);
+      const beat = Math.floor(S.t * 12); if (S.t > 0.6 && beat !== S.lastBeat) { S.lastBeat = beat; sfx.tick(); }
+      if (S.t >= 1) { S.t = 1; resolve(); }
+    } else if (S.phase === 'result') {
+      S.resultT += dt; if (S.resultT > (S.fit ? 1.6 : 3.0)) startReplay();
+    } else if (S.phase === 'replay') {
+      S.replayT = Math.min(S.replayLen, S.replayT + dt);
+    } else if (S.phase === 'card') S.cardT += dt;
+    if (S.phase === 'play') { S.trailI.push(toScreen(S.i)); S.trailJ.push(toScreen(S.j)); if (S.trailI.length > 14) S.trailI.shift(); if (S.trailJ.length > 14) S.trailJ.shift(); }
+    S.popLife = Math.max(0, S.popLife - dt); S.bannerLife = Math.max(0, S.bannerLife - dt);
+
+    drawBackground(); drawWall(); drawPlayer(); drawReplay(); drawFx(dt); drawHud(); drawBrief(); drawCard(); drawOverlay();
+    if (S.shake > 0) { S.shake -= dt; const k = S.shake * 26; world.position.set((Math.random() - 0.5) * k, (Math.random() - 0.5) * k); } else world.position.set(0, 0);
+    S.flash = Math.max(0, S.flash - dt * 1.8);
+    flashG.clear(); if (S.flash > 0) flashG.rect(0, 0, L.w, L.h).fill({ color: S.flashColor, alpha: S.flash * 0.35 });
+  });
+
+  function drawBackground() {
+    const g = bg; g.clear(); const { w, h, horizon, V } = L;
+    for (let k = 0; k < 6; k++) g.rect(0, horizon - 120 + k * 20, w, 20).fill({ color: C.pink, alpha: 0.012 * k });
+    const sr = Math.min(w, h) * 0.16;
+    g.circle(V[0], horizon - sr * 0.35, sr).fill({ color: 0xff3fa4, alpha: 0.18 });
+    for (let k = 0; k < 6; k++) g.rect(V[0] - sr, horizon - sr * 0.35 + k * sr * 0.16, sr * 2, sr * 0.05 + k * 1.5).fill({ color: C.ink });
+    g.rect(0, horizon, w, h - horizon).fill({ color: C.ink });
+    for (let k = -14; k <= 14; k++) g.moveTo(V[0], horizon).lineTo(V[0] + k * w * 0.11, h);
+    g.stroke({ width: 1, color: C.violet, alpha: 0.35 });
+    for (let k = 0; k < 14; k++) { const z = (k + floorPhase) / 14, y = horizon + (h - horizon) * z * z; g.moveTo(0, y).lineTo(w, y); }
+    g.stroke({ width: 1, color: C.pink, alpha: 0.28 });
+    glow(g, [[0, horizon], [w, horizon]], C.pink, 1.5);
+  }
+
+  function wallState() {
+    let tt = S.t;
+    if (S.phase === 'result' && S.fit) tt = 1 + S.resultT * 0.9;
+    if (S.phase === 'result' && !S.fit) tt = 1;
+    const e = Math.pow(Math.min(tt, 1), 2.3);
+    const s = 0.3 + 0.7 * e + Math.max(0, tt - 1) * 2.2;
+    const k = Math.min(1, e);
+    return { s, center: [L.V[0] + (L.O[0] - L.V[0]) * k, L.V[1] + (L.O[1] - L.V[1]) * k], alpha: tt > 1 ? Math.max(0, 1 - (tt - 1) * 2.2) : 1 };
+  }
+
+  function drawWall() {
+    const g = wallG; g.clear(); wallText.visible = false; wallLabels.visible = false;
+    if (S.phase !== 'play' && S.phase !== 'result' && S.phase !== 'brief') return;
+    const { s, center, alpha } = wallState(); if (alpha <= 0) return;
+    const P = (p) => toScreen(p, center, s);
+    const rect = [P([-3.4, -2.2]), P([4.4, -2.2]), P([4.4, 3.2]), P([-3.4, 3.2])];
+    const hole = SHAPE.map((p) => P(apply(S.target, p)));
+    // numbers rule: hole stays hidden until impact
+    const holeVis = S.rule !== 'numbers' ? 1 : S.phase === 'result' ? 1 : Math.max(0, (S.t - 0.9) / 0.1);
+    g.poly(rect.flat()).fill({ color: C.wall, alpha: 0.92 * alpha });
+    if (holeVis > 0.5) g.poly(hole.flat()).cut();
+    for (let y = -2; y <= 3; y += 0.6) { const a = P([-3.4, y]), b = P([4.4, y]); g.moveTo(a[0], a[1]).lineTo(b[0], b[1]); }
+    g.stroke({ width: 1, color: C.pink, alpha: 0.12 * alpha });
+    glow(g, rect, C.pink, 2.5, true, alpha);
+    if (holeVis > 0) glow(g, hole, C.yellow, 2.5, true, alpha * holeVis);
+    if (S.rule === 'full') {
+      const ci = P(apply(S.target, [1, 0])), cj = P(apply(S.target, [0, 1]));
+      g.circle(ci[0], ci[1], 7 * Math.max(0.6, s)).fill({ color: C.green, alpha: 0.9 * alpha });
+      g.circle(cj[0], cj[1], 7 * Math.max(0.6, s)).fill({ color: C.red, alpha: 0.9 * alpha });
+      holeI.text = vstr(col(S.target, 0)); holeJ.text = vstr(col(S.target, 1));
+      holeI.position.set(ci[0], ci[1]); holeJ.position.set(cj[0], cj[1]);
+      const sc = Math.max(0.55, Math.min(1, s)); holeI.scale.set(sc); holeJ.scale.set(sc);
+      wallLabels.visible = true; wallLabels.alpha = alpha;
+    }
+    if (S.rule === 'numbers' && holeVis < 1) {
+      wallText.visible = true; wallText.alpha = alpha * (1 - holeVis);
+      const c = P([0.5, 1.9]), sc = Math.max(0.35, s);
+      wallMat.text = '⎡        ⎤\n⎣        ⎦'; wallMat.position.set(c[0], c[1]); wallMat.scale.set(sc);
+      wallNumI.text = `${fmt(S.target[0][0])}\n${fmt(S.target[1][0])}`; wallNumJ.text = `${fmt(S.target[0][1])}\n${fmt(S.target[1][1])}`;
+      wallNumI.position.set(c[0] - 40 * sc, c[1]); wallNumJ.position.set(c[0] + 40 * sc, c[1]); wallNumI.scale.set(sc); wallNumJ.scale.set(sc);
+    }
+    if (S.phase === 'play' && S.t > 0.75) glow(g, rect, C.red, 4, true, (Math.sin(S.clock * 30) * 0.5 + 0.5) * 0.6);
+  }
+
+  function drawPlayer() {
+    const g = playG; g.clear();
+    const show = S.phase === 'play' || S.phase === 'result' || S.phase === 'brief';
+    coordLayer.visible = show || S.phase === 'replay'; tipI.visible = tipJ.visible = show;
+    hI.visible = hJ.visible = S.phase === 'play';
+    if (!show) return;
+    for (let x = -3; x <= 3; x++) for (let y = -2; y <= 3; y++) { const p = toScreen([x, y]); g.circle(p[0], p[1], 1.8).fill({ color: C.violet, alpha: 0.6 }); }
+    { const a = toScreen([-3.3, 0]), b = toScreen([3.3, 0]), c = toScreen([0, -2.3]), d = toScreen([0, 3.3]); g.moveTo(a[0], a[1]).lineTo(b[0], b[1]).moveTo(c[0], c[1]).lineTo(d[0], d[1]); g.stroke({ width: 1.5, color: C.violet, alpha: 0.7 }); }
+    if (S.ghost) glow(g, SHAPE.map((p) => toScreen(apply(S.ghost, p))), C.yellow, 2, true, 0.6 + 0.4 * Math.sin(S.clock * 10));
+    const pts = SHAPE.map((p) => toScreen(apply(M(), p)));
+    g.poly(pts.flat()).fill({ color: C.cyan, alpha: S.locked ? 0.5 : 0.3 }); glow(g, pts, S.locked ? C.white : C.cyan, 2.5, true);
+    const trail = (tr, color) => { for (let k = 1; k < tr.length; k++) { g.moveTo(tr[k - 1][0], tr[k - 1][1]).lineTo(tr[k][0], tr[k][1]); g.stroke({ width: 1 + k * 0.5, color, alpha: (k / tr.length) * 0.5, cap: 'round' }); } };
+    trail(S.trailI, C.green); trail(S.trailJ, C.red);
+    // live labels: which corner each arrow carries
+    const pi = toScreen(S.i), pj = toScreen(S.j);
+    arrowAt(g, L.O, pi, C.green); arrowAt(g, L.O, pj, C.red);
+    hI.position.set(pi[0], pi[1]); hJ.position.set(pj[0], pj[1]);
+    tipI.text = `î ${vstr(S.i)}`; tipJ.text = `ĵ ${vstr(S.j)}`;
+    tipI.position.set(pi[0] + 14, pi[1] + 6); tipJ.position.set(pj[0] + 14, pj[1] - 26);
+    const pulse = 1 + 0.12 * Math.sin(S.clock * 8);
+    hI.scale.set(drag === 'i' ? 1.35 : pulse); hJ.scale.set(drag === 'j' ? 1.35 : pulse);
+  }
+
+  // replay: the target transformation rebuilt one column at a time
+  function drawReplay() {
+    if (S.phase !== 'replay') { captionT.visible = skipT.visible = false; return; }
+    const g = playG; g.clear();
+    const T = S.target, len = S.replayLen, r = S.replayT / len;
+    const a = ease(r / 0.38), b = ease((r - 0.38) / 0.38);
+    const mi = [lerp(1, T[0][0], a), lerp(0, T[1][0], a)], mj = [lerp(0, T[0][1], b), lerp(1, T[1][1], b)];
+    const m = [[mi[0], mj[0]], [mi[1], mj[1]]];
+    // faint warped grid for the replay only
+    for (let k = -3; k <= 3; k++) {
+      const p1 = toScreen(apply(m, [k, -3])), p2 = toScreen(apply(m, [k, 3])), p3 = toScreen(apply(m, [-3, k])), p4 = toScreen(apply(m, [3, k]));
+      g.moveTo(p1[0], p1[1]).lineTo(p2[0], p2[1]).moveTo(p3[0], p3[1]).lineTo(p4[0], p4[1]);
+    }
+    g.stroke({ width: 1, color: C.violet, alpha: 0.35 });
+    const pts = SHAPE.map((p) => toScreen(apply(m, p)));
+    g.poly(pts.flat()).fill({ color: C.yellow, alpha: 0.18 }); glow(g, pts, C.yellow, 2.5, true);
+    // the corner each arrow carries
+    const ci = toScreen(mi), cj = toScreen(mj);
+    arrowAt(g, L.O, ci, C.green, r < 0.38 ? 6 : 4); arrowAt(g, L.O, cj, C.red, r >= 0.38 && r < 0.76 ? 6 : 4);
+    g.circle(ci[0], ci[1], 7).fill({ color: C.green }); g.circle(cj[0], cj[1], 7).fill({ color: C.red });
+    for (let x = -3; x <= 3; x++) for (let y = -2; y <= 3; y++) { const p = toScreen([x, y]); g.circle(p[0], p[1], 1.6).fill({ color: C.violet, alpha: 0.4 }); }
+    captionT.visible = skipT.visible = true;
+    skipT.text = r >= 1 ? 'CLICK / SPACE TO CONTINUE' : 'click / SPACE to skip'; skipT.style.fill = r >= 1 ? HEX.yellow : HEX.dim;
+    const lead = !S.fit && S.diag ? 'Watch the right move.  ' : '';
+    if (r < 0.38) { captionT.text = `${lead}î carries the corner (1, 0) → it lands on ${vstr(col(T, 0))}`; captionT.style.fill = HEX.green; }
+    else if (r < 0.76) { captionT.text = `ĵ carries the corner (0, 1) → it lands on ${vstr(col(T, 1))}`; captionT.style.fill = HEX.red; }
+    else { captionT.text = 'Column 1 = where î lands · Column 2 = where ĵ lands'; captionT.style.fill = HEX.yellow; }
+  }
+
+  function drawFx(dt) {
+    const g = fxG; g.clear(); S.particles = S.particles.filter((p) => (p.life -= dt) > 0);
+    for (const p of S.particles) { p.vy += 600 * dt; p.x += p.vx * dt; p.y += p.vy * dt; p.vx *= 0.985; const a = Math.max(0, p.life / p.max); g.circle(p.x, p.y, p.r * 2.6).fill({ color: p.color, alpha: a * 0.15 }); g.circle(p.x, p.y, p.r).fill({ color: p.color, alpha: a }); }
+  }
+
+  function drawHud() {
+    const inGame = ['play', 'result', 'replay', 'card', 'brief'].includes(S.phase);
+    hud.visible = inGame; if (!inGame) return;
+    scoreT.text = `SCORE ${S.score}`; comboT.text = S.combo > 1 ? `COMBO ×${S.combo}` : '';
+    livesT.text = '♥'.repeat(Math.max(0, S.lives)) + '♡'.repeat(Math.max(0, 3 - S.lives));
+    const ruleName = { full: 'hint dots', hole: 'hole only', numbers: 'matrix only' }[S.rule];
+    waveT.text = `WAVE ${S.wave} · ${ruleName}${S.phase === 'play' ? `   ·   wall in ${Math.max(0, (1 - S.t) * S.duration / (S.locked ? 6 : 1)).toFixed(1)}s` : ''}`;
+    dexT.text = `TRANSFORM DEX ${S.dex.size}/${DEX_ORDER.length}`;
+    // matrix display: player's during play, target during replay; wrong column blinks after a miss
+    const m = S.phase === 'replay' ? S.target : M();
+    matI.text = `${fmt(m[0][0])}\n${fmt(m[1][0])}`; matJ.text = `${fmt(m[0][1])}\n${fmt(m[1][1])}`;
+    const blink = 0.35 + 0.65 * (Math.sin(S.clock * 14) * 0.5 + 0.5);
+    const r = S.phase === 'replay' ? S.replayT / S.replayLen : -1;
+    matI.alpha = S.phase === 'result' && S.diag?.wrong[0] ? blink : r >= 0 && r >= 0.38 && r < 0.76 ? 0.35 : 1;
+    matJ.alpha = S.phase === 'result' && S.diag?.wrong[1] ? blink : r >= 0 && r < 0.38 ? 0.35 : 1;
+    matI.scale.set(r >= 0 && r < 0.38 ? 1.15 : 1); matJ.scale.set(r >= 0.38 && r < 0.76 ? 1.15 : 1);
+    lockBtn.visible = S.phase === 'play' && !S.locked; lockBtn.alpha = 0.85 + 0.15 * Math.sin(S.clock * 6);
+    popT.visible = subT.visible = S.phase === 'result' || S.phase === 'replay';
+    popT.alpha = Math.min(1, S.popLife * 2); subT.alpha = Math.min(1, S.popLife * 2 + (S.phase === 'replay' && !S.fit ? 1 : 0));
+    popT.scale.set(1 + Math.max(0, S.popLife - 1.3) * 1.5);
+    if (S.phase === 'replay') { popT.alpha = 0; subT.position.set(L.w / 2, 110); } else subT.position.set(L.w / 2, L.h * 0.42 + 44);
+    bannerT.alpha = Math.min(1, S.bannerLife); bannerT.visible = S.phase === 'play';
+    objT.visible = checkT.visible = S.phase === 'play';
+    if (S.phase === 'play') {
+      objT.text = `${DEX[kindOf(S.target)].name} · ${goalText().replace('Your mission: ', '')}`;
+      if (S.rule === 'full') {
+        const okI = Math.abs(S.i[0] - S.target[0][0]) <= TOL && Math.abs(S.i[1] - S.target[1][0]) <= TOL;
+        const okJ = Math.abs(S.j[0] - S.target[0][1]) <= TOL && Math.abs(S.j[1] - S.target[1][1]) <= TOL;
+        checkT.text = `${okI ? '✓' : '○'} î on ${vstr(col(S.target, 0))}      ${okJ ? '✓' : '○'} ĵ on ${vstr(col(S.target, 1))}`;
+        checkT.style.fill = okI && okJ ? HEX.yellow : HEX.text;
+      } else checkT.text = `î is at ${vstr(S.i)}      ĵ is at ${vstr(S.j)}`;
+    }
+    if (bannerT.visible && objT.visible) bannerT.position.set(L.w / 2, 160); else bannerT.position.set(L.w / 2, 64);
+  }
+
+  function drawBrief() { if (S.phase === 'brief') briefCta.alpha = S.clock > 0.4 ? 0.55 + 0.45 * Math.sin(S.clock * 5) : 0; }
+  function drawCard() {
+    cardLayer.visible = S.phase === 'card'; if (!cardLayer.visible) return;
+    const g = cardAnim; g.clear(); const { cx, cy } = L.card; const u = 28, o = [cx - u * 0.5, cy + 8];
+    const k = ease(((S.cardT % 2.4) - 0.4) / 1.2);
+    const m = lerpM([[1, 0], [0, 1]], DEX[[...S.dex].pop()].demo, k);
+    const P = (p) => [o[0] + p[0] * u, o[1] - p[1] * u];
+    for (let q = -2; q <= 2; q++) { const a = P(apply(m, [q, -2])), b = P(apply(m, [q, 2])), c = P(apply(m, [-2, q])), d = P(apply(m, [2, q])); g.moveTo(a[0], a[1]).lineTo(b[0], b[1]).moveTo(c[0], c[1]).lineTo(d[0], d[1]); }
+    g.stroke({ width: 1, color: C.violet, alpha: 0.5 });
+    const pts = SHAPE.map((p) => P(apply(m, p))); g.poly(pts.flat()).fill({ color: C.cyan, alpha: 0.35 }); glow(g, pts, C.cyan, 2, true);
+    arrowAt(g, P([0, 0]), P(apply(m, [1, 0])), C.green, 3); arrowAt(g, P([0, 0]), P(apply(m, [0, 1])), C.red, 3);
+    cardCta.alpha = S.cardT > 0.5 ? 0.55 + 0.45 * Math.sin(S.clock * 5) : 0;
+    cardLayer.scale.set(1); cardLayer.alpha = Math.min(1, S.cardT * 4);
+  }
+
+  function drawOverlay() {
+    overlay.visible = S.phase === 'title' || S.phase === 'over'; if (!overlay.visible) return;
+    ovCta.alpha = 0.55 + 0.45 * Math.sin(S.clock * 5);
+    if (S.phase === 'title') {
+      ovSub.text = 'CABINET 3 · HOLE IN THE WALL';
+      ovBody.text = 'A wall is coming. It has a hole in it.\n\nDrag the GREEN arrow (î) and the RED arrow (ĵ) to warp your shape\nso it fits the hole. Lock in early (SPACE) for a bonus.\n\nThe walls get harder: first with hint dots, then the hole alone,\nthen only the matrix. Collect every transform in the TRANSFORM DEX.';
+      ovCta.text = 'CLICK OR PRESS SPACE TO START';
+    } else {
+      ovTitle.text = 'GAME OVER';
+      ovSub.text = `SCORE ${S.score}  ·  BEST COMBO ×${S.best}  ·  WAVE ${S.wave}`;
+      const got = DEX_ORDER.map((k) => (S.dex.has(k) ? `■ ${DEX[k].name}` : '□ ???')).join('    ');
+      ovBody.text = `TRANSFORM DEX  ${S.dex.size}/${DEX_ORDER.length}\n\n${got}\n\nEvery hole was a matrix: column 1 is where î lands, column 2 is where ĵ lands.`;
+      ovCta.text = 'CLICK TO PLAY AGAIN';
+    }
+  }
+})();
+</script>
+</body>
+</html>
