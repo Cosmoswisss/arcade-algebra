@@ -28,6 +28,10 @@ export function Course({ id }: { id: CabinetId }) {
   const steps = cabinet?.course ?? [];
   const step: CourseStep | undefined = steps[stepIndex];
   const frames = useMemo(() => step?.scene, [step]);
+  const hasScene = !!frames && frames.length > 0;
+  /** Bumped to restart the lesson scene from its first frame. */
+  const [replay, setReplay] = useState(0);
+  const watchAgain = () => { setReplay((n) => n + 1); setView('learn'); };
 
   if (!cabinet || !step) {
     return (
@@ -54,7 +58,7 @@ export function Course({ id }: { id: CabinetId }) {
       <a className="back" href={href.hall}><ArrowLeft size={16} /> Arcade hall</a>
       <header className="course-head">
         <div>
-          <p className="eyebrow">Cabinet {cabinet.meta.order} · {cabinet.meta.name} · lesson {stepIndex + 1} of {steps.length}</p>
+          <p className="eyebrow">Game {cabinet.meta.order} · {cabinet.meta.name} · lesson {stepIndex + 1} of {steps.length}</p>
           <h1>{step.title}</h1>
         </div>
         <div className="seg" role="group" aria-label="Lesson pace">
@@ -78,8 +82,11 @@ export function Course({ id }: { id: CabinetId }) {
         <section className="course-side" aria-label={view === 'learn' ? 'Scene' : 'Your turn'}>
           {view === 'learn' && (
             <>
-              <MiniScene frames={frames} matrix={IDENTITY} label={`Animated scene for the lesson “${step.title}”`} />
-              <div className="actions"><button className="btn btn-primary" onClick={() => setView('ask')}>Your turn: predict it <ArrowRight size={18} /></button></div>
+              {hasScene && <MiniScene key={`${step.id}-${replay}`} frames={frames} matrix={IDENTITY} label={`Animated scene for the lesson “${step.title}”`} />}
+              <div className="actions">
+                <button className="btn btn-primary" onClick={() => setView('ask')}>Your turn: predict it <ArrowRight size={18} /></button>
+                {hasScene && <button className="linklike" onClick={() => setReplay((n) => n + 1)}>Replay from the start</button>}
+              </div>
             </>
           )}
 
@@ -87,7 +94,8 @@ export function Course({ id }: { id: CabinetId }) {
             <>
               <h2 id="q-title">Your turn</h2>
               <QuestionPanel q={step.check} resetKey={`${step.id}-${attempt}`} onSubmit={submit}>
-                <button className="linklike" onClick={() => setView('learn')}>Watch the scene again</button>
+                {hasScene ? <button className="linklike" onClick={watchAgain}>Watch the scene again</button>
+                  : <button className="linklike" onClick={() => setView('learn')}>Back to the lesson</button>}
               </QuestionPanel>
             </>
           )}
@@ -108,10 +116,10 @@ export function Course({ id }: { id: CabinetId }) {
 
           {view === 'right' && (
             <div className="right" role="status">
-              <p className="verdict-ok"><Check size={20} /> <b>Yes.</b> That is the idea{last ? ' — you are ready for the cabinet.' : '.'}</p>
+              <p className="verdict-ok"><Check size={20} /> <b>Yes.</b> That is the idea{last ? ' — you are ready for the game.' : '.'}</p>
               <div className="actions">
                 {!last && <button className="btn btn-primary" onClick={nextStep}>Next lesson <ArrowRight size={18} /></button>}
-                {last && playable && <a className="btn btn-primary" href={href.play(id)}>Enter the cabinet <ArrowRight size={18} /></a>}
+                {last && playable && <a className="btn btn-primary" href={href.play(id)}>Play the game <ArrowRight size={18} /></a>}
                 {last && !playable && <a className="btn btn-primary" href={href.hall}>Back to the hall</a>}
               </div>
             </div>
