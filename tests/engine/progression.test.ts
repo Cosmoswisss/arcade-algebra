@@ -94,4 +94,14 @@ describe('review fixes', () => {
     expect(applyWaveResult(a.next, 'drone', { ...win, concept: 'negative' }).newDex).toBe('negative');
     expect(dexKey('drone', 'negative')).toBe('drone:negative');
   });
+  test('a miss with a named error is remembered', () => {
+    const r = applyWaveResult(defaultProgress(), 'drone', { ...win, correct: false, errorKind: 'swapped-xy' });
+    expect(r.next.errors['swapped-xy']).toBe(1);
+    expect(applyWaveResult(r.next, 'drone', { ...win, correct: false, errorKind: 'swapped-xy' }).next.errors['swapped-xy']).toBe(2);
+    expect(applyWaveResult(defaultProgress(), 'drone', { ...win, errorKind: 'swapped-xy' }).next.errors).toEqual({});
+  });
+  test('placement remembers the placed cabinets', () => {
+    const p = placeFromDiagnostic(placeFromDiagnostic(defaultProgress(), ['drone']), ['drone', 'squash']);
+    expect(p.placed).toEqual(['drone', 'squash']);
+  });
 });

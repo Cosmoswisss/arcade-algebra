@@ -25,6 +25,16 @@ describe('progress v2 storage', () => {
     expect(p.profile).toEqual({ mode: 'fast', theme: 'games' });
     expect(p.xp).toBe(40);
   });
+  test('an old save without errors or placed loads with empty ones', () => {
+    const s = new Mem(); s.setItem(PROGRESS_KEY, JSON.stringify({ xp: 10 }));
+    const p = loadProgressV2(s as unknown as Storage);
+    expect(p.errors).toEqual({}); expect(p.placed).toEqual([]); expect(p.xp).toBe(10);
+  });
+  test('errors and placed round-trip, bad entries are dropped', () => {
+    const s = new Mem(); s.setItem(PROGRESS_KEY, JSON.stringify({ errors: { 'swapped-xy': 2, bad: 'x', neg: -1 }, placed: ['drone', 'nope'] }));
+    const p = loadProgressV2(s as unknown as Storage);
+    expect(p.errors).toEqual({ 'swapped-xy': 2 }); expect(p.placed).toEqual(['drone']);
+  });
   test('a throwing storage gives defaults and never throws', () => {
     expect(loadProgressV2(boom).xp).toBe(0);
     expect(() => saveProgressV2(loadProgressV2(boom), boom)).not.toThrow();

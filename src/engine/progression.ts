@@ -17,9 +17,13 @@ export interface ProgressV2 {
   /** Cabinets that were mastered at least once: they keep later cabinets unlocked. */
   everMastered: CabinetId[];
   streak: { cabinet: CabinetId | null; fails: number; firstTryWins: number };
+  /** How often each error kind was diagnosed (lessons and cabinets): the robot's memory of your mistakes. */
+  errors: Record<string, number>;
+  /** Cabinets passed in the placement test: their lessons are skipped and their game starts one tier up. */
+  placed: CabinetId[];
 }
 
-export interface WaveResult { correct: boolean; rule: Rule; firstTry: boolean; concept: string; boss: boolean; cleared?: boolean }
+export interface WaveResult { correct: boolean; rule: Rule; firstTry: boolean; concept: string; boss: boolean; cleared?: boolean; errorKind?: string }
 
 /** Dex entries are per cabinet: the same concept can have a card in two cabinets. */
 export const dexKey = (cabinet: CabinetId, concept: string) => `${cabinet}:${concept}`;
@@ -29,6 +33,7 @@ export const defaultProgress = (): ProgressV2 => ({
   mastery: Object.fromEntries(CABINETS.map((c) => [c, START])) as Record<CabinetId, number>,
   finished: [], xp: 0, dex: [], modeOverride: {}, everMastered: [],
   streak: { cabinet: null, fails: 0, firstTryWins: 0 },
+  errors: {}, placed: [],
 });
 
 export const levelOf = (xp: number) => Math.floor(xp / 100) + 1;
@@ -70,6 +75,8 @@ export function applyWaveResult(p: ProgressV2, id: CabinetId, r: WaveResult): Ap
   const finished = r.correct && r.cleared && !p.finished.includes(id) ? [...p.finished, id] : p.finished;
   const everMastered = mastery[id] >= MASTERED - 1e-9 && !p.everMastered.includes(id) ? [...p.everMastered, id] : p.everMastered;
 
+  const errors = !r.correct && r.errorKind ? { ...p.errors, [r.errorKind]: (p.errors[r.errorKind] ?? 0) + 1 } : p.errors;
+
   const same = p.streak.cabinet === id;
   let fails = r.correct ? 0 : (same ? p.streak.fails : 0) + 1;
   let firstTryWins = r.correct && r.firstTry ? (same ? p.streak.firstTryWins : 0) + 1 : 0;
@@ -79,7 +86,7 @@ export function applyWaveResult(p: ProgressV2, id: CabinetId, r: WaveResult): Ap
   if (mode === 'guided' && firstTryWins >= 3) { suggestMode = 'fast'; firstTryWins = 0; }
 
   return {
-    next: { ...p, mastery, finished, everMastered, xp: p.xp + xpGained, dex: newDex ? [...p.dex, key] : p.dex, streak: { cabinet: id, fails, firstTryWins } },
+    next: { ...p, mastery, finished, everMastered, xp: p.xp + xpGained, dex: newDex ? [...p.dex, key] : p.dex, streak: { cabinet: id, fails, firstTryWins }, errors },
     xpGained, newDex, suggestMode,
   };
 }
@@ -87,7 +94,7 @@ export function applyWaveResult(p: ProgressV2, id: CabinetId, r: WaveResult): Ap
 export function placeFromDiagnostic(p: ProgressV2, passed: CabinetId[]): ProgressV2 {
   const mastery = { ...p.mastery };
   for (const c of passed) mastery[c] = Math.max(mastery[c], 0.7);
-  return { ...p, mastery, everMastered: [...new Set([...p.everMastered, ...passed])] };
+  return { ...p, mastery, everMastered: [...new Set([...p.everMastered, ...passed])], placed: [...new Set([...p.placed, ...passed])] };
 }
 
 /** The cabinet to highlight: an open, unfinished, available one; the weakest first, then the earliest. */
@@ -114,6 +121,8 @@ export function loadProgressV2(storage?: Storage): ProgressV2 {
     if (typeof o?.xp === 'number' && Number.isFinite(o.xp) && o.xp >= 0) p.xp = o.xp;
     if (Array.isArray(o?.dex)) p.dex = o.dex.filter((d: unknown) => typeof d === 'string');
     if (Array.isArray(o?.everMastered)) p.everMastered = o.everMastered.filter((c: unknown) => CABINETS.includes(c as CabinetId));
+    if (o?.errors && typeof o.errors === 'object') for (const [k, v] of Object.entries(o.errors)) if (typeof v === 'number' && Number.isInteger(v) && v > 0) p.errors[k] = v;
+    if (Array.isArray(o?.placed)) p.placed = o.placed.filter((c: unknown) => CABINETS.includes(c as CabinetId));
     if (o?.modeOverride && typeof o.modeOverride === 'object') for (const c of CABINETS) if (MODES.includes(o.modeOverride[c])) p.modeOverride[c] = o.modeOverride[c];
     return p;
   } catch {
