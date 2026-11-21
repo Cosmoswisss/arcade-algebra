@@ -53,7 +53,7 @@ export default function Hall() {
                 <span className="cab-num mono">{String(k + 1).padStart(2, '0')}</span>
                 <span className="cab-screen"><CabinetIcon id={id} color={st === 'locked' ? '#8b8fc7' : isSuggested ? '#f0abfc' : '#22d3ee'} /></span>
                 <span className="cab-name">{c?.meta.name ?? id.replace(/-/g, ' ')}</span>
-                <span className="cab-state mono">{!c ? 'Coming soon' : isSuggested ? '▶ Play' : STATE_LABEL[st]}</span>
+                <span className="cab-state mono">{!c ? (GAMES[id] ? 'Unavailable' : 'Coming soon') : isSuggested ? '▶ Play' : STATE_LABEL[st]}</span>
                 {st === 'finished' && <span className="badge" aria-hidden="true" />}
               </button>
               {c && <p className="cab-notion">{c.meta.notion}</p>}

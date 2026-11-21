@@ -14,15 +14,20 @@ export interface ProgressV2 {
   /** Concepts whose Dex card is unlocked. */
   dex: string[];
   modeOverride: Partial<Record<CabinetId, Mode>>;
+  /** Cabinets that were mastered at least once: they keep later cabinets unlocked. */
+  everMastered: CabinetId[];
   streak: { cabinet: CabinetId | null; fails: number; firstTryWins: number };
 }
 
-export interface WaveResult { correct: boolean; rule: Rule; firstTry: boolean; concept: string; boss: boolean }
+export interface WaveResult { correct: boolean; rule: Rule; firstTry: boolean; concept: string; boss: boolean; cleared?: boolean }
+
+/** Dex entries are per cabinet: the same concept can have a card in two cabinets. */
+export const dexKey = (cabinet: CabinetId, concept: string) => `${cabinet}:${concept}`;
 
 export const defaultProgress = (): ProgressV2 => ({
   profile: null,
   mastery: Object.fromEntries(CABINETS.map((c) => [c, START])) as Record<CabinetId, number>,
-  finished: [], xp: 0, dex: [], modeOverride: {},
+  finished: [], xp: 0, dex: [], modeOverride: {}, everMastered: [],
   streak: { cabinet: null, fails: 0, firstTryWins: 0 },
 });
 
@@ -37,7 +42,7 @@ export function cabinetState(p: ProgressV2, id: CabinetId, available: (c: Cabine
   if (p.finished.includes(id)) return 'finished';
   if (isMastered(p, id)) return 'mastered';
   const earlier = CABINETS.slice(0, CABINETS.indexOf(id)).filter(available);
-  return earlier.every((c) => p.finished.includes(c) || isMastered(p, c)) ? 'open' : 'locked';
+  return earlier.every((c) => p.finished.includes(c) || isMastered(p, c) || p.everMastered.includes(c)) ? 'open' : 'locked';
 }
 
 /** Aids make a win weaker evidence: treated like hints in the v1 mastery model. */
@@ -46,8 +51,10 @@ const HINTS_FOR_RULE: Record<Rule, number> = { assist: 2, partial: 1, abstract: 
 export function applyWaveResult(p: ProgressV2, id: CabinetId, r: WaveResult): { next: ProgressV2; xpGained: number; newDex: string | null; suggestMode: Mode | null } {
   const xpGained = r.correct ? 10 + (r.rule === 'abstract' ? 5 : 0) + (r.boss ? 50 : 0) : 0;
   const mastery = { ...p.mastery, [id]: updateMastery(p.mastery[id], r.correct, HINTS_FOR_RULE[r.rule]) };
-  const newDex = r.correct && !p.dex.includes(r.concept) ? r.concept : null;
-  const finished = r.correct && r.boss && !p.finished.includes(id) ? [...p.finished, id] : p.finished;
+  const key = dexKey(id, r.concept);
+  const newDex = r.correct && !p.dex.includes(key) ? r.concept : null;
+  const finished = r.correct && r.cleared && !p.finished.includes(id) ? [...p.finished, id] : p.finished;
+  const everMastered = mastery[id] >= MASTERED - 1e-9 && !p.everMastered.includes(id) ? [...p.everMastered, id] : p.everMastered;
 
   const same = p.streak.cabinet === id;
   let fails = r.correct ? 0 : (same ? p.streak.fails : 0) + 1;
@@ -58,7 +65,7 @@ export function applyWaveResult(p: ProgressV2, id: CabinetId, r: WaveResult): { 
   if (mode === 'guided' && firstTryWins >= 3) { suggestMode = 'fast'; firstTryWins = 0; }
 
   return {
-    next: { ...p, mastery, finished, xp: p.xp + xpGained, dex: newDex ? [...p.dex, newDex] : p.dex, streak: { cabinet: id, fails, firstTryWins } },
+    next: { ...p, mastery, finished, everMastered, xp: p.xp + xpGained, dex: newDex ? [...p.dex, key] : p.dex, streak: { cabinet: id, fails, firstTryWins } },
     xpGained, newDex, suggestMode,
   };
 }
@@ -66,7 +73,7 @@ export function applyWaveResult(p: ProgressV2, id: CabinetId, r: WaveResult): { 
 export function placeFromDiagnostic(p: ProgressV2, passed: CabinetId[]): ProgressV2 {
   const mastery = { ...p.mastery };
   for (const c of passed) mastery[c] = Math.max(mastery[c], 0.7);
-  return { ...p, mastery };
+  return { ...p, mastery, everMastered: [...new Set([...p.everMastered, ...passed])] };
 }
 
 // ---------- storage ----------
@@ -83,6 +90,7 @@ export function loadProgressV2(storage?: Storage): ProgressV2 {
     if (Array.isArray(o?.finished)) p.finished = o.finished.filter((c: unknown) => CABINETS.includes(c as CabinetId));
     if (typeof o?.xp === 'number' && Number.isFinite(o.xp) && o.xp >= 0) p.xp = o.xp;
     if (Array.isArray(o?.dex)) p.dex = o.dex.filter((d: unknown) => typeof d === 'string');
+    if (Array.isArray(o?.everMastered)) p.everMastered = o.everMastered.filter((c: unknown) => CABINETS.includes(c as CabinetId));
     if (o?.modeOverride && typeof o.modeOverride === 'object') for (const c of CABINETS) if (MODES.includes(o.modeOverride[c])) p.modeOverride[c] = o.modeOverride[c];
     return p;
   } catch {

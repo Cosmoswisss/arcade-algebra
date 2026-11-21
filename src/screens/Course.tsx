@@ -8,6 +8,7 @@ import type { CabinetId } from '../engine/types';
 import { go } from '../router';
 import { useApp } from '../state';
 import RichText from './RichText';
+import { displayOrder } from '../content/shuffle';
 
 /** KaTeX for a matrix with column 1 green (î) and column 2 red (ĵ). */
 const matrixTex = (m: [[number, number], [number, number]]) =>
@@ -95,7 +96,7 @@ export default function Course({ id }: { id: CabinetId }) {
               )}
               {q.kind === 'choice' && (
                 <div className="choices">
-                  {q.options.map((o, k) => <button key={o} className={`choice ${answer === k ? 'selected' : ''}`} onClick={() => setAnswer(k)} disabled={!!feedback}><span className="choice-label">{o}</span></button>)}
+                  {displayOrder(q.options.length, q.answer, s.id).map((k) => <button key={q.options[k]} className={`choice ${answer === k ? 'selected' : ''}`} onClick={() => setAnswer(k)} disabled={!!feedback}><span className="choice-label">{q.options[k]}</span></button>)}
                 </div>
               )}
               {(q.kind === 'basis' || q.kind === 'point') && !feedback && <p className="muted small">Drag the {q.kind === 'basis' ? 'green and red arrows' : 'yellow point'} in the scene above.</p>}

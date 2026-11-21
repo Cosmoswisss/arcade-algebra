@@ -34,7 +34,10 @@ export interface WaveOutcome {
   rule: Rule;
   firstTry: boolean;
   concept: string;
+  /** A real boss wave (drills played during the boss stage do not count). */
   boss: boolean;
+  /** This win completed the boss stage: the cabinet is cleared. */
+  cleared: boolean;
   diagnosis: Diagnosis | null;
 }
 
@@ -73,6 +76,7 @@ export class Runner {
   caption = '';
   card: DexCard | null = null;
   bossWins = 0;
+  private lockSeen = false;
   private pendingCard: DexCard | null = null;
   private rand: () => number;
 
@@ -84,6 +88,8 @@ export class Runner {
   get meta() { return this.content.meta; }
   get goal() { return this.game.goalText(this.rule); }
   get checklist() { return this.game.checklist(this.rule); }
+  /** True once the player has committed (LOCK IN or an in-game answer button). */
+  get locked() { return this.game.isLocked(); }
   get secondsLeft() { return Math.max(0, ((1 - this.t) * this.duration) / (this.game.isLocked() ? LOCK_SPEED : 1)); }
 
   start() {
@@ -108,6 +114,7 @@ export class Runner {
     this.duration = waveSeconds(meta, this.opts.mode, tierIndex);
     this.t = 0;
     this.lockBonus = 0;
+    this.lockSeen = false;
     this.outcome = null;
     this.game.startWave(pick.wave, this.rule);
     if (this.isDrill) this.banner = `TRAINING · ${this.drillLabel.toUpperCase()}`;
@@ -123,6 +130,7 @@ export class Runner {
     const dt = clampDt(ms);
     this.phaseClock += dt;
     if (this.phase === 'play') {
+      if (this.game.isLocked() && !this.lockSeen) { this.lockSeen = true; this.lockBonus = Math.round((1 - this.t) * 100); }
       this.t = Math.min(1, this.t + (dt / this.duration) * (this.game.isLocked() ? LOCK_SPEED : 1));
       this.game.update(dt, this.t);
       if (this.t >= 1) this.resolve();
@@ -138,6 +146,7 @@ export class Runner {
 
   lock() {
     if (this.phase !== 'play' || this.game.isLocked()) return;
+    this.lockSeen = true;
     this.lockBonus = Math.round((1 - this.t) * 100);
     this.game.lock();
   }
@@ -151,14 +160,16 @@ export class Runner {
   private resolve() {
     const { correct, diagnosis } = this.game.evaluate();
     const wave = this.wave!;
-    const outcome: WaveOutcome = { correct, rule: this.rule, firstTry: correct, concept: wave.concept, boss: this.boss, diagnosis };
+    const realBoss = this.boss && !this.isDrill;
+    if (correct && realBoss) this.bossWins += 1;
+    const cleared = correct && realBoss && this.bossWins >= this.meta.boss.waves;
+    const outcome: WaveOutcome = { correct, rule: this.rule, firstTry: correct, concept: wave.concept, boss: realBoss, cleared, diagnosis };
     this.outcome = outcome;
     if (correct) {
       this.run.combo += 1;
       this.lastGain = (100 + this.lockBonus + (this.rule === 'abstract' ? 50 : 0)) * this.run.combo;
       this.run.score += this.lastGain;
       if (this.isDrill) this.run.focus = null;
-      if (this.boss) this.bossWins += 1;
     } else {
       this.lastGain = 0;
       this.run.combo = 0;

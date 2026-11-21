@@ -55,23 +55,26 @@ export function createFactory(): CabinetGame & { setup(ctx: KitContext): void } 
   function layoutCards(showMatrix: boolean) {
     const L = ctx.layout();
     const narrow = L.w < 760;
-    const trayX = narrow ? L.w / 2 - 170 : 100, beltY = L.horizon + 34;
+    const sc = narrow ? Math.min(1, (L.w - 24) / 3 / 170) : 1;
+    const trayX = narrow ? L.w / 2 - 84 * sc : 100, beltY = L.horizon + 34;
     trayT.text = 'MACHINES (click to add)'; trayT.position.set(trayX - 78, beltY + 52);
-    beltT.text = 'BELT (click to remove) →'; beltT.position.set(L.w / 2 - 250, beltY - 58);
+    beltT.text = 'BELT (click to remove) →'; beltT.position.set(Math.max(12, L.w / 2 - 250), beltY - 58);
     tray.forEach((card, k) => {
       const idx = shuffled[k];
       const used = order.includes(idx);
       card.c.visible = idx !== undefined && !used;
       if (idx === undefined) return;
       card.set(p.machines[idx].name, p.machines[idx].matrix, showMatrix, NEON.player, can());
-      card.c.position.set(narrow ? trayX + (k % 2) * 170 : trayX, beltY + 104 + (narrow ? Math.floor(k / 2) * 66 : k * 70));
+      card.c.scale.set(sc);
+      card.c.position.set(narrow ? trayX + (k % 2) * 168 * sc : trayX, beltY + 104 + (narrow ? Math.floor(k / 2) * 66 * sc : k * 70));
     });
     belt.forEach((card, k) => {
       const idx = order[k];
       card.c.visible = idx !== undefined;
       if (idx === undefined) return;
       card.set(`${k + 1}. ${p.machines[idx].name}`, p.machines[idx].matrix, showMatrix, STAGE[k], can());
-      card.c.position.set(L.w / 2 - 170 + k * 170, beltY);
+      card.c.scale.set(sc);
+      card.c.position.set(L.w / 2 + (k - 1) * 170 * sc, beltY);
     });
     // the conveyor belt itself
     const y = beltY + 30;
@@ -92,9 +95,9 @@ export function createFactory(): CabinetGame & { setup(ctx: KitContext): void } 
     },
     startWave(w: Wave, r: Rule) {
       p = w.params as FactoryParams; rule = r; order = []; locked = false; afterT = 0;
-      // shuffle so the tray order never gives the answer away
-      shuffled = p.machines.map((_, k) => k).reverse();
-      if (shuffled.length === 3) shuffled = [shuffled[1], shuffled[2], shuffled[0]];
+      // random tray order, never equal to the solution order, so the tray never gives the answer away
+      const ids = p.machines.map((_, k) => k);
+      do { shuffled = [...ids].sort(() => Math.random() - 0.5); } while (shuffled.every((v, k) => v === k));
     },
     update() {},
     isLocked: () => locked,

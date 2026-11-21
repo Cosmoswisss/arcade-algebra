@@ -11,7 +11,7 @@ import { checklist, evaluateDrone, goalText, position, solveCoeffs } from './log
 import type { ReachAnswer } from './logic';
 import type { DroneParams } from './params';
 
-const A_Y = -1.25, B_Y = -1.8;
+const A_Y = -0.9, B_Y = -1.9;
 const mk = (size: number, fill: string) => new Text({ text: '', style: { fontFamily: FONT_MONO, fontSize: size, fill, fontWeight: '700', dropShadow: { color: fill, blur: 8, distance: 0, alpha: 0.8 } } });
 const snap = (x: number) => Math.max(-3, Math.min(3, Math.round(x * 2) / 2)) + 0;
 

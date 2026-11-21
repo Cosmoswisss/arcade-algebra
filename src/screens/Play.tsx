@@ -1,7 +1,7 @@
 import { useRef, useState } from 'react';
 import CabinetView from '../arcade/kit/CabinetView';
 import { GAMES } from '../arcade/registry';
-import { applyWaveResult, modeFor } from '../engine/progression';
+import { applyWaveResult, dexKey, modeFor } from '../engine/progression';
 import type { CabinetId, Mode } from '../engine/types';
 import { go } from '../router';
 import { useApp } from '../state';
@@ -12,8 +12,9 @@ export default function Play({ id }: { id: CabinetId }) {
   const latest = useRef(progress);
   latest.current = progress;
   const [suggest, setSuggest] = useState<Mode | null>(null);
+  // the mode is fixed for the whole run; a suggestion accepted mid-run applies to the next run
+  const [mode] = useState<Mode>(() => modeFor(progress, id));
   if (!c || !make) return <main className="screen narrow"><p className="lead">This cabinet is not ready yet.</p><button className="btn btn-secondary" onClick={() => go('/hall')}>Back to the arcade</button></main>;
-  const mode = modeFor(progress, id);
   return (
     <div className="play-screen">
       <CabinetView
@@ -25,7 +26,7 @@ export default function Play({ id }: { id: CabinetId }) {
           if (r.suggestMode) setSuggest(r.suggestMode);
           return { newDex: r.newDex };
         }}
-        dex={() => ({ count: c.dex.filter((d) => latest.current.dex.includes(d.concept)).length, total: c.dex.length, isNew: (k) => !latest.current.dex.includes(k) })}
+        dex={() => ({ count: c.dex.filter((d) => latest.current.dex.includes(dexKey(id, d.concept))).length, total: c.dex.length, isNew: (k) => !latest.current.dex.includes(dexKey(id, k)) })}
         onExit={() => go('/hall')}
       />
       {suggest && (

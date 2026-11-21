@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'vitest';
-import { applyWaveResult, cabinetState, defaultProgress, levelOf, placeFromDiagnostic } from '../../src/engine/progression';
+import { applyWaveResult, cabinetState, defaultProgress, dexKey, levelOf, placeFromDiagnostic } from '../../src/engine/progression';
 import type { ProgressV2 } from '../../src/engine/progression';
 
 const win = { correct: true, rule: 'assist' as const, firstTry: true, concept: 'stretch', boss: false };
@@ -29,7 +29,7 @@ describe('progression', () => {
     expect(applyWaveResult(defaultProgress(), 'hole-in-the-wall', { ...win, correct: false }).newDex).toBeNull();
   });
   test('a boss win finishes the cabinet', () => {
-    const r = applyWaveResult(defaultProgress(), 'vector-golf', { ...win, boss: true });
+    const r = applyWaveResult(defaultProgress(), 'vector-golf', { ...win, boss: true, cleared: true });
     expect(r.next.finished).toContain('vector-golf');
     expect(cabinetState(r.next, 'vector-golf')).toBe('finished');
   });
@@ -72,5 +72,26 @@ describe('unavailable cabinets', () => {
     const available = (id: string) => id === 'hole-in-the-wall';
     expect(cabinetState(defaultProgress(), 'hole-in-the-wall', available)).toBe('open');
     expect(cabinetState(defaultProgress(), 'factory', available)).toBe('locked');
+  });
+});
+
+describe('review fixes', () => {
+  test('a boss win only finishes the cabinet when the run is cleared', () => {
+    const r = applyWaveResult(defaultProgress(), 'vector-golf', { ...win, boss: true, cleared: false });
+    expect(r.next.finished).not.toContain('vector-golf');
+    expect(applyWaveResult(r.next, 'vector-golf', { ...win, boss: true, cleared: true }).next.finished).toContain('vector-golf');
+  });
+  test('unlocks are sticky: a later miss does not re-lock the next cabinets', () => {
+    let p = placeFromDiagnostic(defaultProgress(), ['vector-golf']);
+    expect(cabinetState(p, 'drone')).toBe('open');
+    for (let k = 0; k < 3; k++) p = applyWaveResult(p, 'vector-golf', { ...win, correct: false }).next;
+    expect(p.mastery['vector-golf']).toBeLessThan(0.6);
+    expect(cabinetState(p, 'drone')).toBe('open');
+  });
+  test('the Dex is keyed per cabinet: the same concept in two cabinets gives two cards', () => {
+    const a = applyWaveResult(defaultProgress(), 'vector-golf', { ...win, concept: 'negative' });
+    expect(a.newDex).toBe('negative');
+    expect(applyWaveResult(a.next, 'drone', { ...win, concept: 'negative' }).newDex).toBe('negative');
+    expect(dexKey('drone', 'negative')).toBe('drone:negative');
   });
 });

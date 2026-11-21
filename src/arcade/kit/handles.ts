@@ -37,8 +37,11 @@ export class Handle {
     let [px, py] = this.o.toPlane(x, y);
     if (step > 0) { px = Math.round(px / step) * step; py = Math.round(py / step) * step; }
     px = Math.min(x1, Math.max(x0, px)); py = Math.min(y1, Math.max(y0, py));
-    const cur = this.o.get();
-    if (cur[0] !== px || cur[1] !== py) { this.o.set([px, py]); sfx.snap(); }
+    const before = this.o.get();
+    if (before[0] === px && before[1] === py) return;
+    this.o.set([px, py]);
+    const after = this.o.get();
+    if (after[0] !== before[0] || after[1] !== before[1]) sfx.snap(); // only when the value really changed
   }
   update(clock: number) {
     const p = this.o.toScreen(this.o.get());

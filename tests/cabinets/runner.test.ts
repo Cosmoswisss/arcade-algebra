@@ -91,3 +91,23 @@ describe('runner', () => {
     expect(r.banner).toContain('NEW RULE');
   });
 });
+
+describe('review fixes', () => {
+  test('a drill wave during the boss stage does not count as a boss win', () => {
+    let calls = 0;
+    const { r, results } = make(() => { calls++; return calls !== 11; }); // first boss wave missed → drill
+    for (let w = 0; w < 16 && r.phase !== 'done' && r.phase !== 'over'; w++) { play(r); finishWave(r); toNext(r); }
+    const drillDuringBoss = results.filter((o) => o.boss && !o.correct);
+    expect(drillDuringBoss.length).toBe(1);
+    expect(results.filter((o) => o.cleared)).toHaveLength(1);
+    expect(results.find((o) => o.cleared)).toBe(results[results.length - 1]);
+  });
+  test('answering with an in-game button (game locks itself) still earns the early bonus', () => {
+    const { game } = fakeGame(() => true);
+    const r = new Runner(content, game, { mode: 'guided', onWaveResult: () => ({ newDex: null }) });
+    r.start(); wait(r, 500); r.click(); r.tick(50);
+    game.lock(); r.tick(50);
+    expect(r.lockBonus).toBeGreaterThan(90);
+    expect(r.locked).toBe(true);
+  });
+});

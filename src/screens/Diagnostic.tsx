@@ -8,6 +8,7 @@ import type { CabinetId } from '../engine/types';
 import { go } from '../router';
 import { useApp } from '../state';
 import RichText from './RichText';
+import { displayOrder } from '../content/shuffle';
 
 const matrixTex = (m: [[number, number], [number, number]]) =>
   String.raw`\begin{bmatrix}\color{#4ade80}{${m[0][0]}} & \color{#f87171}{${m[0][1]}} \\ \color{#4ade80}{${m[1][0]}} & \color{#f87171}{${m[1][1]}}\end{bmatrix}`;
@@ -73,7 +74,7 @@ export default function Diagnostic() {
               <output className="mono">{typeof answer === 'number' ? answer : 0}</output>
             </label>
           )}
-          {q.kind === 'choice' && <div className="choices">{q.options.map((o, i) => <button key={o} className={`choice ${answer === i ? 'selected' : ''}`} onClick={() => setAnswer(i)}><span className="choice-label">{o}</span></button>)}</div>}
+          {q.kind === 'choice' && <div className="choices">{displayOrder(q.options.length, q.answer, cabinet).map((i) => <button key={q.options[i]} className={`choice ${answer === i ? 'selected' : ''}`} onClick={() => setAnswer(i)}><span className="choice-label">{q.options[i]}</span></button>)}</div>}
           <div className="actions-row">
             <button className="btn btn-primary" onClick={submit} disabled={answer === null && q.kind !== 'number'}>Next</button>
             <button className="btn btn-quiet" onClick={() => advance(passed)}>I don't know</button>
