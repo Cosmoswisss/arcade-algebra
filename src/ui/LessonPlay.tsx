@@ -1,4 +1,4 @@
-import { Suspense, useRef, useState } from 'react';
+import { Suspense, useEffect, useRef, useState } from 'react';
 import type { StageControls, StageStatus } from '../arcade/kit/ArcadeStage';
 import type { ChallengeResult } from '../arcade/kit/drivers';
 import { LazyStage } from '../arcade/playable';
@@ -47,7 +47,17 @@ export function LessonPlay({ cabinet, play, theme, variant = 'lesson', rule, onD
   const [card, setCard] = useState<DexCard | null>(null);
   const [gain, setGain] = useState('');
   const controls = useRef<StageControls | null>(null);
+  const robotRef = useRef<HTMLDivElement>(null);
   const firstTry = useRef(true);
+  const [onDrill, setOnDrill] = useState(false);
+
+  // The verdict appears above the stage while the player's eyes (and the LOCK IN button) are below it:
+  // bring the robot's bubble back into view so the named mistake is actually read.
+  useEffect(() => {
+    if (!feedback || !talk) return;
+    const reduce = typeof matchMedia === 'function' && matchMedia('(prefers-reduced-motion: reduce)').matches;
+    robotRef.current?.scrollIntoView?.({ block: 'nearest', behavior: reduce ? 'auto' : 'smooth' });
+  }, [feedback, talk]);
   const lines = content.robot;
 
   const drillFor = (kind: string | null): Wave | null => {
@@ -73,11 +83,12 @@ export function LessonPlay({ cabinet, play, theme, variant = 'lesson', rule, onD
     if (step === 'named') setFeedback({ step, mood: 'oops', kind, text: named });
     else if (step === 'hint') setFeedback({ step, mood: 'thinking', kind, text: robotLine(lines, 'hint') });
     else if (step === 'replay-then-drill') { setFeedback({ step, mood: 'thinking', kind, text: named }); controls.current?.showReplay(); }
-    else setFeedback({ step, mood: 'oops', kind, text: robotLine(lines, 'retry') });
+    // on the training wave, keep naming the mistake: the player must know what to fix
+    else setFeedback({ step, mood: 'oops', kind, text: `${robotLine(lines, 'retry')} ${r.diagnosis?.text ?? ''}`.trim() });
   };
 
   const retry = (next: { wave?: Wave; rule?: Rule }) => {
-    if (next.wave) setWave(next.wave);
+    if (next.wave) { setWave(next.wave); setOnDrill(next.wave.id !== play.wave.id); }
     if (next.rule) setWaveRule(next.rule);
     setFeedback(null); setCard(null); setGain(''); setStatus(null);
     setAttempt((a) => a + 1);
@@ -91,7 +102,7 @@ export function LessonPlay({ cabinet, play, theme, variant = 'lesson', rule, onD
   if (!cab) return <p className="lead">This game is not available.</p>;
   return (
     <div className="lesson-play">
-      {talk && <Robot name={lines.name} mood={feedback?.mood ?? 'idle'} line={feedback?.text ?? play.mission[theme]} />}
+      {talk && <div ref={robotRef} className="lesson-robot"><Robot name={lines.name} mood={feedback?.mood ?? 'idle'} line={feedback?.text ?? play.mission[theme]} /></div>}
       <div className="stage-frame">
         <Suspense fallback={<p className="stage-loading">Powering up…</p>}>
           <LazyStage key={`${wave.id}-${attempt}`} cabinet={cabinet} content={cab} className="stage" mode={mode}
@@ -113,7 +124,7 @@ export function LessonPlay({ cabinet, play, theme, variant = 'lesson', rule, onD
         {feedback?.step === 'hint' && <button className="btn btn-primary" onClick={() => retry({ rule: 'assist' })}>Try again with the aids</button>}
         {(feedback?.step === 'replay-then-drill' || feedback?.step === 'drill') && (
           <button className="btn btn-primary" disabled={status?.phase === 'replay'} onClick={() => retry({ wave: drill ?? play.wave, rule: 'assist' })}>
-            {drill ? 'Training wave' : 'Try again'}
+            {drill && !onDrill ? 'Training wave' : 'Try again'}
           </button>
         )}
         {feedback && feedback.step !== 'right' && onBack && <button className="btn btn-secondary" onClick={onBack}>Back to the lesson</button>}

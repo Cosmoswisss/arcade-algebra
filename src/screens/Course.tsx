@@ -56,6 +56,8 @@ export function Course({ id }: { id: CabinetId }) {
   const [view, setView] = useState<View>('learn');
   const [diagnosis, setDiagnosis] = useState<Mistake | null>(null);
   const [attempt, setAttempt] = useState(0);
+  // a first-try success shortens the NEXT lesson, not the one on screen
+  const fastNext = useRef(false);
   const lines = content.robot;
 
   const theme = progress.profile?.theme ?? 'games';
@@ -81,10 +83,14 @@ export function Course({ id }: { id: CabinetId }) {
 
   const last = stepIndex === steps.length - 1;
   const playable = PLAYABLE.has(id);
-  const goTo = (k: number) => { setStepIndex(k); setView('learn'); setDiagnosis(null); setAttempt(0); setPhase('lesson'); window.scrollTo(0, 0); };
+  const goTo = (k: number) => {
+    if (fastNext.current && k === stepIndex + 1) setMode('fast');
+    fastNext.current = false;
+    setStepIndex(k); setView('learn'); setDiagnosis(null); setAttempt(0); setPhase('lesson'); window.scrollTo(0, 0);
+  };
   const solved = (firstTry: boolean) => {
     // a first-try success shortens the next lesson (the pace switch stays available)
-    if (firstTry) setMode('fast');
+    fastNext.current = firstTry;
     setView('right');
   };
   const submit = (a: Answer) => {

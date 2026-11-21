@@ -210,6 +210,8 @@ main.narrow { max-width: 720px; }
 
 /* ---------- guide robot ---------- */
 .robot { display: flex; gap: var(--s3); align-items: flex-start; margin: 0 0 var(--s4); }
+/* scrolled back into view when it gives feedback: keep it clear of the sticky top bar */
+.lesson-robot { scroll-margin-top: 96px; }
 .robot-body { flex: none; filter: drop-shadow(0 0 8px rgba(34, 211, 238, 0.45)); }
 .robot-oops .robot-body { filter: drop-shadow(0 0 8px rgba(240, 171, 252, 0.55)); }
 .robot-bubble { position: relative; flex: 1; min-width: 0; padding: var(--s3) var(--s4); background: var(--panel); border: 1px solid var(--cyan); box-shadow: var(--glow-cyan);
@@ -221,7 +223,7 @@ main.narrow { max-width: 720px; }
 .course-intro .robot + .robot { margin-left: var(--s6); }
 
 /* ---------- lesson stage (the real game in the course) ---------- */
-.stage-frame { position: relative; aspect-ratio: 4 / 3; min-height: 300px; border: 1px solid var(--line); background: var(--ink); overflow: hidden; box-shadow: 0 0 24px rgba(99, 102, 241, 0.25); }
+.stage-frame { position: relative; aspect-ratio: 4 / 3; min-height: 300px; min-width: 0; border: 1px solid var(--line); background: var(--ink); overflow: hidden; box-shadow: 0 0 24px rgba(99, 102, 241, 0.25); }
 .stage { position: absolute; inset: 0; touch-action: none; }
 .stage canvas { display: block; }
 .stage-loading { position: absolute; inset: 0; display: grid; place-items: center; margin: 0; font-family: var(--font-mono); color: var(--dim); }
@@ -238,3 +240,8 @@ main.narrow { max-width: 720px; }
 .ticks li button { all: unset; display: block; width: 100%; height: 100%; cursor: pointer; }
 .ticks li button:focus-visible { outline: 2px solid var(--cyan); outline-offset: 3px; }
 .ticks li { height: 8px; }
+
+/* phones: the 4:3 frame follows the column width (a 300 px min-height would force it to 400 px wide) */
+@media (max-width: 640px) {
+  .stage-frame { min-height: 0; }
+}
