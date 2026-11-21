@@ -61,6 +61,9 @@ export default function ArcadeStage(props: ArcadeStageProps) {
       await app.init({ resizeTo: el, background: NEON.bg, antialias: true, autoDensity: true, resolution: Math.min(2, window.devicePixelRatio || 1) });
       if (!alive) { app.destroy(true, { children: true }); return; }
       el.appendChild(app.canvas);
+      // Pixi's resizeTo only listens to window resizes: follow the element itself (a screen transition can start it at 0 px high)
+      const resizer = typeof ResizeObserver === 'function' ? new ResizeObserver(() => app.resize()) : null;
+      resizer?.observe(el);
 
       const mode = latest.current.mode;
       let L: Layout = computeLayout(app.screen.width, app.screen.height);
@@ -218,6 +221,7 @@ export default function ArcadeStage(props: ArcadeStageProps) {
         window.removeEventListener('keydown', onKey);
         el.removeEventListener('keydown', onStageKey);
         el.removeEventListener('focusout', onBlur);
+        resizer?.disconnect();
         app.ticker.remove(tick);
         game.destroy();
         app.destroy(true, { children: true });
