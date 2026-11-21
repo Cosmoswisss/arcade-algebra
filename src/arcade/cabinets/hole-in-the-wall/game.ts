@@ -70,36 +70,25 @@ export function createConstellation(): CabinetGame & { setup(ctx: KitContext): v
   function drawStars(phase: Phase, clock: number, t: number) {
     const g = starG; g.clear();
     starLabels.forEach((s) => { s.visible = false; });
+    // like the hole in Vector Golf: the stars stay hidden while the player aims (the mission gives their coordinates)
+    // and appear at the impact, lit where the player's grid points land on them
+    const shown = phase === 'result' || (phase === 'play' && t > 0.97);
+    if (!shown) return;
     const m = M();
-    const hidden = rule === 'abstract' && phase !== 'result' && !(phase === 'play' && t > 0.97);
     const stars = anchors.map((p) => starPoint(target, p));
-    const mine = anchors.map((p) => apply(m, p));
-    const lit = stars.map((s, k) => near(mine[k], s));
+    const lit = stars.map((s, k) => near(apply(m, anchors[k]), s));
     const allLit = lit.every(Boolean);
-    if (!hidden) {
-      // constellation lines, glowing once every star is lit
-      const pts = stars.map(S);
-      for (let k = 1; k < pts.length; k++) glow(g, [pts[k - 1], pts[k]], allLit ? NEON.target : NEON.muted, allLit ? 2 : 1, false, allLit ? 0.9 : 0.25);
-      stars.forEach((s, k) => {
-        const tw = 0.75 + 0.25 * Math.sin(clock * 3 + k);
-        // in assist, the stars of (1, 0) and (0, 1) carry the î / ĵ colours
-        const color = lit[k] ? NEON.target : rule === 'assist' && k === 0 ? NEON.i : rule === 'assist' && k === 1 ? NEON.j : NEON.white;
-        sparkle(g, S(s), lit[k] ? 13 : 9, color, lit[k] ? 1 : 0.55 * tw);
-        if (rule === 'assist') {
-          // full label only for the stars of î and ĵ; the others just name their point, small, under the star
-          const t2 = starLabels[k], q = S(s);
-          t2.visible = !(k < 2 && lit[k]); // once î or ĵ sits on its star, the arrow's own label says it
-          if (k < 2) { t2.text = `${k === 0 ? 'î' : 'ĵ'} star ${vstr(s)}`; t2.style.fontSize = 15; t2.style.fill = k === 0 ? CSS.i : CSS.j; t2.anchor.set(0, 1); t2.position.set(q[0] + 12, q[1] - 6); }
-          else { t2.text = vstr(anchors[k]); t2.style.fontSize = 12; t2.style.fill = CSS.muted; t2.anchor.set(0.5, 0); t2.position.set(q[0], q[1] + 12); }
-        }
-      });
-    }
-    // the player's own points for the stars: small rings that the stars must catch
-    mine.forEach((p, k) => {
-      const q = S(p);
-      g.circle(q[0], q[1], 5).stroke({ width: 2, color: lit[k] && !hidden ? NEON.target : NEON.player, alpha: 0.9 });
+    const pts = stars.map(S);
+    for (let k = 1; k < pts.length; k++) glow(g, [pts[k - 1], pts[k]], allLit ? NEON.target : NEON.muted, allLit ? 2 : 1, false, allLit ? 0.9 : 0.35);
+    stars.forEach((s, k) => {
+      const tw = 0.75 + 0.25 * Math.sin(clock * 3 + k);
+      sparkle(g, S(s), lit[k] ? 13 : 10, lit[k] ? NEON.target : NEON.j, lit[k] ? 1 : 0.8 * tw);
+      const t2 = starLabels[k], q = S(s);
+      t2.visible = true; t2.text = `${vstr(anchors[k])} → ${vstr(s)}`; t2.style.fontSize = 12; t2.style.fill = lit[k] ? CSS.target : CSS.j;
+      t2.anchor.set(0.5, 0); t2.position.set(q[0], q[1] + 12);
     });
   }
+
 
   function drawArrows(phase: Phase) {
     const g = playG; g.clear();

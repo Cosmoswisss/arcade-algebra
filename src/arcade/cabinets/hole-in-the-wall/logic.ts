@@ -37,22 +37,35 @@ export function litStars(target: Mat2, i: Vec2, j: Vec2): boolean[] {
   return starAnchors(target).map((p) => on(apply(m, p), apply(target, p)));
 }
 
+/**
+ * The two stars given as clues in the partial rule: two points other than (1, 0) and (0, 1), independent,
+ * whose stars are on the visible plane. The player deduces î and ĵ from them (linearity). Falls back to a basis point.
+ */
+export function clueAnchors(target: Mat2): [Vec2, Vec2] {
+  const pool: Vec2[] = [...starAnchors(target).slice(2), ...EXTRA.filter((p) => inView(apply(target, p))), [1, 0], [0, 1]];
+  for (let a = 0; a < pool.length; a++)
+    for (let b = a + 1; b < pool.length; b++)
+      if (pool[a][0] * pool[b][1] - pool[a][1] * pool[b][0] !== 0) return [pool[a], pool[b]];
+  return [[1, 0], [0, 1]];
+}
+
+/** "★ (1, 1) → (2, 2)": a known point and where its star is. */
+const clue = (target: Mat2, p: Vec2) => `★ ${vstr(p)} → ${vstr(apply(target, p))}`;
+
+/**
+ * Like Vector Golf: the stars are not drawn while aiming, only their coordinates are given here.
+ * assist: the stars of (1, 0) and (0, 1); partial: two other stars, find î and ĵ from them; abstract: the star map (matrix).
+ */
 export function goalText(target: Mat2, rule: Rule): string {
-  if (rule === 'assist') return `Light every star: send î to ${vstr(col(target, 0))} and ĵ to ${vstr(col(target, 1))}.`;
-  if (rule === 'partial') return 'Light every star. Which stars are (1, 0) and (0, 1)?';
+  if (rule === 'assist') return `${clue(target, [1, 0])}   ${clue(target, [0, 1])}\nPlace î and ĵ on their stars`;
+  if (rule === 'partial') { const [a, b] = clueAnchors(target); return `${clue(target, a)}   ${clue(target, b)}\nFind î and ĵ`; }
   return 'Read the star map: column 1 is î, column 2 is ĵ.';
 }
 
-export function checklist(target: Mat2, i: Vec2, j: Vec2, rule: Rule): { label: string; ok: boolean }[] {
+/** The player's arrows as numbers only: never ticked or coloured, the player checks them against the stars himself. */
+export function checklist(_target: Mat2, i: Vec2, j: Vec2, rule: Rule): { label: string; ok: boolean }[] {
   if (rule === 'abstract') return [];
-  if (rule === 'partial') {
-    const lit = litStars(target, i, j), n = lit.filter(Boolean).length;
-    return [{ label: `stars lit ${n}/${lit.length}`, ok: n === lit.length }];
-  }
-  return [
-    { label: `î on ${vstr(col(target, 0))}`, ok: on(i, col(target, 0)) },
-    { label: `ĵ on ${vstr(col(target, 1))}`, ok: on(j, col(target, 1)) },
-  ];
+  return [{ label: `î ${vstr(i)}   ĵ ${vstr(j)}`, ok: false }];
 }
 
 export function evaluate(i: Vec2, j: Vec2, target: Mat2): { correct: boolean; diagnosis: Diagnosis | null } {

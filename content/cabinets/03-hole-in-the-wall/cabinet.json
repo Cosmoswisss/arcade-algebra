@@ -6,7 +6,7 @@
   "tiers": [
     {
       "rule": "assist",
-      "banner": "Labelled stars: (1, 0) is green, (0, 1) is red",
+      "banner": "The stars of (1, 0) and (0, 1) are given: place î and ĵ on them",
       "waves": {
         "guided": 3,
         "fast": 2
@@ -14,7 +14,7 @@
     },
     {
       "rule": "partial",
-      "banner": "NEW RULE · BARE STARS — find (1, 0) and (0, 1) yourself",
+      "banner": "NEW RULE · TWO OTHER STARS — deduce î and ĵ from them",
       "waves": {
         "guided": 3,
         "fast": 2

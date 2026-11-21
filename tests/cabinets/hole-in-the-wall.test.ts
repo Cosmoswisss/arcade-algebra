@@ -14,8 +14,11 @@ describe('hole in the wall logic', () => {
     expect(goalText(T, 'partial')).not.toContain('(2, 1)');
     expect(goalText(T, 'abstract')).not.toContain('(2, 1)');
   });
-  test('assist checklist ticks each arrow on its target', () => {
-    expect(checklist(T, [2, 1], [0, 0], 'assist').map((c) => c.ok)).toEqual([true, false]);
+  test('the checklist gives the arrows as numbers and never ticks, even on the answer', () => {
+    for (const rule of ['assist', 'partial'] as const) {
+      const c = checklist(T, [2, 1], [0, 1], rule);
+      expect(c).toHaveLength(1); expect(c[0].ok).toBe(false); expect(c[0].label).toContain('(2, 1)');
+    }
   });
   test('abstract checklist is empty', () => expect(checklist(T, [2, 1], [0, 1], 'abstract')).toEqual([]));
   test('swapped arrows are diagnosed', () => expect(evaluate([0, 1], [2, 1], T).diagnosis?.kind).toBe('swapped-columns'));
@@ -57,8 +60,16 @@ describe('constellation stars', () => {
     expect(half[0]).toBe(true); expect(half[1]).toBe(false);
     expect(half).toHaveLength(anchors.length);
   });
-  test('checklist counts the lit stars from the partial rule on', () => {
-    const c = checklist(T, [2, 1], [0, 0], 'partial');
-    expect(c).toHaveLength(1); expect(c[0].label).toMatch(/stars? lit 1\/\d/); expect(c[0].ok).toBe(false);
+  test('the partial rule gives two other stars as clues, never the columns themselves', async () => {
+    const { clueAnchors, starPoint } = await import('../../src/arcade/cabinets/hole-in-the-wall/logic');
+    const c = loadContent().cabinets['hole-in-the-wall']!;
+    for (const w of allPlayableWaves(c)) {
+      const m = (w.params as { matrix: Mat2 }).matrix;
+      const [a, b] = clueAnchors(m);
+      expect(a[0] * b[1] - a[1] * b[0], `${w.id}: the clues must be independent`).not.toBe(0);
+      for (const p of [a, b]) { const s = starPoint(m, p); expect(s[0] >= -3 && s[0] <= 3 && s[1] >= -2 && s[1] <= 3, `${w.id} ${p}`).toBe(true); }
+      const g = goalText(m, 'partial');
+      expect(g).toContain(`(${a[0]}, ${a[1]})`);
+    }
   });
 });
