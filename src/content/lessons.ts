@@ -15,6 +15,8 @@ export function allPlayableWaves(c: CabinetContent): Wave[] {
  * so trying it again would test memory, not understanding. Cycles with `n`; falls back to `wave`.
  */
 export function siblingWave(c: CabinetContent, wave: Wave, n: number): Wave {
-  const pool = c.waves.filter((w) => w.concept === wave.concept && w.id !== wave.id);
+  const same = JSON.stringify(wave.params);
+  // a different id is not enough: a wave with the same numbers would keep the revealed answer valid
+  const pool = c.waves.filter((w) => w.concept === wave.concept && w.id !== wave.id && JSON.stringify(w.params) !== same);
   return pool.length ? pool[n % pool.length] : wave;
 }

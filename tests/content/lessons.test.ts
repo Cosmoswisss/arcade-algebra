@@ -25,7 +25,9 @@ describe('siblingWave', () => {
   test('every lesson wave has a sibling, so a retry never replays a revealed answer', () => {
     for (const c of Object.values(cabinets)) for (const s of c!.course) {
       if (!s.play) continue;
-      expect(siblingWave(c!, s.play.wave, 0).id, `${c!.meta.id}/${s.id}`).not.toBe(s.play.wave.id);
+      const w = siblingWave(c!, s.play.wave, 0);
+      expect(w.id, `${c!.meta.id}/${s.id}`).not.toBe(s.play.wave.id);
+      expect(JSON.stringify(w.params), `${c!.meta.id}/${s.id}: same numbers as the lesson`).not.toBe(JSON.stringify(s.play.wave.params));
     }
   });
 });
