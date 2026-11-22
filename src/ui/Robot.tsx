@@ -26,12 +26,12 @@ function Face({ mood }: { mood: RobotMood }) {
 }
 
 /** The guide robot with its speech bubble. It only ever says lines written in robot.json or the lessons. */
-export function Robot({ mood = 'idle', line, name = 'VEX', children }: { mood?: RobotMood; line: string; name?: string; children?: React.ReactNode }) {
+export function Robot({ mood = 'idle', line, name = 'VEX', face = true, children }: { mood?: RobotMood; line: string; name?: string; /** False when the robot just spoke with this same face: the bubble keeps its place, the drawing is not repeated. */ face?: boolean; children?: React.ReactNode }) {
   const reduce = useReducedMotion();
   if (!line && !children) return null;
   return (
-    <div className={`robot robot-${mood}`}>
-      <motion.div className="robot-body" animate={reduce ? undefined : { y: [0, -4, 0] }} transition={{ duration: 2.4, repeat: Infinity, ease: 'easeInOut' }}>
+    <div className={`robot robot-${mood}${face ? '' : ' robot-noface'}`}>
+      <motion.div className="robot-body" aria-hidden={face ? undefined : true} animate={reduce || !face ? undefined : { y: [0, -4, 0] }} transition={{ duration: 2.4, repeat: Infinity, ease: 'easeInOut' }}>
         <Face mood={mood} />
       </motion.div>
       <div className="robot-bubble" role="status" aria-live="polite">

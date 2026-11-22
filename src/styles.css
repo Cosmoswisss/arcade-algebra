@@ -223,6 +223,9 @@ main.narrow { max-width: 720px; }
 .robot-bubble p { margin: 2px 0 0; color: var(--text); }
 .robot-name { font-size: 11px; letter-spacing: 0.14em; color: var(--cyan); }
 .course-intro .robot + .robot { margin-left: var(--s6); }
+/* the same face twice in a row: the bubble keeps its place, the drawing is not repeated */
+.robot-noface .robot-body { visibility: hidden; }
+.course-intro .robot-noface { margin-top: calc(var(--s3) * -1); }
 
 /* ---------- lesson stage (the real game in the course) ---------- */
 .stage-frame { position: relative; aspect-ratio: 4 / 3; min-height: 300px; min-width: 0; border: 1px solid var(--line); background: var(--ink); overflow: hidden; box-shadow: 0 0 24px rgba(99, 102, 241, 0.25); }

@@ -21,6 +21,8 @@ import { robotLine } from '../ui/robotLines';
 
 type View = 'learn' | 'ask' | 'wrong' | 'right';
 type Phase = 'intro' | 'warmup' | 'lesson';
+/** The first line is calm; the next ones (memory of your mistakes) are thoughtful. A face is drawn only when it changes. */
+const introMood = (k: number): 'idle' | 'thinking' => (k === 0 ? 'idle' : 'thinking');
 const THEME_NAME = { games: 'Games', physics: 'Physics', sport: 'Sport' } as const;
 
 /** The scene of a lesson: the replay of a wave of this cabinet, on a loop, with its caption. */
@@ -133,7 +135,7 @@ export function Course({ id }: { id: CabinetId }) {
         {header}
         {phase === 'intro' && (
           <section className="course-intro">
-            {introLines.map((l, k) => <Robot key={k} name={lines.name} mood={k === 0 ? 'idle' : 'thinking'} line={l} />)}
+            {introLines.map((l, k) => <Robot key={k} name={lines.name} mood={introMood(k)} face={k === 0 || introMood(k) !== introMood(k - 1)} line={l} />)}
             <div className="actions">
               {warm
                 ? <button className="btn btn-primary" onClick={() => setPhase('warmup')}>Warm-up: {warm.meta.name} <ArrowRight size={18} /></button>
