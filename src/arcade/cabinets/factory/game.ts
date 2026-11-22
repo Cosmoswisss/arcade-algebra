@@ -54,10 +54,13 @@ export function createFactory(): CabinetGame & { setup(ctx: KitContext): void } 
   }
   function layoutCards(showMatrix: boolean) {
     const L = ctx.layout();
+    // wide screens: the tray is a left column; mid-size stages (a lesson, the placement test) keep that
+    // column with smaller cards so the plane and the target stay clear; phones stack it under the belt
     const narrow = L.w < 760;
-    const sc = narrow ? Math.min(1, (L.w - 24) / 3 / 170) : 1;
-    const trayX = narrow ? L.w / 2 - 84 * sc : 100, beltY = L.horizon + 34;
-    trayT.text = 'MACHINES (click to add)'; trayT.position.set(trayX - 78, beltY + 52);
+    const side = narrow && L.w >= 520;
+    const sc = side ? 0.72 : narrow ? Math.min(1, (L.w - 24) / 3 / 170) : 1;
+    const trayX = side ? 12 + 84 * sc : narrow ? L.w / 2 - 84 * sc : 100, beltY = L.horizon + 34;
+    trayT.text = side ? 'MACHINES (click)' : 'MACHINES (click to add)'; trayT.position.set(side ? 12 : trayX - 78, beltY + 52);
     beltT.text = 'BELT (click to remove) →'; beltT.position.set(Math.max(12, L.w / 2 - 250), beltY - 58);
     tray.forEach((card, k) => {
       const idx = shuffled[k];
@@ -66,7 +69,7 @@ export function createFactory(): CabinetGame & { setup(ctx: KitContext): void } 
       if (idx === undefined) return;
       card.set(p.machines[idx].name, p.machines[idx].matrix, showMatrix, NEON.player, can());
       card.c.scale.set(sc);
-      card.c.position.set(narrow ? trayX + (k % 2) * 168 * sc : trayX, beltY + 104 + (narrow ? Math.floor(k / 2) * 66 * sc : k * 70));
+      card.c.position.set(narrow && !side ? trayX + (k % 2) * 168 * sc : trayX, beltY + (side ? 96 : 104) + (narrow && !side ? Math.floor(k / 2) * 66 * sc : k * 70 * sc));
     });
     belt.forEach((card, k) => {
       const idx = order[k];
