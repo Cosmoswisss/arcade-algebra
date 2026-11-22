@@ -141,4 +141,4 @@ tests/          unit tests for the engine, the content and the games
 
 ## Team
 
-Built in one weekend at LauzHack 2026 by [Camil Mechta](https://github.com/camilmechta), [Massimo Binetruy](https://github.com/GuizmoU) and [Gabriel Plasse](https://github.com/Cosmoswisss).
+Built in 24h at LauzHack 2026 by [Camil Mechta](https://github.com/camilmechta), [Massimo Binetruy](https://github.com/GuizmoU) and [Gabriel Plasse](https://github.com/Cosmoswisss).
