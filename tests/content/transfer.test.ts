@@ -1,6 +1,6 @@
 import { describe, expect, test } from 'vitest';
 import { checkAnswer } from '../../src/content/checkAnswer';
-import { seeded, TRANSFER_AT_END, transferQuestions } from '../../src/content/transfer';
+import { SEEN, seen, seeded, TRANSFER_AT_END, transferQuestions, waypointsOf } from '../../src/content/transfer';
 import { loadContent } from '../../src/content/load';
 import { CABINETS } from '../../src/engine/types';
 import type { Mat2 } from '../../src/engine/types';
@@ -57,6 +57,31 @@ describe('transfer questions', () => {
     for (const cabinet of CABINETS) for (let k = 0; k < 80; k++) for (const q of transferQuestions(cabinet, 2, `fmt-${k}`)) {
       expect(q.prompt).not.toMatch(/\+ -|- -|-\d|--|1[uv]/);
     }
+  });
+
+  test('every point the player has to follow stays on the visible plane (no step falls off the screen)', () => {
+    let followed = 0;
+    for (const cabinet of CABINETS) for (let k = 0; k < 120; k++) for (const q of transferQuestions(cabinet, 3, `vis-${k}`)) {
+      const pts = waypointsOf(q);
+      if (q.kind === 'point') expect(pts.length, `${cabinet}: ${q.prompt}`).toBeGreaterThan(1);
+      for (const p of pts) { expect(seen(p), `${cabinet}: ${q.prompt} -> (${p})`).toBe(true); followed++; }
+    }
+    expect(followed).toBeGreaterThan(500);
+    expect(SEEN.x[0]).toBeGreaterThanOrEqual(-3.5); expect(SEEN.x[1]).toBeLessThanOrEqual(4.5);
+    expect(SEEN.y[0]).toBeGreaterThanOrEqual(-2.5); expect(SEEN.y[1]).toBeLessThanOrEqual(3.5);
+  });
+
+  test('the visibility rule keeps the variety: many different point questions per game', () => {
+    for (const cabinet of ['vector-golf', 'drone', 'factory', 'hole-in-the-wall'] as const) {
+      const prompts = new Set<string>();
+      for (let k = 0; k < 150; k++) for (const q of transferQuestions(cabinet, 3, `var-${k}`)) prompts.add(q.prompt);
+      expect(prompts.size, cabinet).toBeGreaterThan(12);
+    }
+  });
+
+  test('the case from the placement test (u = (−1, −1), v = (2, 1), 2u + 3v) can no longer be asked', () => {
+    for (let k = 0; k < 400; k++) for (const q of transferQuestions('drone', 3, `old-${k}`)) expect(q.prompt).not.toBe('u = (−1, −1) and v = (2, 1). Click the point you reach with 2u + 3v.');
+    expect(seen([-1, -1], [2, 1], [-2, -2], [6, 3], [4, 1])).toBe(false);
   });
 
   test('a wrong answer is refused', () => {

@@ -30,6 +30,19 @@ const IDENTITY: Mat2 = [[1, 0], [0, 1]];
 const half = (x: number) => Math.abs(x * 2 - Math.round(x * 2)) < 1e-9;
 /** What the lesson plane lets the player click or set. */
 const inPlane = (v: Vec2) => Math.abs(v[0]) <= 4 && Math.abs(v[1]) <= 3.5 && v.every(half);
+
+/**
+ * What the player can see of the plane (a margin inside the lesson plane, whose labels sit on its edge).
+ * Every point the player has to follow in their head (a multiple of a vector, the end of the first shot, the point after the
+ * first machine) must be inside it: a step that falls off the screen cannot be checked against the axes.
+ */
+export const SEEN = { x: [-3, 4], y: [-2, 3] } as const;
+export const seen = (...vs: Vec2[]) => vs.every((v) => v[0] >= SEEN.x[0] && v[0] <= SEEN.x[1] && v[1] >= SEEN.y[0] && v[1] <= SEEN.y[1]);
+
+/** The points a question makes you follow, for the tests. */
+const WAYPOINTS = new WeakMap<Question, Vec2[]>();
+export const waypointsOf = (q: Question): Vec2[] => WAYPOINTS.get(q) ?? [];
+const withWaypoints = (q: Question, ...vs: Vec2[]): Question => { WAYPOINTS.set(q, vs); return q; };
 const inArrows = (m: Mat2) => m.every((row) => row.every((x) => Math.abs(x) <= 3 && half(x)));
 const fmt = (x: number) => (x < 0 ? `−${Math.abs(x)}` : String(x));
 const v2 = (v: Vec2) => `(${fmt(v[0])}, ${fmt(v[1])})`;
@@ -63,24 +76,27 @@ const MAKERS: Record<CabinetId, (r: Rand) => Question | null> = {
     const b: Vec2 = [int(r, -2, 2), int(r, -2, 2)];
     const k = choose(r, [-1, 2, 3]);
     const end: Vec2 = [s[0] + a[0] + k * b[0], s[1] + a[1] + k * b[1]];
-    if (!inPlane(end) || (b[0] === 0 && b[1] === 0) || (a[0] === 0 && a[1] === 0)) return null;
-    return point(`The ball starts at the marked point ${v2(s)}. Shot 1 = ${v2(a)}, then shot 2 = ${fmt(k)} × ${v2(b)}. Click where it lands.`, end, s);
+    const afterShot1: Vec2 = [s[0] + a[0], s[1] + a[1]];
+    const shot2: Vec2 = [k * b[0], k * b[1]];
+    if (!inPlane(end) || !seen(s, afterShot1, end, shot2) || (b[0] === 0 && b[1] === 0) || (a[0] === 0 && a[1] === 0)) return null;
+    return withWaypoints(point(`The ball starts at the marked point ${v2(s)}. Shot 1 = ${v2(a)}, then shot 2 = ${fmt(k)} × ${v2(b)}. Click where it lands.`, end, s), s, afterShot1, end, shot2);
   },
   drone: (r) => {
     const u: Vec2 = [int(r, -2, 2), int(r, -2, 2)];
     const v: Vec2 = [int(r, -2, 2), int(r, -2, 2)];
     const p = int(r, -2, 3), q = int(r, -2, 3);
     const end: Vec2 = [p * u[0] + q * v[0], p * u[1] + q * v[1]];
-    if (u[0] * v[1] - u[1] * v[0] === 0 || !inPlane(end) || p === 0 || q === 0) return null;
-    return point(`u = ${v2(u)} and v = ${v2(v)}. Click the point you reach with ${combo(p, q)}.`, end);
+    const pu: Vec2 = [p * u[0], p * u[1]], qv: Vec2 = [q * v[0], q * v[1]];
+    if (u[0] * v[1] - u[1] * v[0] === 0 || !inPlane(end) || !seen(u, v, pu, qv, end) || p === 0 || q === 0) return null;
+    return withWaypoints(point(`u = ${v2(u)} and v = ${v2(v)}. Click the point you reach with ${combo(p, q)}.`, end), u, v, pu, qv, end);
   },
   'hole-in-the-wall': (r) => {
     if (r() < 0.5) {
       const m: Mat2 = [[int(r, -1, 2), int(r, -1, 2)], [int(r, -1, 2), int(r, -1, 2)]];
       const x: Vec2 = [int(r, -2, 2), int(r, -2, 2)];
       const end = apply(m, x);
-      if (det(m) === 0 || (x[0] === 0 && x[1] === 0) || !inPlane(end)) return null;
-      return point(`A matrix sends ${cols(m)}. Place the point where ${v2(x)} lands.`, end);
+      if (det(m) === 0 || (x[0] === 0 && x[1] === 0) || !inPlane(end) || !seen(x, end)) return null;
+      return withWaypoints(point(`A matrix sends ${cols(m)}. Place the point where ${v2(x)} lands.`, end), x, end);
     }
     const kind = int(r, 0, 3);
     if (kind === 0) { const kx = choose(r, [0.5, 1.5, 3, -1, -2]), ky = choose(r, [0.5, 1.5, 2, -1]); return basis(`Stretch the plane by ${fmt(kx)} along x and by ${fmt(ky)} along y. Drag î and ĵ to the right spots.`, [[kx, 0], [0, ky]]); }
@@ -96,8 +112,9 @@ const MAKERS: Record<CabinetId, (r: Rand) => Question | null> = {
     const x: Vec2 = [int(r, -2, 2), int(r, -2, 2)];
     const end = apply(mul(second.m, first.m), x);
     const swapped = apply(mul(first.m, second.m), x);
-    if ((x[0] === 0 && x[1] === 0) || !inPlane(end) || (end[0] === swapped[0] && end[1] === swapped[1])) return null;
-    return point(`The point ${v2(x)} goes through ${first.name} first, then ${second.name}. Where does it come out?`, end);
+    const middle = apply(first.m, x);
+    if ((x[0] === 0 && x[1] === 0) || !inPlane(end) || !seen(x, middle, end) || (end[0] === swapped[0] && end[1] === swapped[1])) return null;
+    return withWaypoints(point(`The point ${v2(x)} goes through ${first.name} first, then ${second.name}. Where does it come out?`, end), x, middle, end);
   },
   squash: (r) => {
     const m: Mat2 = [[int(r, -2, 3), int(r, -2, 3)], [int(r, -2, 3), int(r, -2, 3)]];
