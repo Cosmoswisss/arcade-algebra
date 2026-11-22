@@ -8,24 +8,24 @@
       "rule": "assist",
       "banner": "You see the part after each machine",
       "waves": {
-        "guided": 3,
-        "fast": 2
+        "guided": 1,
+        "fast": 1
       }
     },
     {
       "rule": "partial",
       "banner": "NEW RULE · ONLY THE FINAL PART",
       "waves": {
-        "guided": 3,
-        "fast": 2
+        "guided": 1,
+        "fast": 1
       }
     },
     {
       "rule": "abstract",
       "banner": "NEW RULE · MATRICES ONLY",
       "waves": {
-        "guided": 3,
-        "fast": 2
+        "guided": 1,
+        "fast": 1
       }
     }
   ],
@@ -34,7 +34,7 @@
     "fast": 15
   },
   "boss": {
-    "waves": 2
+    "waves": 1
   },
   "story": {
     "intro": "The factory belt runs its machines in random order. Put some order back.",

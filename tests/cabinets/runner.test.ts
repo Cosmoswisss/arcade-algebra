@@ -4,7 +4,10 @@ import type { CabinetGame, WaveOutcome } from '../../src/arcade/kit/runner';
 import { loadContent } from '../../src/content/load';
 import type { Rule } from '../../src/engine/types';
 
-const content = loadContent().cabinets['hole-in-the-wall']!;
+const real = loadContent().cabinets['hole-in-the-wall']!;
+// the engine is tested on the long plan (tiers 3/3/4, boss 2): the bundled games are now short runs (1/1/1, boss 1)
+const LONG = [{ guided: 3, fast: 2 }, { guided: 3, fast: 2 }, { guided: 4, fast: 3 }];
+const content = { ...real, meta: { ...real.meta, tiers: real.meta.tiers.map((t, k) => ({ ...t, waves: LONG[k] })), boss: { waves: 2 } } };
 
 function fakeGame(answer: () => boolean, kind = 'swapped-columns') {
   const log: { started: string[]; rules: Rule[] } = { started: [], rules: [] };
@@ -55,6 +58,17 @@ describe('runner pace', () => {
     expect(r.untimed).toBe(false);
     for (let k = 0; k < 2000 && r.phase === 'play'; k++) r.tick(50);
     expect(r.phase).toBe('result');
+  });
+});
+
+describe('the bundled games are short runs', () => {
+  test('one wave per tier, then one boss wave: done in 4 waves', () => {
+    const { game, log } = fakeGame(() => true);
+    const r = new Runner(real, game, { mode: 'guided', onWaveResult: () => ({ newDex: null }) });
+    r.start();
+    for (let w = 0; w < 8 && r.phase !== 'done'; w++) { play(r); finishWave(r); toNext(r); }
+    expect(log.rules).toEqual(['assist', 'partial', 'abstract', 'abstract']);
+    expect(r.phase).toBe('done');
   });
 });
 

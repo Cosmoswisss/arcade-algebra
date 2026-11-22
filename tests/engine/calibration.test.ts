@@ -9,7 +9,10 @@ import { weakSpots } from '../../src/ui/LearnerReport';
 import { Runner, START_LIVES } from '../../src/arcade/kit/runner';
 import type { CabinetGame } from '../../src/arcade/kit/runner';
 
-const content = loadContent().cabinets['hole-in-the-wall']!;
+const real = loadContent().cabinets['hole-in-the-wall']!;
+// the run logic is calibrated on the long plan (tiers 3/3/4, boss 2): the bundled games are now short runs (1/1/1, boss 1)
+const LONG = [{ guided: 3, fast: 2 }, { guided: 3, fast: 2 }, { guided: 4, fast: 3 }];
+const content = { ...real, meta: { ...real.meta, tiers: real.meta.tiers.map((t, k) => ({ ...t, waves: LONG[k] })), boss: { waves: 2 } } };
 const meta = content.meta;
 const concepts = content.dex.map((d) => d.concept);
 const win = (concept: string, rule: WaveResult['rule'] = 'abstract'): WaveResult => ({ correct: true, rule, firstTry: true, concept, boss: false });

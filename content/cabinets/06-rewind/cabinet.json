@@ -8,24 +8,24 @@
       "rule": "assist",
       "banner": "The original frame is shown",
       "waves": {
-        "guided": 3,
-        "fast": 2
+        "guided": 1,
+        "fast": 1
       }
     },
     {
       "rule": "partial",
       "banner": "NEW RULE · NO FRAME",
       "waves": {
-        "guided": 3,
-        "fast": 2
+        "guided": 1,
+        "fast": 1
       }
     },
     {
       "rule": "abstract",
       "banner": "NEW RULE · MATRIX ONLY",
       "waves": {
-        "guided": 3,
-        "fast": 2
+        "guided": 1,
+        "fast": 1
       }
     }
   ],
@@ -34,7 +34,7 @@
     "fast": 14
   },
   "boss": {
-    "waves": 2
+    "waves": 1
   },
   "story": {
     "intro": "Every picture in this zone got warped. Rewind them, if you can.",

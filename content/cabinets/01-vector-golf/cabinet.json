@@ -8,24 +8,24 @@
       "rule": "assist",
       "banner": "The arrows chain tip to tail",
       "waves": {
-        "guided": 3,
-        "fast": 2
+        "guided": 1,
+        "fast": 1
       }
     },
     {
       "rule": "partial",
       "banner": "NEW RULE · EVERY ARROW STARTS AT THE BALL — add them in your head",
       "waves": {
-        "guided": 3,
-        "fast": 2
+        "guided": 1,
+        "fast": 1
       }
     },
     {
       "rule": "abstract",
       "banner": "NEW RULE · NUMBERS ONLY — predict where the ball stops",
       "waves": {
-        "guided": 3,
-        "fast": 2
+        "guided": 1,
+        "fast": 1
       }
     }
   ],
@@ -34,7 +34,7 @@
     "fast": 12
   },
   "boss": {
-    "waves": 2
+    "waves": 1
   },
   "story": {
     "intro": "Welcome to the Grid. The golf course forgot that a vector is a move, so let us remind it.",

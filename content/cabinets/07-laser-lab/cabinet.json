@@ -8,24 +8,24 @@
       "rule": "assist",
       "banner": "The exit beam is shown live",
       "waves": {
-        "guided": 3,
-        "fast": 2
+        "guided": 1,
+        "fast": 1
       }
     },
     {
       "rule": "partial",
       "banner": "NEW RULE · EXIT BEAM HIDDEN until you fire",
       "waves": {
-        "guided": 3,
-        "fast": 2
+        "guided": 1,
+        "fast": 1
       }
     },
     {
       "rule": "abstract",
       "banner": "NEW RULE · LENS MATRIX ONLY",
       "waves": {
-        "guided": 3,
-        "fast": 2
+        "guided": 1,
+        "fast": 1
       }
     }
   ],
@@ -34,7 +34,7 @@
     "fast": 14
   },
   "boss": {
-    "waves": 2
+    "waves": 1
   },
   "story": {
     "intro": "The lab lenses bend every beam. Find the beams that come out straight.",

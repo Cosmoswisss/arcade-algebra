@@ -8,24 +8,24 @@
       "rule": "assist",
       "banner": "The drone moves live",
       "waves": {
-        "guided": 3,
-        "fast": 2
+        "guided": 1,
+        "fast": 1
       }
     },
     {
       "rule": "partial",
       "banner": "NEW RULE · DRONE HIDDEN until it flies",
       "waves": {
-        "guided": 3,
-        "fast": 2
+        "guided": 1,
+        "fast": 1
       }
     },
     {
       "rule": "abstract",
       "banner": "NEW RULE · REACHABLE OR NOT? answer first",
       "waves": {
-        "guided": 3,
-        "fast": 2
+        "guided": 1,
+        "fast": 1
       }
     }
   ],
@@ -34,7 +34,7 @@
     "fast": 14
   },
   "boss": {
-    "waves": 2
+    "waves": 1
   },
   "story": {
     "intro": "The drone bay lost its mixing rule. Two thrusters, one target: teach it to combine.",

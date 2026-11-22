@@ -3,7 +3,10 @@ import { isBossWave, nextWave, tierFor, waveSeconds } from '../../src/engine/wav
 import type { RunState } from '../../src/engine/waves';
 import { loadContent } from '../../src/content/load';
 
-const content = loadContent().cabinets['hole-in-the-wall']!;
+const real = loadContent().cabinets['hole-in-the-wall']!;
+// the engine is tested on the long plan (tiers 3/3/4, boss 2): the bundled games are now short runs (1/1/1, boss 1)
+const LONG = [{ guided: 3, fast: 2 }, { guided: 3, fast: 2 }, { guided: 4, fast: 3 }];
+const content = { ...real, meta: { ...real.meta, tiers: real.meta.tiers.map((t, k) => ({ ...t, waves: LONG[k] })), boss: { waves: 2 } } };
 const meta = content.meta; // tiers guided 3,3,4 ; boss 2
 const run = (over: Partial<RunState> = {}): RunState => ({ mode: 'guided', waveIndex: 0, tierIndex: 0, focus: null, lastWaveId: null, lives: 3, score: 0, combo: 0, ...over });
 const seq = (seed = 1) => { let s = seed; return () => ((s = (s * 16807) % 2147483647) / 2147483647); };
