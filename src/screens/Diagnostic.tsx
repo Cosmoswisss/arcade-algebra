@@ -11,7 +11,7 @@ import { QuestionPanel } from '../ui/QuestionPanel';
 /**
  * A short, skippable, adaptive test: a binary search along the chain of games, about three games asked for seven. Each one gets
  * two probes you cannot pass by luck (its last lesson, played or asked, then a new case); one slip is forgiven with a spare
- * question. A game passed places the ones before it too. A game placed is: its known lessons are skipped, its game starts at the partial rule and its concepts count as known.
+ * question. A game passed also unlocks the ones before it (not placed: their lessons stay). A game placed is: its known lessons are skipped, its game starts at the partial rule and its concepts count as known.
  * "Skip the test" keeps the answers already given.
  */
 /** A played probe keeps its stage on screen this long after the impact, so the swing and the ball finish before the next one. */

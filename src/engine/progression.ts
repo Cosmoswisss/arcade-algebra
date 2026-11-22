@@ -149,9 +149,10 @@ export function applyCourseResult(p: ProgressV2, id: CabinetId, r: CourseResult,
  * waves skip ahead), but it is not "mastered": only a win with no aid inside the game proves that.
  * `inferred` are cabinets that were not asked but come before a passed one: placed the same way, on half the evidence.
  */
+/** Placement: games passed are placed (lessons skipped, start one tier up); games only inferred from a later pass are unlocked, not placed. */
 export function placeFromDiagnostic(p: ProgressV2, passed: CabinetId[], failed: CabinetId[] = [], conceptsOf: (c: CabinetId) => string[] | undefined = () => undefined, now = Date.now(), inferred: CabinetId[] = []): ProgressV2 {
   const known = [...passed, ...inferred];
-  let next: ProgressV2 = { ...p, everMastered: [...new Set([...p.everMastered, ...known])], placed: [...new Set([...p.placed, ...known])], placementResult: { ...p.placementResult, ...Object.fromEntries(known.map((c) => [c, 'known'])), ...Object.fromEntries(failed.map((c) => [c, 'missed'])) } };
+  let next: ProgressV2 = { ...p, everMastered: [...new Set([...p.everMastered, ...known])], placed: [...new Set([...p.placed, ...passed])], placementResult: { ...p.placementResult, ...Object.fromEntries(known.map((c) => [c, 'known'])), ...Object.fromEntries(failed.map((c) => [c, 'missed'])) } };
   for (const c of [...known, ...failed]) {
     const ok = !failed.includes(c);
     const half = inferred.includes(c) ? 0.5 : 1;

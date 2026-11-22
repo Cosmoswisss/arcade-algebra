@@ -106,4 +106,9 @@ describe('review fixes', () => {
     const p = placeFromDiagnostic(placeFromDiagnostic(defaultProgress(), ['drone']), ['drone', 'squash']);
     expect(p.placed).toEqual(['drone', 'squash']);
   });
+  test('placement: cabinets only inferred from a later pass are unlocked, but not placed (their lessons are not skipped)', () => {
+    const p = placeFromDiagnostic(defaultProgress(), ['factory'], [], () => undefined, 0, ['vector-golf', 'drone']);
+    expect(p.placed).toEqual(['factory']);
+    expect(p.everMastered).toEqual(expect.arrayContaining(['factory', 'vector-golf', 'drone']));
+  });
 });
