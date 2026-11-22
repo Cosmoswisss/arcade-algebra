@@ -138,12 +138,6 @@ src/ui/         shared components (map, robot, lesson player, learner report)
 tests/          unit tests for the engine, the content and the games
 ```
 
-## Honest limits
-
-- **The learner model has not been calibrated on real learners yet.** Its weights and thresholds were tuned against simulated students (novice, expert, guesser, aid-dependent, persistent mistake), not against people. They are the first thing to adjust after real play.
-- **The placement test can be fooled a little.** A learner who guesses a lot can open a game by luck; the boss and the transfer check catch almost all of them.
-- **The theme only changes the examples and missions** shown in the lessons, not the waves themselves.
-- Touch, sound and screen readers have not been tested on real devices.
 
 ## Team
 
