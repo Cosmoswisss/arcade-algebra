@@ -10,7 +10,9 @@ export interface CabinetViewProps {
   createGame: GameFactory;
   mode: Mode;
   /** 1 starts at the partial rule (placement test). */
-  startTier?: 0 | 1;
+  startTier?: 0 | 1 | 2;
+  /** Live-demo mode: a seeded random source, so the waves repeat from one rehearsal to the next. */
+  rand?: () => number;
   onWaveResult: (o: WaveOutcome) => { newDex: string | null };
   dex: () => { count: number; total: number; isNew: (concept: string) => boolean };
   onExit: () => void;
@@ -21,13 +23,13 @@ export interface CabinetViewProps {
 }
 
 /** A full cabinet run: the arcade stage driven by the Runner, with the in-game HUD. */
-export default function CabinetView({ content, createGame, mode, startTier, onWaveResult, dex, onExit, learner, onProve }: CabinetViewProps) {
+export default function CabinetView({ content, createGame, mode, startTier, rand, onWaveResult, dex, onExit, learner, onProve }: CabinetViewProps) {
   return (
     <ArcadeStage
       content={content}
       createGame={createGame}
       label={`${content.meta.name}. Press space to lock in or continue. Tab picks an arrow, the arrow keys move it.`}
-      mode={{ kind: 'run', mode, startTier, onWaveResult, dex, onExit, learner, onProve }}
+      mode={{ kind: 'run', mode, startTier, rand, onWaveResult, dex, onExit, learner, onProve }}
     />
   );
 }

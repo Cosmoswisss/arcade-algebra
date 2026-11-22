@@ -48,7 +48,7 @@ export interface WaveOutcome {
 export interface RunnerOptions {
   mode: Mode;
   /** 1 starts the run at the partial rule (a cabinet passed in the placement test). */
-  startTier?: 0 | 1;
+  startTier?: 0 | 1 | 2;
   rand?: () => number;
   /** What the game knows about the learner: makes the next wave depend on weak concepts and recurring mistakes. */
   learner?: Learner;

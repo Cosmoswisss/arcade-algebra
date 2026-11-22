@@ -11,6 +11,8 @@ import { Transfer } from './screens/Transfer';
 import { Profile } from './screens/Profile';
 import { Title } from './screens/Title';
 import { LogoMark } from './ui/icons';
+import { isDemo } from './demo/demo';
+import { DemoPanel } from './demo/DemoPanel';
 
 function TopBar() {
   const { progress } = useStore();
@@ -76,6 +78,7 @@ export default function App() {
   return (
     <StoreProvider>
       <Shell />
+      {isDemo() && <DemoPanel />}
     </StoreProvider>
   );
 }

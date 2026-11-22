@@ -10,6 +10,7 @@ import type { CabinetId, Mode } from '../engine/types';
 import type { Learner } from '../engine/waves';
 import { go, href } from '../router';
 import { useStore } from '../store';
+import { demoRun, isDemo, seeded } from '../demo/demo';
 
 export function Play({ id }: { id: CabinetId }) {
   const { progress, content, applyWave, latest, setModeOverride } = useStore();
@@ -64,11 +65,12 @@ export function Play({ id }: { id: CabinetId }) {
   return (
     <div className="play">
       <CabinetView
-        key={`${id}-${mode}`}
+        key={`${id}-${mode}-${demoRun.nonce}`}
         content={cabinet}
         createGame={make}
         mode={mode}
-        startTier={startTier(progress, id)}
+        startTier={demoRun.cabinet === id && demoRun.startTier !== null ? demoRun.startTier : startTier(progress, id)}
+        rand={isDemo() ? seeded(id) : undefined}
         learner={learner}
         onWaveResult={onWave}
         dex={dex}

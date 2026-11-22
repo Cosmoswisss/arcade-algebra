@@ -370,3 +370,12 @@ main.narrow { max-width: 720px; }
 .course--test .course-head { margin-bottom: var(--s3); }
 .course--test .narrow-card .tiny { margin: 0 0 var(--s2); }
 .course--test .lesson-play { width: min(100%, max(360px, calc((100vh - 440px) * 1.6))); }
+
+/* ---------- live-demo remote (?demo only) ---------- */
+.demo-remote { position: fixed; left: 10px; bottom: 10px; z-index: 50; font-family: var(--font-mono); font-size: 12px; }
+.demo-dot { all: unset; cursor: pointer; padding: 2px 7px; color: var(--dim); border: 1px solid var(--line); background: var(--ink); opacity: 0.35; }
+.demo-dot:hover, .demo-dot:focus-visible, .demo-dot[aria-expanded="true"] { opacity: 1; outline: 1px solid var(--cyan); }
+.demo-list { list-style: none; margin: 6px 0 0; padding: 6px; background: var(--panel); border: 1px solid var(--cyan); box-shadow: var(--glow-cyan); display: grid; gap: 2px; }
+.demo-list button { all: unset; cursor: pointer; display: block; padding: 4px 8px; color: var(--text); }
+.demo-list button:hover, .demo-list button:focus-visible { background: var(--panel-2); color: var(--cyan); }
+.demo-list kbd { color: var(--yellow); margin-right: 6px; }

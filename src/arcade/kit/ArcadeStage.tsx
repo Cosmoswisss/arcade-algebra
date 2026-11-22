@@ -23,7 +23,7 @@ export type GameFactory = () => CabinetGame & { setup(ctx: KitContext): void };
 
 /** How the stage is driven: a full run (the cabinet), a looping replay (a lesson scene), or one untimed wave ("Your turn"). */
 export type StageMode =
-  | { kind: 'run'; mode: Mode; startTier?: 0 | 1; onWaveResult: (o: WaveOutcome) => { newDex: string | null }; dex: () => { count: number; total: number; isNew: (concept: string) => boolean }; onExit: () => void; learner?: Learner; onProve?: () => void }
+  | { kind: 'run'; mode: Mode; startTier?: 0 | 1 | 2; rand?: () => number; onWaveResult: (o: WaveOutcome) => { newDex: string | null }; dex: () => { count: number; total: number; isNew: (concept: string) => boolean }; onExit: () => void; learner?: Learner; onProve?: () => void }
   | { kind: 'demo'; wave: Wave; rule: Rule; seconds?: number }
   | { kind: 'challenge'; wave: Wave; rule: Rule; onDone: (r: ChallengeResult) => void };
 
@@ -130,7 +130,7 @@ export default function ArcadeStage(props: ArcadeStageProps) {
       let hud: Hud | null = null;
       if (mode.kind === 'run') {
         const runOpts = () => latest.current.mode as Extract<StageMode, { kind: 'run' }>;
-        runner = new Runner(latest.current.content, game, { mode: mode.mode, startTier: mode.startTier, learner: mode.learner, onWaveResult: (o) => runOpts().onWaveResult(o) });
+        runner = new Runner(latest.current.content, game, { mode: mode.mode, startTier: mode.startTier, rand: mode.rand, learner: mode.learner, onWaveResult: (o) => runOpts().onWaveResult(o) });
         const r = runner;
         hud = new Hud(latest.current.content.meta, latest.current.content.dex, {
           onLock: () => { if (r.phase === 'play') { r.lock(); sfx.lock(); } },
