@@ -46,7 +46,6 @@ export function goalText(p: DroneParams, rule: Rule): string {
 
 export function checklist(p: DroneParams, rule: Rule, a: number, b: number): { label: string; ok: boolean }[] {
   if (rule === 'abstract') return [];
-  if (rule === 'partial') return [{ label: `a = ${a}, b = ${b}`, ok: false }];
-  const pos = position(p, a, b);
-  return [{ label: `a·u + b·v = ${vstr(pos)}`, ok: Math.hypot(pos[0] - p.target[0], pos[1] - p.target[1]) <= POS_TOL }];
+  // the dials as numbers only: never the resulting position (that would give the answer away) and never ticked
+  return [{ label: `a = ${a}, b = ${b}`, ok: false }];
 }

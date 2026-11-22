@@ -103,10 +103,13 @@ export function createDrone(): CabinetGame & { setup(ctx: KitContext): void } {
       ctx.coords.draw(L.O, L.U, [-3, 3], [-2, 3]);
       cantBtn.position.set(L.w - 120, L.h - 60); canBtn.position.set(L.w - 120, L.h - 116);
       cantBtn.alpha = canBtn.alpha = locked ? 0.4 : 1;
-      // thrusters and target
-      arrowAt(g, S(O()), S(p.u), NEON.i, 3.5); arrowAt(g, S(O()), S(p.v), NEON.j, 3.5);
-      uT.text = `u ${vstr(p.u)}`; vT.text = `v ${vstr(p.v)}`;
-      uT.position.set(S(p.u)[0] + 10, S(p.u)[1] + 4); vT.position.set(S(p.v)[0] + 10, S(p.v)[1] - 24);
+      // thrusters (drawn only in the first tier; then only their numbers, in the mission) and target
+      uT.visible = vT.visible = rule === 'assist';
+      if (rule === 'assist') {
+        arrowAt(g, S(O()), S(p.u), NEON.i, 3.5); arrowAt(g, S(O()), S(p.v), NEON.j, 3.5);
+        uT.text = `u ${vstr(p.u)}`; vT.text = `v ${vstr(p.v)}`;
+        uT.position.set(S(p.u)[0] + 10, S(p.u)[1] + 4); vT.position.set(S(p.v)[0] + 10, S(p.v)[1] - 24);
+      }
       const tc = S(p.target);
       g.circle(tc[0], tc[1], 14 + Math.sin(clock * 4) * 2).stroke({ width: 3, color: NEON.target });
       tT.text = `target ${vstr(p.target)}`; tT.position.set(tc[0] + 16, tc[1] - 28);
@@ -117,14 +120,7 @@ export function createDrone(): CabinetGame & { setup(ctx: KitContext): void } {
       if (phase === 'result' && answer === null && rule !== 'abstract') {
         const f = ease(afterT / 1.1);
         drawDrone([lerp(0, pos[0], f), lerp(0, pos[1], f)], clock);
-      } else if (rule === 'assist') {
-        // live: the path a·u then b·v and where the drone would end
-        const mid: Vec2 = [a * p.u[0], a * p.u[1]];
-        if (a !== 0) arrowAt(g, S(O()), S(mid), NEON.i, 2, 0.5);
-        if (b !== 0) arrowAt(g, S(mid), S(pos), NEON.j, 2, 0.5);
-        drawDrone(pos, clock, 0.6);
-        dT.visible = true; dT.text = vstr(pos); dT.position.set(S(pos)[0] + 16, S(pos)[1] + 6);
-      } else drawDrone([0, 0], clock);
+      } else drawDrone([0, 0], clock); // the drone waits at the start: it only flies after LOCK IN (no live preview)
     },
     destroy() {},
   };

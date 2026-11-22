@@ -40,3 +40,11 @@ describe('drone logic', () => {
     }
   });
 });
+
+test('while aiming, the checklist gives the dials only: never where the drone would land, never ticked', () => {
+  const q: DroneParams = { u: [1, 0], v: [0, 1], target: [2, 1], reachable: true };
+  for (const rule of ['assist', 'partial'] as const) {
+    const c = checklist(q, rule, 2, 1); // the right answer
+    expect(c).toEqual([{ label: 'a = 2, b = 1', ok: false }]);
+  }
+});

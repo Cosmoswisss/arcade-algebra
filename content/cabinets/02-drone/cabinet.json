@@ -6,7 +6,7 @@
   "tiers": [
     {
       "rule": "assist",
-      "banner": "The drone moves live",
+      "banner": "u and v are drawn: the drone only flies when you lock in",
       "waves": {
         "guided": 1,
         "fast": 1
@@ -14,7 +14,7 @@
     },
     {
       "rule": "partial",
-      "banner": "NEW RULE · DRONE HIDDEN until it flies",
+      "banner": "NEW RULE · THRUSTERS HIDDEN — only their numbers",
       "waves": {
         "guided": 1,
         "fast": 1
