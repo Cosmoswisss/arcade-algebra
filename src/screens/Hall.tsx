@@ -27,7 +27,7 @@ export function Hall() {
   const [celebration] = useState(() => pendingCelebration(progress));
   useEffect(() => { if (celebration) celebrate(celebration); }, [celebration, celebrate]);
   const clearedLine = celebration ? content.cabinets[celebration]?.meta.story.cleared : undefined;
-  const robotSays = clearedLine ?? (rec ? `Next stop: ${names[rec]}. Follow the glowing path.` : undefined);
+  const robotSays = clearedLine ?? (rec ? `Next stop: ${names[rec]}${/[.!?]$/.test(names[rec]) ? '' : '.'} Follow the glowing path.` : undefined);
 
   return (
     <main className="hall">
