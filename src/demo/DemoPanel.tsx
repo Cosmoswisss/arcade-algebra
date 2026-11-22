@@ -21,10 +21,16 @@ export function DemoPanel() {
     demoRun.cabinet = target ?? null;
     demoRun.startTier = target ? (s.startTier ?? null) : null;
     demoRun.nonce += 1;
-    loadScene(s.build(conceptsOf));
+    const p = s.build(conceptsOf);
+    // screens that need a profile redirect to the profile page: a scene without one changes screen first,
+    // a scene with one loads its progress first
+    if (p.profile || location.hash === s.hash) { loadScene(p); go(s.hash); }
+    else {
+      window.addEventListener('hashchange', () => loadScene(p), { once: true });
+      go(s.hash);
+    }
     setLast(s.key);
     setOpen(false);
-    go(s.hash);
     window.scrollTo(0, 0);
   };
 
