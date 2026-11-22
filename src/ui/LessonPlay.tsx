@@ -2,6 +2,7 @@ import { Suspense, useEffect, useRef, useState } from 'react';
 import type { StageControls, StageStatus } from '../arcade/kit/ArcadeStage';
 import type { ChallengeResult } from '../arcade/kit/drivers';
 import { LazyStage } from '../arcade/playable';
+import { siblingWave } from '../content/lessons';
 import type { DexCard, LessonPlay as LessonPlayData, Wave } from '../content/types';
 import { nextHintStep } from '../engine/adapt';
 import type { HintStep } from '../engine/adapt';
@@ -89,8 +90,11 @@ export function LessonPlay({ cabinet, play, theme, variant = 'lesson', rule, onD
     else setFeedback({ step, mood: 'oops', kind, text: robotLine(lines, 'retry'), detail });
   };
 
-  const retry = (next: { wave?: Wave; rule?: Rule }) => {
-    if (next.wave) { setWave(next.wave); setOnDrill(next.wave.id !== play.wave.id); }
+  /** A miss reveals the answer, so a retry plays another wave on the same idea (or the drill for the mistake). */
+  // the lesson's mission describes its own wave; a retry wave gets a generic line
+  const [retryLine] = useState(() => robotLine(lines, 'retry'));
+  const retry = (next: { wave?: Wave; rule?: Rule; drill?: boolean }) => {
+    if (next.wave) { setWave(next.wave); setOnDrill(!!next.drill); }
     if (next.rule) setWaveRule(next.rule);
     setFeedback(null); setCard(null); setGain(''); setStatus(null);
     setAttempt((a) => a + 1);
@@ -104,7 +108,7 @@ export function LessonPlay({ cabinet, play, theme, variant = 'lesson', rule, onD
   if (!cab) return <p className="lead">This game is not available.</p>;
   return (
     <div className="lesson-play">
-      {talk && <div ref={robotRef} className="lesson-robot"><Robot name={lines.name} mood={feedback?.mood ?? 'idle'} line={feedback?.text ?? play.mission[theme]} />
+      {talk && <div ref={robotRef} className="lesson-robot"><Robot name={lines.name} mood={feedback?.mood ?? 'idle'} line={feedback?.text ?? (wave.id === play.wave.id ? play.mission[theme] : retryLine)} />
         {feedback?.detail && <p className="verdict-detail mono">{feedback.detail}</p>}</div>}
       <div className="stage-frame">
         <Suspense fallback={<p className="stage-loading">Powering up…</p>}>
@@ -123,10 +127,10 @@ export function LessonPlay({ cabinet, play, theme, variant = 'lesson', rule, onD
       <div className="actions">
         {playing && <button className="btn btn-primary" disabled={status?.locked} onClick={() => controls.current?.lock()}>Lock in <kbd>Space</kbd></button>}
         {feedback?.step === 'right' && <button className="btn btn-primary" onClick={() => onDone({ correct: true, firstTry: firstTry.current })}>Continue</button>}
-        {feedback?.step === 'named' && <button className="btn btn-primary" onClick={() => retry({})}>Try again</button>}
-        {feedback?.step === 'hint' && <button className="btn btn-primary" onClick={() => retry({ rule: 'assist' })}>Try again with the aids</button>}
+        {feedback?.step === 'named' && <button className="btn btn-primary" onClick={() => retry({ wave: siblingWave(cab!, wave, attempt) })}>Try another one</button>}
+        {feedback?.step === 'hint' && <button className="btn btn-primary" onClick={() => retry({ wave: siblingWave(cab!, wave, attempt), rule: 'assist' })}>Try another one, with the aids</button>}
         {(feedback?.step === 'replay-then-drill' || feedback?.step === 'drill') && (
-          <button className="btn btn-primary" disabled={status?.phase === 'replay'} onClick={() => retry({ wave: drill ?? play.wave, rule: 'assist' })}>
+          <button className="btn btn-primary" disabled={status?.phase === 'replay'} onClick={() => retry(drill ? { wave: drill, rule: 'assist', drill: true } : { wave: siblingWave(cab!, wave, attempt), rule: 'assist' })}>
             {drill && !onDrill ? 'Training wave' : 'Try again'}
           </button>
         )}

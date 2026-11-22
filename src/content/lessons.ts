@@ -9,3 +9,12 @@ export function findWave(c: CabinetContent, id: string): Wave | null {
 export function allPlayableWaves(c: CabinetContent): Wave[] {
   return [...c.waves, ...c.drills.flatMap((d) => d.waves), ...c.course.flatMap((s) => (s.play ? [s.play.wave] : []))];
 }
+
+/**
+ * Another wave on the same idea, for a retry after a miss: the miss revealed this wave's answer,
+ * so trying it again would test memory, not understanding. Cycles with `n`; falls back to `wave`.
+ */
+export function siblingWave(c: CabinetContent, wave: Wave, n: number): Wave {
+  const pool = c.waves.filter((w) => w.concept === wave.concept && w.id !== wave.id);
+  return pool.length ? pool[n % pool.length] : wave;
+}
