@@ -12,8 +12,12 @@ export const snapBet = (x: number) => Math.max(-BET_MAX, Math.min(BET_MAX, Math.
 const mstr = (m: Mat2) => `[[${m[0][0]}, ${m[0][1]}], [${m[1][0]}, ${m[1][1]}]]`;
 
 export function evaluateSquash(m: Mat2, bet: number): { correct: boolean; diagnosis: Diagnosis | null } {
-  const d = diagnoseNumber(bet, areaFactor(m), BET_TOL);
-  return d ? { correct: false, diagnosis: d } : { correct: true, diagnosis: null };
+  const target = areaFactor(m);
+  const d = diagnoseNumber(bet, target, BET_TOL);
+  if (!d) return { correct: true, diagnosis: null };
+  // a bet of the wrong size: the press's own mistake, trained by its own drill and catch-up lesson
+  if (d.kind === 'other') return { correct: false, diagnosis: { kind: 'area-off', wrongParts: [true], text: `The unit square now covers ${target} squares, not ${bet}.` } };
+  return { correct: false, diagnosis: d };
 }
 
 export function goalText(m: Mat2, rule: Rule): string {

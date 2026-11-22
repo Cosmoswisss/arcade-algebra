@@ -1,38 +1,8 @@
 {
   "errorKind": "other",
-  "title": "Read the corners",
+  "title": "Read it one number at a time",
   "text": {
-    "guided": "Look at the corners of the shape: the corner (1, 0) rides on î and the corner (0, 1) rides on ĵ. Find where those two corners sit in the target, and put the arrow tips there.",
-    "fast": "Find where the corners (1, 0) and (0, 1) land, then place î and ĵ there."
-  },
-  "scene": [
-    {
-      "matrix": [
-        [
-          1,
-          0
-        ],
-        [
-          0,
-          1
-        ]
-      ],
-      "caption": "Start from the identity: î = (1, 0), ĵ = (0, 1)",
-      "ms": 1800
-    },
-    {
-      "matrix": [
-        [
-          2,
-          0
-        ],
-        [
-          0,
-          1
-        ]
-      ],
-      "caption": "î carries the corner (1, 0), ĵ carries the corner (0, 1)",
-      "ms": 2600
-    }
-  ]
+    "guided": "Slow down and read the mission again, one number at a time. Write the coordinates you are aiming for, x first, then y. Then check your answer against each number before you lock in.",
+    "fast": "Re-read the mission's numbers, x first, then y, and check each one before locking in."
+  }
 }

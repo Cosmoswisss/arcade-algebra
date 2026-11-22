@@ -11,6 +11,11 @@ describe('squash logic', () => {
   test('right bet', () => expect(evaluateSquash([[2, 0], [0, 1]], 2).correct).toBe(true));
   test('wrong sign on a flip', () => expect(evaluateSquash([[0, 1], [1, 0]], 1).diagnosis?.kind).toBe('wrong-sign'));
   test('missed a squash to zero', () => expect(evaluateSquash([[1, 2], [0.5, 1]], 1).diagnosis?.kind).toBe('missed-zero'));
+  test('a bet of the wrong size is an area-off mistake, explained in squares', () => {
+    const d = evaluateSquash([[2, 0], [0, 1.5]], 1).diagnosis;
+    expect(d?.kind).toBe('area-off');
+    expect(d?.text).toMatch(/square/);
+  });
   test('snapBet rounds to 0.5 and clamps to ±3', () => { expect(snapBet(1.26)).toBe(1.5); expect(snapBet(-9)).toBe(-3); });
   test('goal shows the matrix only from the partial rule on; assist explains counting', () => {
     expect(goalText([[2, 0], [0, 1]], 'assist')).toContain('Count');

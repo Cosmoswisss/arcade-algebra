@@ -108,7 +108,7 @@
     ]
   },
   {
-    "errorKind": "other",
+    "errorKind": "area-off",
     "label": "counting the area",
     "waves": [
       {

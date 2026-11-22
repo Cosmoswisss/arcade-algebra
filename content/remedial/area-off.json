@@ -1,0 +1,12 @@
+{
+  "errorKind": "area-off",
+  "title": "Count the squares",
+  "text": {
+    "guided": "Start from the unit square: it covers **1** square. After the press, count how many squares the new shape covers, halves included. That number is the area factor, the **determinant**. A rectangle 2 wide and 1.5 tall covers 2 × 1.5 = **3** squares.",
+    "fast": "Area factor = how many unit squares the image of the unit square covers. For a diagonal matrix, multiply the two stretches."
+  },
+  "scene": [
+    { "matrix": [[1, 0], [0, 1]], "caption": "The unit square covers 1 square", "ms": 1800 },
+    { "matrix": [[2, 0], [0, 1.5]], "caption": "2 wide, 1.5 tall: it covers 3 squares, so the area factor is 3", "ms": 2800 }
+  ]
+}
