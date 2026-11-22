@@ -60,7 +60,7 @@ export function createVectorGolf(): CabinetGame & { setup(ctx: KitContext): void
     g.ellipse(x, y, r, r * 0.45).fill({ color: NEON.bg }).ellipse(x, y, r, r * 0.45).stroke({ width: 2, color: NEON.target, alpha: 0.8 });
     glow(g, [[x, y], [x, y - pole]], NEON.white, 1.6);
     g.poly([x, y - pole, x + 26, y - pole + 7 + wave * 0.3, x, y - pole + 15]).fill({ color: NEON.target });
-    holeT.text = `⛳ hole ${vstr(at)}`; holeT.anchor.set(0.5, 1); holeT.position.set(x + 8, y - pole - 6); holeT.visible = true;
+    holeT.text = `hole ${vstr(at)}`; holeT.anchor.set(0.5, 1); holeT.position.set(x + 8, y - pole - 6); holeT.visible = true;
   }
 
   function drawField(clock: number, showFlag = true) {
